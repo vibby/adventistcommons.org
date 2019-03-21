@@ -1,7 +1,9 @@
 <h1 class="h2">Welcome Back &#x1f44b;</h1>
 <p class="lead">Log in to your account to continue</p>
 
-<div id="infoMessage"><?php echo $message;?></div>
+<?php if( $message ) { ?>
+	<div class="alert alert-warning"><?php echo $message; ?></div>
+<?php } ?>
 
 <form action="login" method="post">
 	<div class="form-group">
@@ -10,7 +12,7 @@
 	<div class="form-group">
 		<input class="form-control" type="password" placeholder="Password" name="password" />
 		<div class="text-right">
-			<small><a href="#">Forgot password?</a>
+			<small><a href="/forgot_password">Forgot password?</a>
 			</small>
 		</div>
 	</div>

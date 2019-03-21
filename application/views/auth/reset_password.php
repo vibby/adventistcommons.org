@@ -1,22 +1,19 @@
 <h1><?php echo lang('reset_password_heading');?></h1>
 
-<div id="infoMessage"><?php echo $message;?></div>
+<?php if( $message ) { ?>
+	<div class="alert alert-warning"><?php echo $message; ?></div>
+<?php } ?>
 
-<?php echo form_open('auth/reset_password/' . $code);?>
-
-	<p>
-		<label for="new_password"><?php echo sprintf(lang('reset_password_new_password_label'), $min_password_length);?></label> <br />
-		<?php echo form_input($new_password);?>
-	</p>
-
-	<p>
-		<?php echo lang('reset_password_new_password_confirm_label', 'new_password_confirm');?> <br />
-		<?php echo form_input($new_password_confirm);?>
-	</p>
-
+<form action="/reset_password/<?php echo $code; ?>" method="post">
+	<div class="form-group">
+		<input class="form-control" type="password" placeholder="New password" name="new_password" />
+	</div>
+	<div class="form-group">
+		<input class="form-control" type="password" placeholder="Confirm new password" name="new_password_confirm" />
+	</div>
 	<?php echo form_input($user_id);?>
 	<?php echo form_hidden($csrf); ?>
-
-	<p><?php echo form_submit('submit', lang('reset_password_submit_btn'));?></p>
-
-<?php echo form_close();?>
+	<button class="btn btn-lg btn-block btn-primary" role="button" type="submit">
+		Change password
+	</button>
+</form>

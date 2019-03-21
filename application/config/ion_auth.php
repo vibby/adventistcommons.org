@@ -101,7 +101,7 @@ $config['join']['groups'] = 'group_id';
  | For more information, check the password_hash function help: http://php.net/manual/en/function.password-hash.php
  |
  */
-$config['hash_method']				= 'bcrypt';	// bcrypt or argon2
+$config['hash_method']				= 'argon2';	// bcrypt or argon2
 $config['bcrypt_default_cost']		= 10;		// Set cost according to your server benchmark - but no lower than 10 (default PHP value)
 $config['bcrypt_admin_cost']		= 12;		// Cost for user in admin group
 $config['argon2_default_params']	= [
@@ -130,7 +130,7 @@ $config['argon2_admin_params']		= [
  | The library will fail for empty password or password size above 4096 bytes.
  | This is an arbitrary (long) value to protect against DOS attack.
  */
-$config['site_title']                 = "Example.com";       // Site Title, example.com
+$config['site_title']                 = "Adventist Commons";       // Site Title, example.com
 $config['admin_email']                = "admin@example.com"; // Admin Email, admin@example.com
 $config['default_group']              = 'members';           // Default group, use name
 $config['admin_group']                = 'admin';             // Default administrators group, use name
@@ -142,7 +142,7 @@ $config['min_password_length']        = 8;                   // Minimum Required
 $config['email_activation']           = FALSE;               // Email Activation for registration
 $config['manual_activation']          = FALSE;               // Manual Activation for registration
 $config['remember_users']             = TRUE;                // Allow users to be remembered and enable auto-login
-$config['user_expire']                = 86500;               // How long to remember the user (seconds). Set to zero for no expiration - see sess_expiration in CodeIgniter Session Config for session expiration
+$config['user_expire']                = 0;               // How long to remember the user (seconds). Set to zero for no expiration - see sess_expiration in CodeIgniter Session Config for session expiration
 $config['user_extend_on_login']       = FALSE;               // Extend the users cookies every time they auto-login
 $config['track_login_attempts']       = TRUE;                // Track the number of failed login attempts for each user or ip.
 $config['track_login_ip_address']     = TRUE;                // Track login attempts by IP Address, if FALSE will track based on identity. (Default: TRUE)

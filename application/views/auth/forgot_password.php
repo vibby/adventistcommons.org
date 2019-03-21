@@ -1,15 +1,13 @@
-<h1><?php echo lang('forgot_password_heading');?></h1>
-<p><?php echo sprintf(lang('forgot_password_subheading'), $identity_label);?></p>
-
-<div id="infoMessage"><?php echo $message;?></div>
-
-<?php echo form_open("auth/forgot_password");?>
-
-      <p>
-      	<label for="identity"><?php echo (($type=='email') ? sprintf(lang('forgot_password_email_label'), $identity_label) : sprintf(lang('forgot_password_identity_label'), $identity_label));?></label> <br />
-      	<?php echo form_input($identity);?>
-      </p>
-
-      <p><?php echo form_submit('submit', lang('forgot_password_submit_btn'));?></p>
-
-<?php echo form_close();?>
+<h1 class="h2">Forgot password &#x1f62B;</h1>
+<p class="lead">Enter your email address to reset</p>
+<?php if( $message ) { ?>
+	<div class="alert alert-warning"><?php echo $message; ?></div>
+<?php } ?>
+<form action="forgot_password" method="post">
+	<div class="form-group">
+		<input class="form-control" type="email" placeholder="Email Address" name="identity" />
+	</div>
+	<button class="btn btn-lg btn-block btn-primary" role="button" type="submit">
+		Send reset link
+	</button>
+</form>
