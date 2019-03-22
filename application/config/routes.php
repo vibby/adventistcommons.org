@@ -56,5 +56,6 @@ $route['logout'] = 'auth/logout';
 $route['change_password'] = 'auth/change_password';
 $route['forgot_password'] = 'auth/forgot_password';
 $route['reset_password'] = 'auth/reset_password';
+$route['projects/(:num)'] = 'projects/detail/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

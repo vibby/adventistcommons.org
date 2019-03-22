@@ -44,7 +44,7 @@
 									</div>
 								</div>
 								<div class="card-title">
-									<a href="#">
+									<a href="/projects/<?php echo $project["id"]; ?>">
 										<h5 data-filter-by="text"><?php echo $project["publication_name"]; ?><span class="badge badge-light text-secondary ml-1"><?php echo $project["language_name"]; ?></span></h5>
 									</a>
 								</div>

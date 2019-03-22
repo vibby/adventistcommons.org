@@ -6,10 +6,10 @@
 		<title>Adventist Commons | <?php echo $title ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="description" content="A project management Bootstrap theme by Medium Rare">
-		<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon">
+		<link href="/assets/img/favicon.ico" rel="icon" type="image/x-icon">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
-		<link href="assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="/assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
 	</head>
 
 	<body>
@@ -17,7 +17,7 @@
 		<div class="layout layout-nav-top">
 			<div class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
 				<a class="navbar-brand" href="/projects">
-					<img src="assets/img/logo.png" width="40" />
+					<img src="/assets/img/logo.png" width="40" />
 				</a>
 				<div class="d-flex align-items-center">
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -121,16 +121,16 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="assets/js/jquery.min.js"></script>
-		<script type="text/javascript" src="assets/js/autosize.min.js"></script>
-		<script type="text/javascript" src="assets/js/popper.min.js"></script>
-		<script type="text/javascript" src="assets/js/prism.js"></script>
-		<script type="text/javascript" src="assets/js/draggable.bundle.legacy.js"></script>
-		<script type="text/javascript" src="assets/js/swap-animation.js"></script>
-		<script type="text/javascript" src="assets/js/dropzone.min.js"></script>
-		<script type="text/javascript" src="assets/js/list.min.js"></script>
-		<script type="text/javascript" src="assets/js/bootstrap.js"></script>
-		<script type="text/javascript" src="assets/js/theme.js"></script>
+		<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/js/autosize.min.js"></script>
+		<script type="text/javascript" src="/assets/js/popper.min.js"></script>
+		<script type="text/javascript" src="/assets/js/prism.js"></script>
+		<script type="text/javascript" src="/assets/js/draggable.bundle.legacy.js"></script>
+		<script type="text/javascript" src="/assets/js/swap-animation.js"></script>
+		<script type="text/javascript" src="/assets/js/dropzone.min.js"></script>
+		<script type="text/javascript" src="/assets/js/list.min.js"></script>
+		<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+		<script type="text/javascript" src="/assets/js/theme.js"></script>
 
 
 	</body>
