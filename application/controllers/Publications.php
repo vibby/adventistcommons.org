@@ -18,7 +18,7 @@ class Publications extends CI_Controller {
 	
 	public $breadcrumbs = [
 		[
-			"label" => "Publications",
+			"label" => "Catalog",
 			"url" => "/publications",
 		],
 	];
@@ -29,7 +29,7 @@ class Publications extends CI_Controller {
 			"publications" => $this->publication_model->getPublications(),
 		];
 		$this->template->set( "title", "Publications" );
-		$this->breadcrumbs[] = [ "label" => "All"  ];
+		$this->breadcrumbs[] = [ "label" => "All Publications"  ];
 		$this->template->set( "breadcrumbs", $this->breadcrumbs );
 		$this->template->load( "template", "publications", $data );
 	}

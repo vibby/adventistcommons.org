@@ -18,7 +18,7 @@ class Projects extends CI_Controller {
 	
 	public $breadcrumbs = [
 		[
-			"label" => "Projects",
+			"label" => "Dashboard",
 			"url" => "/projects",
 		],
 	];
@@ -28,7 +28,7 @@ class Projects extends CI_Controller {
 		$data = [
 			"projects" => $this->project_model->getProjects(),
 		];
-		$this->template->set( "title", "Projects" );
+		$this->template->set( "title", "Dashboard" );
 		$this->breadcrumbs[] = [ "label" => "All"  ];
 		$this->template->set( "breadcrumbs", $this->breadcrumbs );
 		$this->template->load( "template", "projects", $data );

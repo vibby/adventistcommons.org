@@ -41,19 +41,13 @@
 
 						<li class="nav-item">
 
-							<a class="nav-link" href="/projects">Projects</a>
+							<a class="nav-link" href="/projects">Dashboard</a>
 
 						</li>
 						
 						<li class="nav-item">
 
-							<a class="nav-link" href="/publications">Publications</a>
-
-						</li>
-
-						<li class="nav-item">
-
-							<a class="nav-link" href="#">Tutorial</a>
+							<a class="nav-link" href="/publications">Catalog</a>
 
 						</li>
 
@@ -98,21 +92,6 @@
 							<?php } ?>
 						</ol>
 					</nav>
-				
-					<div class="dropdown">
-						<button class="btn btn-round" role="button" data-toggle="dropdown" aria-expanded="false">
-							<i class="material-icons">settings</i>
-						</button>
-						<div class="dropdown-menu dropdown-menu-right">
-
-							<a class="dropdown-item" href="#" data-toggle="modal" data-target="#team-manage-modal">Edit Team</a>
-							<a class="dropdown-item" href="#">Share</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item text-danger" href="#">Leave</a>
-
-						</div>
-					</div>
-
 				</div>
 				<div class="container">
 					<?php echo $contents ?>

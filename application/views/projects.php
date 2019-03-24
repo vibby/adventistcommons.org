@@ -1,28 +1,26 @@
 <div class="row justify-content-center">
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header">
-			<h1>Translation Projects</h1>
-			<p class="lead">Produced and licensed under Creative Commons.</p>
+			<h1>Adventist Commons</h1>
+			<p class="lead">Contribute to a project below or browse the <a href="/publications" class="text-secondary">catalog</a> for other books and resources.</p>
 		</div>
 		<hr>
 		<div class="content-list">
 			<div class="row content-list-head">
 				<div class="col-auto">
-					<h3>Projects</h3>
-					<button class="btn btn-round" data-toggle="modal" data-target="#project-add-modal">
-						<i class="material-icons">add</i>
-					</button>
+					<h3>In-progress Translations</h3>
 				</div>
-				<form class="col-md-auto">
-					<div class="input-group input-group-round">
-						<div class="input-group-prepend">
-							<span class="input-group-text">
-								<i class="material-icons">filter_list</i>
-							</span>
+				<div class="col-auto">
+					<div class="dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+							<i class="material-icons align-top">language</i> All Languages
+						</button>
+						<div class="dropdown-menu">
+							<a class="dropdown-item" href="#">Spanish</a>
+							<a class="dropdown-item" href="#">French</a>
 						</div>
-						<input type="search" class="form-control filter-list-input" placeholder="Filter projects" aria-label="Filter Projects" aria-describedby="filter-projects">
 					</div>
-				</form>
+				</div>
 			</div>
 			<!--end of content list head-->
 			<div class="content-list-body row">
