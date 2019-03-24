@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header">
-			<h1><?php echo $publication["name"]; ?></h1>
+			<h1><?php echo $publication["name"]; ?> <span class="badge badge-secondary text-light ml-1"><?php echo $project["language_name"]; ?></span></h1>
 			<p class="lead"><?php echo $publication["description"]; ?></p>
 			<div class="d-flex align-items-center">
 				<ul class="avatars">

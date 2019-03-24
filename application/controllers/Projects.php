@@ -10,6 +10,10 @@ class Projects extends CI_Controller {
 		$this->load->library(['ion_auth']);
 		$this->load->helper(['url']);
 		$this->load->model( "project_model" );
+		
+		if ( ! $this->ion_auth->logged_in() ) {
+			redirect( "/login", "refresh" );
+		}
 	}
 	
 	public $breadcrumbs = [
