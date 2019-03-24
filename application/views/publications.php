@@ -1,7 +1,7 @@
 <div class="row justify-content-center">
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header">
-			<h1>Publications</h1>
+			<h1>Catalog</h1>
 		</div>
 		<hr>
 		<div class="content-list">
