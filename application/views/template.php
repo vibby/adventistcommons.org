@@ -24,33 +24,40 @@
 						<span class="navbar-toggler-icon"></span>
 					</button>
 					<div class="d-block d-lg-none ml-2">
-						<div class="dropdown">
-							<a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
-							</a>
-							<div class="dropdown-menu dropdown-menu-right">
-								<a href="/user/profile" class="dropdown-item">Profile</a>
-								<a href="/user/profile" class="dropdown-item">Account Settings</a>
-								<a href="/logout" class="dropdown-item">Log Out</a>
+						<?php if ( $this->ion_auth->logged_in() ) { ?>
+							<div class="dropdown">
+								<a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
+								</a>
+								<div class="dropdown-menu dropdown-menu-right">
+									<a href="/user/profile" class="dropdown-item">Profile</a>
+									<a href="/account" class="dropdown-item">Account Settings</a>
+									<a href="/logout" class="dropdown-item">Log Out</a>
+								</div>
 							</div>
-						</div>
+						<?php } else { ?>
+							<ul class="navbar-nav">
+								<li class="nav-item">
+									<a class="nav-link" href="/login">Login</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="/register">Sign Up</a>
+								</li>
+							</ul>
+						<?php } ?>
 					</div>
 				</div>
 				<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse">
 					<ul class="navbar-nav">
-
 						<li class="nav-item">
-
-							<a class="nav-link" href="/projects">Dashboard</a>
-
+							<a class="nav-link" href="/projects">Translations In Progress</a>
 						</li>
-						
 						<li class="nav-item">
-
-							<a class="nav-link" href="/publications">Catalog</a>
-
+							<a class="nav-link" href="/products">Products</a>
 						</li>
-
+						<li class="nav-item">
+							<a class="nav-link" href="#">How It Works</a>
+						</li>
 					</ul>
 					<div class="d-lg-flex align-items-center mx-lg-2">
 						<form class="form-inline my-lg-0 my-2 mx-lg-2">
@@ -64,16 +71,27 @@
 							</div>
 						</form>
 						<div class="d-none d-lg-block">
-							<div class="dropdown">
-								<a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
-								</a>
-								<div class="dropdown-menu dropdown-menu-right">
-									<a href="/user/profile" class="dropdown-item">Profile</a>
-									<a href="/user/profile" class="dropdown-item">Account Settings</a>
-									<a href="/logout" class="dropdown-item">Log Out</a>
+							<?php if ( $this->ion_auth->logged_in() ) { ?>
+								<div class="dropdown">
+									<a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
+									</a>
+									<div class="dropdown-menu dropdown-menu-right">
+										<a href="/user/profile" class="dropdown-item">Profile</a>
+										<a href="/account" class="dropdown-item">Account Settings</a>
+										<a href="/logout" class="dropdown-item">Log Out</a>
+									</div>
 								</div>
-							</div>
+							<?php } else { ?>
+								<ul class="navbar-nav">
+									<li class="nav-item">
+										<a class="nav-link" href="/login">Login</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="/register">Sign Up</a>
+									</li>
+								</ul>
+							<?php } ?>
 						</div>
 					</div>
 				</div>

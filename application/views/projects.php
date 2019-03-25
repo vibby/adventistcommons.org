@@ -2,13 +2,13 @@
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header">
 			<h1>Adventist Commons</h1>
-			<p class="lead">Contribute to a project below or browse the <a href="/publications" class="text-secondary">catalog</a> for other books and resources.</p>
+			<p class="lead">Contribute to a project below or browse <a href="/products" class="text-secondary">other available products</a> for more books and resources.</p>
 		</div>
 		<hr>
 		<div class="content-list">
 			<div class="row content-list-head">
 				<div class="col-auto">
-					<h3>In-progress Translations</h3>
+					<h3>Translations In Progress</h3>
 				</div>
 				<div class="col-auto">
 					<div class="dropdown">
@@ -43,7 +43,7 @@
 								</div>
 								<div class="card-title">
 									<a href="/projects/<?php echo $project["id"]; ?>">
-										<h5 data-filter-by="text"><?php echo $project["publication_name"]; ?><span class="badge badge-light text-secondary ml-1"><?php echo $project["language_name"]; ?></span></h5>
+										<h5 data-filter-by="text"><?php echo $project["product_name"]; ?><span class="badge badge-light text-secondary ml-1"><?php echo $project["language_name"]; ?></span></h5>
 									</a>
 								</div>
 								<ul class="avatars">

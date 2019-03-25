@@ -10,15 +10,11 @@ class Projects extends CI_Controller {
 		$this->load->library(['ion_auth']);
 		$this->load->helper(['url']);
 		$this->load->model( "project_model" );
-		
-		if ( ! $this->ion_auth->logged_in() ) {
-			redirect( "/login", "refresh" );
-		}
 	}
 	
 	public $breadcrumbs = [
 		[
-			"label" => "Dashboard",
+			"label" => "Translations In Progress",
 			"url" => "/projects",
 		],
 	];
@@ -35,13 +31,13 @@ class Projects extends CI_Controller {
 	}
 	
 	public function detail( $project_id ) {
-		$this->load->model( "publication_model" );
+		$this->load->model( "product_model" );
 		$project = $this->project_model->getProject( $project_id );
-		$publication = $this->publication_model->getPublication( $project["publication_id"] );
-		$title = "{$publication['name']} ({$project['language_name']})";
+		$product = $this->product_model->getProduct( $project["product_id"] );
+		$title = "{$product['name']} ({$project['language_name']})";
 		$data = [
 			"project" => $project,
-			"publication" => $publication,
+			"product" => $product,
 			"members" => $this->project_model->getMembers( $project["id"] ),
 			"sections" => $this->project_model->getSections( $project["id"] ),
 		];

@@ -1,8 +1,8 @@
 <div class="row justify-content-center">
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header">
-			<h1><?php echo $publication["name"]; ?> <span class="badge badge-secondary text-light ml-1"><?php echo $project["language_name"]; ?></span></h1>
-			<p class="lead"><?php echo $publication["description"]; ?></p>
+			<h1><?php echo $product["name"]; ?> <span class="badge badge-secondary text-light ml-1"><?php echo $project["language_name"]; ?></span></h1>
+			<p class="lead"><?php echo $product["description"]; ?></p>
 			<div class="d-flex align-items-center">
 				<ul class="avatars">
 					<?php foreach( $members as $member ) { ?>
@@ -43,7 +43,7 @@
 							</div>
 							<div class="card-body">
 								<div class="card-title">
-									<a href="#">
+									<a href="/editor/<?php echo $project["id"]; ?>/<?php echo $section["id"]; ?>">
 										<h6 data-filter-by="text"><?php echo $section["name"]; ?></h6>
 									</a>
 									<div class="d-flex align-items-center">
@@ -52,7 +52,7 @@
 									</div>
 								</div>
 								<div class="card-meta">
-									<a href="/translate/section/<?php echo $section["id"]; ?>" class="btn btn-secondary">Start Translating</a>
+									<a href="/editor/<?php echo $project["id"]; ?>/<?php echo $section["id"]; ?>" class="btn btn-secondary">Start Translating</a>
 								</div>
 							</div>
 						</div>

@@ -1,11 +1,11 @@
 <div class="row justify-content-center">
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header clearfix">
-			<img src="/uploads/<?php echo $publication["cover_image"]; ?>" width="140" class="float-left mr-3 rounded">
-			<h1><?php echo $publication["name"]; ?></h1>
+			<img src="/uploads/<?php echo $product["cover_image"]; ?>" width="140" class="float-left mr-3 rounded">
+			<h1><?php echo $product["name"]; ?></h1>
 			<p class="lead">
-				<?php echo $publication["description"]; ?>
-				<br><span class="text-small"><strong>Author</strong>: <?php echo $publication["author"]; ?></span>
+				<?php echo $product["description"]; ?>
+				<br><span class="text-small"><strong>Author</strong>: <?php echo $product["author"]; ?></span>
 			</p>
 		</div>
 		<hr>

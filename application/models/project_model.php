@@ -36,7 +36,7 @@ class Project_model extends CI_Model
 		}, $projects );
 	}
 	
-	public function getProjectsByPublicationId( $publication_id ) {
+	public function getProjectsByProductId( $product_id ) {
 		$projects = $this->_projectsQuery()->get()->result_array();
 		return array_map( function( $project ) {
 			$project["total_strings"] = 5;
@@ -74,8 +74,8 @@ class Project_model extends CI_Model
 	
 	public function getSections( $project_id ) {
 		$sections = $this->db->select( "*" )
-			->from( "publication_sections" )
-			->join( "projects", "publication_sections.publication_id = projects.publication_id", "left" )
+			->from( "product_sections" )
+			->join( "projects", "product_sections.product_id = projects.product_id", "left" )
 			->where( "projects.id", $project_id )
 			->get()
 			->result_array();
@@ -91,9 +91,9 @@ class Project_model extends CI_Model
 	}
 	
 	private function _projectsQuery() {
-		return $this->db->select( "projects.*, publications.name as publication_name, languages.name as language_name" )
+		return $this->db->select( "projects.*, products.name as product_name, languages.name as language_name" )
 			->from( "projects" )
-			->join( "publications", "projects.publication_id = publications.id" )
+			->join( "products", "projects.product_id = products.id" )
 			->join( "languages", "projects.language_id = languages.id" );
 	}
 }
