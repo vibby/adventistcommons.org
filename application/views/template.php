@@ -30,7 +30,6 @@
 									<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
-									<a href="/user/profile" class="dropdown-item">Profile</a>
 									<a href="/account" class="dropdown-item">Account Settings</a>
 									<a href="/logout" class="dropdown-item">Log Out</a>
 								</div>
@@ -77,7 +76,6 @@
 										<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
 									</a>
 									<div class="dropdown-menu dropdown-menu-right">
-										<a href="/user/profile" class="dropdown-item">Profile</a>
 										<a href="/account" class="dropdown-item">Account Settings</a>
 										<a href="/logout" class="dropdown-item">Log Out</a>
 									</div>
