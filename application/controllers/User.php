@@ -710,7 +710,7 @@ class User extends CI_Controller
 			$data["username"] = $data["email"];
 			$this->db->where( "id", $user_id );
 			$this->db->update( "users", $data );
-			$this->output->set_output( json_encode( [ "success" => "Account info update" ] ) );
+			$this->output->set_output( json_encode( [ "success" => "Account info updated" ] ) );
 		}
 	}
 	

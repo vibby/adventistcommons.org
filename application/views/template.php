@@ -6,10 +6,10 @@
 		<title>Adventist Commons | <?php echo $title ?></title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="icon" href="/assets/img/favicon.png"> 
-		<link href="/assets/img/favicon.ico" rel="icon" type="image/x-icon">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
 		<link href="/assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="/assets/css/custom.css" rel="stylesheet" type="text/css" media="all" />
 	</head>
 
 	<body>

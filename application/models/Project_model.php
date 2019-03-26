@@ -37,7 +37,10 @@ class Project_model extends CI_Model
 	}
 	
 	public function getProjectsByProductId( $product_id ) {
-		$projects = $this->_projectsQuery()->get()->result_array();
+		$projects = $this->_projectsQuery()
+			->where( "product_id", $product_id )
+			->get()
+			->result_array();
 		return array_map( function( $project ) {
 			$project["total_strings"] = 5;
 			$project["completed_strings"] = 2;

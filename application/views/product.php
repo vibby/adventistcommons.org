@@ -2,11 +2,12 @@
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header clearfix">
 			<img src="/uploads/<?php echo $product["cover_image"]; ?>" width="140" class="float-left mr-3 rounded">
-			<h1><?php echo $product["name"]; ?></h1>
-			<p class="lead">
-				<?php echo $product["description"]; ?>
-				<br><span class="text-small"><strong>Author</strong>: <?php echo $product["author"]; ?></span>
-			</p>
+			<h2><?php echo $product["name"]; ?></h2>
+			<p><?php echo $product["description"]; ?></p>
+			<span class="text-small pr-2"><strong>Author</strong>: <?php echo $product["author"]; ?></span>
+			<span class="text-small pr-2"><strong>Pages</strong>: <?php echo $product["page_count"]; ?></span>
+			<span class="text-small pr-2"><strong>Dimensions</strong>: <?php echo $product["dimensions"]; ?></span>
+			<span class="text-small pr-2"><strong>Colors</strong>: <?php echo $product["colors"]; ?></span>
 		</div>
 		<hr>
 		<div class="row content-list-head">
@@ -49,6 +50,9 @@
 								</div>
 							</div>
 						</div>
+					<?php } ?>
+					<?php if( count( $languages ) < 1 ) { ?>
+						<p>This product is not yet available in any languages.</p>
 					<?php } ?>
 				</div>
 			</div>
