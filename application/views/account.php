@@ -22,7 +22,7 @@
 							</div>
 						</div>
 						<!--end of avatar-->
-						<form>
+						<form class="auto-submit" action="/account/save" method="post">
 							<div class="form-group row align-items-center">
 								<label class="col-3">First Name</label>
 								<div class="col">
@@ -50,32 +50,38 @@
 							<div class="form-group row">
 								<label class="col-3">Bio</label>
 								<div class="col">
-									<textarea type="text" placeholder="Tell us a little about yourself" name="bio" value="<?php echo $user->bio; ?>" class="form-control" rows="4"></textarea>
+									<textarea type="text" placeholder="Tell us a little about yourself" name="bio" class="form-control" rows="4"><?php echo $user->bio; ?></textarea>
 									<small>This will be displayed on your public profile</small>
 								</div>
 							</div>
 							<div class="row justify-content-end">
-								<button type="submit" class="btn btn-primary">Save</button>
+								<button type="submit" class="btn btn-primary mr-2">Save</button>
 							</div>
 						</form>
 					</div>
 					<div class="tab-pane fade" role="tabpanel" id="password" aria-labelledby="password-tab">
-						<form>
+						<form action="/account/save_password" method="post" class="auto-submit">
+							<div class="form-group row align-items-center">
+								<label class="col-3">Current Password</label>
+								<div class="col">
+									<input type="password" placeholder="Enter your current password" name="current_password" class="form-control" />
+								</div>
+							</div>
 							<div class="form-group row align-items-center">
 								<label class="col-3">New Password</label>
 								<div class="col">
-									<input type="password" placeholder="Enter a new password" name="password-new" class="form-control" />
+									<input type="password" placeholder="Enter a new password" name="new_password" class="form-control" />
 									<small>Password must be at least 8 characters long</small>
 								</div>
 							</div>
 							<div class="form-group row align-items-center">
 								<label class="col-3">Confirm Password</label>
 								<div class="col">
-									<input type="password" placeholder="Confirm your new password" name="password-new-confirm" class="form-control" />
+									<input type="password" placeholder="Confirm your new password" name="confirm_password" class="form-control" />
 								</div>
 							</div>
 							<div class="row justify-content-end">
-								<button type="submit" class="btn btn-primary">Change Password</button>
+								<button type="submit" class="btn btn-primary mr-2">Change Password</button>
 							</div>
 						</form>
 					</div>

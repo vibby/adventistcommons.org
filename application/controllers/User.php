@@ -694,6 +694,46 @@ class User extends CI_Controller
 		$this->template->set( "breadcrumbs", $breadcrumbs );
 		$this->template->load( "template", "account", $data );
 	}
+	
+	public function save_account() {
+		$this->output->set_content_type('application/json');
+		
+		$this->form_validation->set_rules( "email", "Email", "required|valid_email" );
+		$this->form_validation->set_rules( "first_name", "First name", "required" );
+		$this->form_validation->set_rules( "last_name", "Last name", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+		} else {
+			$user_id = $this->ion_auth->user()->row()->id;
+			$data = $this->input->post();
+			$data["username"] = $data["email"];
+			$this->db->where( "id", $user_id );
+			$this->db->update( "users", $data );
+			$this->output->set_output( json_encode( [ "success" => "Account info update" ] ) );
+		}
+	}
+	
+	public function save_password() {
+		$this->output->set_content_type('application/json');
+		
+		$this->form_validation->set_rules( "current_password", "Current password", "required" );
+		$this->form_validation->set_rules( "new_password", "New password", "required|min_length[" . $this->config->item( "min_password_length", "ion_auth" ) . "]|matches[confirm_password]" );
+		$this->form_validation->set_rules( "confirm_password", "Confirm password", "required" );
+
+		$user = $this->ion_auth->user()->row();
+
+		if ( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+		} else {
+			$change = $this->ion_auth->change_password( $user->email, $this->input->post( "current_password" ), $this->input->post( "new_password" ) );
+			if( ! $change ) {
+				$this->output->set_output( json_encode( [ "error" => $this->ion_auth->errors() ] ) );
+			} else {
+				$this->output->set_output( json_encode( [ "success" => "Password updated successfully" ] ) );
+			}
+		}
+	}
 
 	/**
 	 * Create a new group

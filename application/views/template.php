@@ -126,6 +126,7 @@
 		<script type="text/javascript" src="/assets/js/list.min.js"></script>
 		<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
 		<script type="text/javascript" src="/assets/js/theme.js"></script>
+		<script type="text/javascript" src="/assets/js/app.js"></script>
 
 
 	</body>
