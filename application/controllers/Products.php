@@ -65,10 +65,8 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 		
 		$this->form_validation->set_rules( "name", "Title", "required" );
-		$this->form_validation->set_rules( "author", "Author(s)", "required" );
+		$this->form_validation->set_rules( "audience", "Audience", "required" );
 		$this->form_validation->set_rules( "page_count", "Page count", "required|numeric" );
-		$this->form_validation->set_rules( "dimensions", "Dimensions", "required" );
-		$this->form_validation->set_rules( "colors", "Colors", "required" );
 		$this->form_validation->set_rules( "type", "Product type", "required" );
 		
 		if( $this->form_validation->run() === false ) {
