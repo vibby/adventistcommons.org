@@ -71,15 +71,58 @@ class Product_model extends CI_Model
 			->result_array();
 		
 		return array_map( function( $content ) use( $project_id ) {
-			$content["revisions"] = $this->db->select( "*" )
+			$revisions = $this->db->select( "*" )
 				->from( "product_content_revisions" )
 				->where( "content_id", $content["id"] )
 				->order_by( "created_at", "desc" )
 				->join( "users", "product_content_revisions.user_id = users.id" )
 				->get()
 				->result_array();
+			
+			foreach( $revisions as $key => $revision ) {
+				$date = new DateTime( $revision["created_at"] );
+				$revisions[$key]["created_at_formatted"] = $date->format( "Y-m-d H:i a" );
+				$revisions[$key]["created_at"] = $date->format( "c" );
+				$old_content = array_key_exists( $key+1, $revisions ) ? $revisions[$key+1]["content"] : "";
+				$revisions[$key]["diff"] = $this->_htmlDiff( $old_content, $revision["content"] );
+			}
+			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
 			return $content;
 		}, $content );
+	}
+	
+	//https://github.com/paulgb/simplediff
+	private function _diff($old, $new){
+		$matrix = array();
+		$maxlen = 0;
+		foreach($old as $oindex => $ovalue){
+			$nkeys = array_keys($new, $ovalue);
+			foreach($nkeys as $nindex){
+				$matrix[$oindex][$nindex] = isset($matrix[$oindex - 1][$nindex - 1]) ?
+					$matrix[$oindex - 1][$nindex - 1] + 1 : 1;
+				if($matrix[$oindex][$nindex] > $maxlen){
+					$maxlen = $matrix[$oindex][$nindex];
+					$omax = $oindex + 1 - $maxlen;
+					$nmax = $nindex + 1 - $maxlen;
+				}
+			}   
+		}
+		if($maxlen == 0) return array(array('d'=>$old, 'i'=>$new));
+		return array_merge(
+			$this->_diff(array_slice($old, 0, $omax), array_slice($new, 0, $nmax)),
+			array_slice($new, $nmax, $maxlen),
+			$this->_diff(array_slice($old, $omax + $maxlen), array_slice($new, $nmax + $maxlen)));
+	}
+	private function _htmlDiff($old, $new){
+		$ret = '';
+		$diff = $this->_diff(preg_split("/[\s]+/", $old), preg_split("/[\s]+/", $new));
+		foreach($diff as $k){
+			if(is_array($k))
+				$ret .= (!empty($k['d'])?"<del>".implode(' ',$k['d'])."</del> ":'').
+					(!empty($k['i'])?"<ins>".implode(' ',$k['i'])."</ins> ":'');
+			else $ret .= $k . ' ';
+		}
+		return $ret;
 	}
 }

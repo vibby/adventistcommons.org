@@ -27,7 +27,9 @@
 			<div class="tab-pane fade show active" id="product-languages" role="tabpanel">
 				<div class="content-list-head d-flex justify-content-between align-items-center">
 					<h3>Languages</h3>
-					<button class="btn btn-secondary d-flex" data-toggle="modal" data-target="#add-project-form">Start New Translation</button>
+					<?php if( $this->ion_auth->logged_in() ) { ?>
+						<button class="btn btn-secondary d-flex" data-toggle="modal" data-target="#add-project-form">Start New Translation</button>
+					<?php } ?>
 				</div>
 				<div class="content-list-body">
 					<div class="card-list">

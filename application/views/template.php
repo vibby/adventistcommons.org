@@ -9,7 +9,7 @@
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
 		<link href="/assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
-		<link href="/assets/css/custom.css" rel="stylesheet" type="text/css" media="all" />
+		<link href="/assets/css/custom.css?v=2" rel="stylesheet" type="text/css" media="all" />
 	</head>
 
 	<body>
@@ -126,8 +126,9 @@
 		<script type="text/javascript" src="/assets/js/list.min.js"></script>
 		<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
 		<script type="text/javascript" src="/assets/js/selectize.min.js"></script>
+		<script type="text/javascript" src="/assets/js/jquery.timeago.js"></script>
 		<script type="text/javascript" src="/assets/js/theme.js"></script>
-		<script type="text/javascript" src="/assets/js/app.js"></script>
+		<script type="text/javascript" src="/assets/js/app.js?v=2"></script>
 		
 		<link href="/assets/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" media="all" />
 

@@ -15,3 +15,22 @@
 
 .selectize-control.single .selectize-input:after {
 	border-color: #495057 transparent transparent transparent !important;
+}
+
+.revision-header {
+	cursor: pointer;
+}
+
+.revision-content del {
+	color: white;
+	background: #e25d69;
+	padding: 1px 5px;
+}
+
+.revision-content ins {
+	color: white;
+	background: #57b36c;
+	font-weight: 500;
+	padding: 1px 5px;
+	text-decoration: none;
+}

@@ -1,3 +1,5 @@
+$( "time" ).timeago();
+
 function handleFormResponse( $form, message, type = "danger" ) {
 	$form.append( '<div class="alert alert-' + type + ' mt-2 form-response">' + message + '</div>' );
 	setTimeout(function() {
@@ -81,3 +83,32 @@ if( $( ".language-select" ).length > 0 ) {
 		});
 	});
 }
+
+$( ".commit-paragraph" ).click( function(e) {
+	$parent = $(this).parents( ".editor-item" );
+	$btn = $(this);
+	btn_text = $btn.text();
+	$btn.text( "..." ).prop( "disabled", true );
+	e.preventDefault();
+	var data = {
+		"content": $parent.find( "textarea" ).val(),
+		"project_id": $parent.attr( "data-project-id" ),
+		"content_id": $parent.attr( "data-content-id" ),
+	}
+	$.post( "/editor/commit", data, function( response ) {
+		$btn.text( btn_text ).prop( "disabled", false );
+		if( response.error ) {
+			handleFormResponse( $parent.find( ".response" ), response.error );
+			return;
+		}
+		handleFormResponse( $parent.find( ".response" ), response.success, "success" );
+	})
+	.fail(function() {
+		handleFormResponse( $parent.find( ".response" ), "An error has occured" );
+		$btn.text( btn_text ).prop( "disabled", false );
+	});
+});
+
+$( ".revision-header" ).click( function() {
+	$(this).next().slideToggle();
+});

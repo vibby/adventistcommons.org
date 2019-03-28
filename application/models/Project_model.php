@@ -76,7 +76,7 @@ class Project_model extends CI_Model
 	}
 	
 	public function getSections( $project_id ) {
-		$sections = $this->db->select( "*" )
+		$sections = $this->db->select( "*, product_sections.id as id" )
 			->from( "product_sections" )
 			->join( "projects", "product_sections.product_id = projects.product_id", "left" )
 			->where( "projects.id", $project_id )
