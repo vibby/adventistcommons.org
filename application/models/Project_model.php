@@ -93,6 +93,13 @@ class Project_model extends CI_Model
 		return $sections;
 	}
 	
+	public function getLanguages() {
+		return $this->db->select( "*" )
+			->from( "languages" )
+			->get()
+			->result_array();
+	}
+	
 	private function _projectsQuery() {
 		return $this->db->select( "projects.*, products.name as product_name, languages.name as language_name" )
 			->from( "projects" )

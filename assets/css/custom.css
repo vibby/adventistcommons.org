@@ -1,3 +1,17 @@
 .custom-file-label::after {
 	height: auto;
 }
+
+.selectize-input {
+	border-color: #E9EEF2 !important;
+	font-size: .875rem !important;
+	border-radius: 0.5rem !important;
+	vertical-align: middle;
+}
+
+.selectize-dropdown {
+	font-size: .875rem !important;
+}
+
+.selectize-control.single .selectize-input:after {
+	border-color: #495057 transparent transparent transparent !important;

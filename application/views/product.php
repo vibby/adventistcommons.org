@@ -25,10 +25,9 @@
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane fade show active" id="product-languages" role="tabpanel">
-				<div class="row content-list-head">
-					<div class="col-auto">
-						<h3>Languages</h3>
-					</div>
+				<div class="content-list-head d-flex justify-content-between align-items-center">
+					<h3>Languages</h3>
+					<button class="btn btn-secondary d-flex" data-toggle="modal" data-target="#add-project-form">Start New Translation</button>
 				</div>
 				<div class="content-list-body">
 					<div class="card-list">
@@ -156,3 +155,30 @@
 		</div>
 	</div>
 </div>
+
+<form class="modal fade auto-submit" action="/projects/add" id="add-project-form" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Start New Translation</h5>
+				<button type="button" class="close btn btn-round" data-dismiss="modal">
+					<i class="material-icons">close</i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group row align-items-center">
+					<label class="col-3">Language</label>
+					<select class="language-select col" name="language_id" data-placeholder="Select a language...">
+						<option value="">None</option>
+					</select>
+				</div>
+				<input type="hidden" name="product_id" value="<?php echo $product["id"]; ?>">
+			</div>
+			<div class="modal-footer">
+				<button role="button" class="btn btn-primary" type="submit">
+					Start Translation
+				</button>
+			</div>
+		</div>
+	</div>
+</form>

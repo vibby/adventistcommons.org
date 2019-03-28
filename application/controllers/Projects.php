@@ -7,8 +7,8 @@ class Projects extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(['ion_auth']);
-		$this->load->helper(['url']);
+		$this->load->library( [ "ion_auth", "form_validation" ] );
+		$this->load->helper( [ "url" ] );
 		$this->load->model( "project_model" );
 	}
 	
@@ -45,5 +45,46 @@ class Projects extends CI_Controller {
 		$this->breadcrumbs[] = [ "label" => $title  ];
 		$this->template->set( "breadcrumbs", $this->breadcrumbs );
 		$this->template->load( "template", "project", $data );
+	}
+	
+	public function get_languages() {
+		$languages = $this->project_model->getLanguages();
+		$this->output->set_content_type("application/json");
+		$this->output->set_output( json_encode( $languages ) );
+	}
+	
+	public function add( $product_id = null ) {
+		if( ! $this->ion_auth->logged_in() ) {
+			show_404();
+		}
+		$this->load->model( "product_model" );
+		$this->output->set_content_type("application/json");
+		$this->form_validation->set_rules( "language_id", "Language", "required" );
+		$this->form_validation->set_rules( "product_id", "Product ID", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		if( ! $this->product_model->getProduct( $data["product_id"] ) ) {
+			show_404();
+		}
+		
+		$count_existing = $this->db->select( "id" )
+			->where( "product_id", $data["product_id"] )
+			->where( "language_id", $data["language_id"] )
+			->from( "projects" )
+			->count_all_results();
+		
+		if( $count_existing > 0 ) {
+			$this->output->set_output( json_encode( [ "error" => "This product is already being translated into the chosen language" ] ) );
+			return false;
+		}
+		
+		$this->db->insert( "projects", $data );
+		$id = $this->db->insert_id();
+		$this->output->set_output( json_encode( [ "redirect" => "/projects/$id" ] ) );
 	}
 }

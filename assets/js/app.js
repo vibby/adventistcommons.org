@@ -8,6 +8,9 @@ function handleFormResponse( $form, message, type = "danger" ) {
 $( "form.auto-submit" ).submit( function(e) {
 	$form = $(this);
 	$btn = $form.find( "button[type='submit']" );
+	if( $form.find( ".modal-body" ).length > 0 ) {
+		$form = $form.find( ".modal-body" );
+	}
 	btn_text = $btn.text();
 	$btn.text( "..." ).prop( "disabled", true );
 	e.preventDefault();
@@ -18,7 +21,11 @@ $( "form.auto-submit" ).submit( function(e) {
 			handleFormResponse( $form, response.error );
 			return;
 		}
-		handleFormResponse( $form, response.success, "success" );
+		if( response.redirect ) {
+			window.location.href = response.redirect;
+		} else {
+			handleFormResponse( $form, response.success, "success" );
+		}
 	})
 	.fail(function() {
 		handleFormResponse( $form, "An error has occured" );
@@ -62,3 +69,15 @@ $( ".custom-file input" ).change( function (e) {
 	}
 	$(this).next( ".custom-file-label" ).html(files.join( ", " ) );
 });
+
+if( $( ".language-select" ).length > 0 ) {
+	$.getJSON( "/projects/get_languages", function( languages ) {
+		$( ".language-select" ).each( function( index ) {
+			$item = $(this);
+			$.each( languages, function( key, item ) {
+				$item.append( "<option value='" + item.id + "'>" + item.name + "</option>" );
+			});
+			$item.selectize();
+		});
+	});
+}

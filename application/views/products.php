@@ -66,7 +66,7 @@
 							<label class="col-3">Title</label>
 							<input class="form-control col" type="text" name="name" />
 						</div>
-						<div class="form-group row align-items-center">
+						<div class="form-group row align-items-https://goo.gl/maps/Dx2ztuHkeXQ2center">
 							<label class="col-3">Author(s)</label>
 							<input class="form-control col" type="text" name="author" />
 						</div>
@@ -87,7 +87,7 @@
 								<option>Hindu</option>
 								<option>Sikh</option>
 								<option>Animist</option>
-								<option>Animist</option>
+								<option>Secular</option>
 							</select>
 						</div>
 						<div class="form-group row align-items-center">
