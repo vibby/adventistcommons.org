@@ -77,6 +77,7 @@ class Products extends CI_Controller {
 		$data = [
 			"product" => $product,
 			"languages" => $languages,
+			"file_types" => $this->product_model->file_types,
 		];
 		$this->template->set( "title", $product["name"] );
 		$this->breadcrumbs[] = [ "label" => $product["name"]  ];
@@ -171,6 +172,36 @@ class Products extends CI_Controller {
 		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 	}
 	
+	public function add_file() {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		
+		$this->output->set_content_type("application/json");
+		
+		$this->form_validation->set_rules( "language_id", "Language", "required" );
+		$this->form_validation->set_rules( "product_id", "Product ID", "required" );
+		$this->form_validation->set_rules( "file_type", "File type", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		$data = $this->input->post();
+		
+		$attachment = $this->_uploadAttachment();
+		if( ! $attachment ) {
+			$this->output->set_output( json_encode( [ "error" => "Error uploading file" ] ) );
+			return false;
+		}
+		
+		$data["file"] = $attachment["file_name"];
+		
+		$this->db->insert( "product_attachments", $data );
+		$id = $this->db->insert_id();
+		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $data["product_id"] ] ) );
+	}
+	
 	private function _uploadCoverImage() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "jpg|png";
@@ -213,6 +244,22 @@ class Products extends CI_Controller {
 		$this->load->library( "upload", $config );
 
 		if ( ! $this->upload->do_upload( "xliff_file" ) ) {
+			return false;
+		}
+		
+		$file = $this->upload->data();
+		return $this->upload->data();
+	}
+	
+	private function _uploadAttachment() {
+		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
+		$config["allowed_types"] = "pdf";
+		$config["max_size"] = 50000;
+		$config["encrypt_name"] = true;
+
+		$this->load->library( "upload", $config );
+
+		if ( ! $this->upload->do_upload( "file" ) ) {
 			return false;
 		}
 		

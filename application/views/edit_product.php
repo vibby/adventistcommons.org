@@ -40,6 +40,10 @@
 								<label class="col-3">Publisher</label>
 								<input class="form-control col" type="text" name="publisher" value="<?php echo $product["publisher"]; ?>" />
 							</div>
+							<div class="form-group row align-items-center">
+								<label class="col-3">Publisher website</label>
+								<input class="form-control col" type="text" name="publisher_website" value="<?php echo $product["publisher_website"]; ?>" />
+							</div>
 							<div class="form-group row">
 								<label class="col-3">Description</label>
 								<textarea class="form-control col" rows="3" name="description"><?php echo $product["description"]; ?></textarea>

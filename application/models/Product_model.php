@@ -11,8 +11,10 @@ class Product_model extends CI_Model
 	}
 	
 	public $file_types = [
-		"PDF" => "PDF",
-		"INDD" => "InDesign",
+		"pdf_printing" => "PDF (Production)",
+		"pdf_personal" => "PDF (Personal)",
+		"indd" => "InDesign",
+		
 	];
 	
 	public function getProducts()

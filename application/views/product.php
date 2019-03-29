@@ -28,11 +28,16 @@
 		</ul>
 		<div class="tab-content">
 			<div class="tab-pane fade show active" id="product-languages" role="tabpanel">
-				<div class="content-list-head d-flex justify-content-between align-items-center">
+				<div class="content-list-head d-flex">
 					<h3>Languages</h3>
-					<?php if( $this->ion_auth->logged_in() ) { ?>
-						<button class="btn btn-secondary d-flex" data-toggle="modal" data-target="#add-project-form">Start New Translation</button>
-					<?php } ?>
+					<div class="float-right d-none d-sm-block">
+						<?php if( $this->ion_auth->is_admin() ) { ?>
+							<button class="btn btn-secondary" data-toggle="modal" data-target="#add-file-form">Upload File</button>
+						<?php } ?>
+						<?php if( $this->ion_auth->logged_in() ) { ?>
+							<button class="btn btn-secondary" data-toggle="modal" data-target="#add-project-form">Start New Translation</button>
+						<?php } ?>
+					</div>
 				</div>
 				<div class="content-list-body">
 					<div class="card-list">
@@ -93,7 +98,13 @@
 				<?php if( $product["publisher"] ) { ?>
 					<dl class="row">
 						<dt class="col-sm-4">Publisher</dt>
-						<dd class="col-sm-8"><?php echo ucfirst( $product["publisher"] ); ?></dd>
+						<dd class="col-sm-8">
+							<?php if( $product["publisher_website"] ) { ?>
+								<a href="<?php echo ucfirst( $product["publisher_website"] ); ?>" target="_blank"><?php echo ucfirst( $product["publisher"] ); ?></a>
+							<?php } else { ?>
+								<?php echo ucfirst( $product["publisher"] ); ?>	
+							<?php } ?>
+						</dd>
 					</dl>
 				<?php } ?>
 				<?php if( $product["page_count"] ) { ?>
@@ -182,6 +193,48 @@
 			<div class="modal-footer">
 				<button role="button" class="btn btn-primary" type="submit">
 					Start Translation
+				</button>
+			</div>
+		</div>
+	</div>
+</form>
+
+<form class="modal fade auto-submit" action="/products/add_file" id="add-file-form"  tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Upload File</h5>
+				<button type="button" class="close btn btn-round" data-dismiss="modal">
+					<i class="material-icons">close</i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group row align-items-center">
+					<label class="col-3">File type</label>
+					<select class="col form-control" name="file_type" data-placeholder="Select a file type...">
+						<?php foreach( $file_types as $key => $type ) {
+							echo "<option value='$key'>$type</option>";
+						} ?>
+					</select>
+				</div>
+				<div class="form-group row align-items-center">
+					<label class="col-3">Language</label>
+					<select class="language-select col" name="language_id" data-placeholder="Select a language...">
+						<option value="">None</option>
+					</select>
+				</div>
+				<div class="input-group mt-2">
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" id="file" name="file">
+						<label class="custom-file-label" for="file">Choose file</label>
+					</div>
+				</div>
+				
+				<input type="hidden" name="product_id" value="<?php echo $product["id"]; ?>">
+			</div>
+			<div class="modal-footer">
+				<button role="button" class="btn btn-primary" type="submit">
+					Upload File
 				</button>
 			</div>
 		</div>

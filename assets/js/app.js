@@ -10,8 +10,9 @@ function handleFormResponse( $form, message, type = "danger" ) {
 $( "form.auto-submit" ).submit( function(e) {
 	$form = $(this);
 	$btn = $form.find( "button[type='submit']" );
+	$response_target = $form;
 	if( $form.find( ".modal-body" ).length > 0 ) {
-		$form = $form.find( ".modal-body" );
+		$response_target = $form.find( ".modal-body" );
 	}
 	btn_text = $btn.text();
 	$btn.text( "..." ).prop( "disabled", true );
@@ -28,17 +29,17 @@ $( "form.auto-submit" ).submit( function(e) {
 		success: function( response ) {
 			$btn.text( btn_text ).prop( "disabled", false );
 			if( response.error ) {
-				handleFormResponse( $form, response.error );
+				handleFormResponse( $response_target, response.error );
 				return;
 			}
 			if( response.redirect ) {
 				window.location.href = response.redirect;
 			} else {
-				handleFormResponse( $form, response.success, "success" );
+				handleFormResponse( $response_target, response.success, "success" );
 			}
 		},
 		error: function() {
-			handleFormResponse( $form, "An error has occured" );
+			handleFormResponse( $response_target, "An error has occured" );
 			$btn.text( btn_text ).prop( "disabled", false );
 		}
 	});
