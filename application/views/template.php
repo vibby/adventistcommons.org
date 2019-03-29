@@ -128,7 +128,7 @@
 		<script type="text/javascript" src="/assets/js/selectize.min.js"></script>
 		<script type="text/javascript" src="/assets/js/jquery.timeago.js"></script>
 		<script type="text/javascript" src="/assets/js/theme.js"></script>
-		<script type="text/javascript" src="/assets/js/app.js?v=2"></script>
+		<script type="text/javascript" src="/assets/js/app.js?v=3"></script>
 		
 		<link href="/assets/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" media="all" />
 

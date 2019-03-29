@@ -17,21 +17,30 @@ $( "form.auto-submit" ).submit( function(e) {
 	$btn.text( "..." ).prop( "disabled", true );
 	e.preventDefault();
 	action = $(this).attr( "action" );
-	$.post( action, $( this ).serialize(), function( response ) {
-		$btn.text( btn_text ).prop( "disabled", false );
-		if( response.error ) {
-			handleFormResponse( $form, response.error );
-			return;
+	
+	$.ajax({
+		url: action, 
+		type: "POST",             
+		data: new FormData( $form[0] ),
+		contentType: false,
+		cache: false,
+		processData: false,
+		success: function( response ) {
+			$btn.text( btn_text ).prop( "disabled", false );
+			if( response.error ) {
+				handleFormResponse( $form, response.error );
+				return;
+			}
+			if( response.redirect ) {
+				window.location.href = response.redirect;
+			} else {
+				handleFormResponse( $form, response.success, "success" );
+			}
+		},
+		error: function() {
+			handleFormResponse( $form, "An error has occured" );
+			$btn.text( btn_text ).prop( "disabled", false );
 		}
-		if( response.redirect ) {
-			window.location.href = response.redirect;
-		} else {
-			handleFormResponse( $form, response.success, "success" );
-		}
-	})
-	.fail(function() {
-		handleFormResponse( $form, "An error has occured" );
-		$btn.text( btn_text ).prop( "disabled", false );
 	});
 });
 

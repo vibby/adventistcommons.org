@@ -2,7 +2,10 @@
 	<div class="col-xl-10 col-lg-11">
 		<div class="page-header clearfix">
 			<img src="/uploads/<?php echo $product["cover_image"]; ?>" width="140" class="float-left mr-3 rounded">
-			<h2><?php echo $product["name"]; ?></h2>
+			<div class="d-flex justify-content-between align-items-center">
+				<h2><?php echo $product["name"]; ?></h2>
+				<a href="/products/edit/<?php echo $product["id"]; ?>" class="btn btn-sm btn-secondary float-right"><i class="material-icons align-top text-small">edit</i> Edit</a>
+			</div>
 			<p><?php echo $product["description"]; ?></p>
 			<?php if( $product["type"] ) { ?>
 				<span class="text-small pr-2"><strong>Type</strong>: <?php echo ucfirst( $product["type"] ); ?></span>
@@ -61,7 +64,7 @@
 													</div>
 												</div>
 											<?php } else { ?>
-												<a href="/translate/section/<?php echo $language["project"]["status"]; ?>" class="btn btn-secondary">Start Translating</a>
+												<a href="/projects/<?php echo $language["project"]["id"]; ?>" class="btn btn-secondary">Start Translating</a>
 											<?php } ?>
 										</div>
 									</div>

@@ -31,6 +31,10 @@
 	color: white;
 	background: #57b36c;
 	font-weight: 500;
-	padding: 1px 5px;
+	padding: 1px 4px;
 	text-decoration: none;
+}
+
+.revision-content ins:empty, .revision-content del:empty {
+	display: none;
 }

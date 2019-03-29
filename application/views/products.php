@@ -81,13 +81,9 @@
 						<div class="form-group row align-items-center">
 							<label class="col-3">Audience</label>
 							<select class="form-control col" name="audience">
-								<option>Christian</option>
-								<option>Muslim</option>
-								<option>Buddhist</option>
-								<option>Hindu</option>
-								<option>Sikh</option>
-								<option>Animist</option>
-								<option>Secular</option>
+								<?php foreach( $audience_options as $item ) {
+									echo "<option>$item</option>";
+								} ?>
 							</select>
 						</div>
 						<div class="form-group row align-items-center">
@@ -97,30 +93,14 @@
 						<hr>
 						<h6>Product type</h6>
 						<div class="row">
-							<div class="col">
-								<div class="custom-control custom-radio">
-									<input type="radio" id="type-book" name="type" class="custom-control-input" value="book" checked>
-									<label class="custom-control-label" for="type-book">Book</label>
+							<?php foreach( $product_types as $type ) { ?>
+								<div class="col">
+									<div class="custom-control custom-radio">
+										<input type="radio" id="type-<?php echo $type; ?>" name="type" class="custom-control-input" value="<?php echo $type; ?>">
+										<label class="custom-control-label" for="type-<?php echo $type; ?>"><?php echo ucfirst( $type ); ?></label>
+									</div>
 								</div>
-							</div>
-							<div class="col">
-								<div class="custom-control custom-radio">
-									<input type="radio" id="type-magabook" name="type" class="custom-control-input" value="magabook">
-									<label class="custom-control-label" for="type-magabook">Magabook</label>
-								</div>
-							</div>
-							<div class="col">
-								<div class="custom-control custom-radio">
-									<input type="radio" id="type-booklet" name="type" class="custom-control-input" value="booklet">
-									<label class="custom-control-label" for="type-booklet">Booklet</label>
-								</div>
-							</div>
-							<div class="col">
-								<div class="custom-control custom-radio">
-									<input type="radio" id="type-tract" name="type" class="custom-control-input" value="tract">
-									<label class="custom-control-label" for="type-tract">Tract</label>
-								</div>
-							</div>
+							<?php } ?>
 						</div>
 						<hr>
 						<h6>Cover Image</h6>
@@ -192,10 +172,9 @@
 						<div class="form-group row align-items-center">
 							<label class="col-3">Binding</label>
 							<select class="form-control col" name="binding">
-								<option>Hardcover</option>
-								<option>Perfect Bound</option>
-								<option>Spiral Bound</option>
-								<option>Saddle Stitch</option>
+								<?php foreach( $product_binding as $item ) {
+									echo "<option>$item</option>";
+								} ?>
 							</select>
 						</div>
 						<div class="form-group row align-items-center">

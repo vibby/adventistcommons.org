@@ -12,6 +12,30 @@ class Products extends CI_Controller {
 		$this->load->model( "product_model" );
 	}
 	
+	public $audience = [
+		"Christian",
+		"Muslim",
+		"Buddhist",
+		"Hindu",
+		"Sikh",
+		"Animist",
+		"Secular",
+	];
+	
+	public $product_types = [
+		"book",
+		"magabook",
+		"booklet",
+		"tract",
+	];
+	
+	public $product_binding = [
+		"Hardcover",
+		"Perfect Bound",
+		"Spiral Bound",
+		"Saddle Stitch",
+	];
+	
 	public $breadcrumbs = [
 		[
 			"label" => "Products",
@@ -23,6 +47,9 @@ class Products extends CI_Controller {
 	{
 		$data = [
 			"products" => $this->product_model->getProducts(),
+			"audience_options" => $this->audience,
+			"product_types" => $this->product_types,
+			"product_binding" => $this->product_binding,
 		];
 		$this->template->set( "title", "Products" );
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
@@ -57,7 +84,29 @@ class Products extends CI_Controller {
 		$this->template->load( "template", "product", $data );
 	}
 	
-	public function save( $product_id = null ) {
+	public function edit( $product_id ) {
+		$product = $this->product_model->getProduct( $product_id );
+		if( ! $product ) show_404();
+		
+		$data = [
+			"product" => $product,
+			"audience_options" => $this->audience,
+			"product_types" => $this->product_types,
+			"product_binding" => $this->product_binding,
+		];
+		$this->template->set( "title", "Edit Product" );
+		$this->breadcrumbs[] = [
+			"label" => $product["name"],
+			"url" => "/products/" . $product["id"],
+		];
+		$this->breadcrumbs[] = [
+			"label" => "Edit",
+		];
+		$this->template->set( "breadcrumbs", $this->breadcrumbs );
+		$this->template->load( "template", "edit_product", $data );
+	}
+	
+	public function save() {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
@@ -74,28 +123,52 @@ class Products extends CI_Controller {
 			return false;
 		}
 		$data = $this->input->post();
-		$cover_image = $this->_uploadCoverImage();
-		if( ! $cover_image ) {
-			$this->output->set_output( json_encode( [ "error" => "Error uploading cover image" ] ) );
-			return false;
-		}
-		/*$xliff_file = $this->_uploadXliff();
-		if( ! $xliff_file ) {
-			$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
-			return false;
-		}*/
-		$data["cover_image"] = $cover_image["file_name"];
-		//$data["xliff_file"] = $xliff_file["file_name"];
 		
-		if( $product_id ) {
-			$this->db->where( "id", $product_id );
-			$this->db->update( "products", $data );
-			$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
-		} else {
+		$is_new = ! array_key_exists( "id", $data );
+		
+		if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
+			$cover_image = $this->_uploadCoverImage();
+			if( ! $cover_image ) {
+				$this->output->set_output( json_encode( [ "error" => "Error uploading cover image" ] ) );
+				return false;
+			}
+			$data["cover_image"] = $cover_image["file_name"];
+		}
+		
+		if( $is_new ) {
+			/*$xliff_file = $this->_uploadXliff();
+			if( ! $xliff_file ) {
+				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
+				return false;
+			}*/
+			//$data["xliff_file"] = $xliff_file["file_name"];
+		}
+		
+		if( $is_new ) {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
 			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+		} else {
+			$this->db->where( "id", $data["id"] );
+			$this->db->update( "products", $data );
+			if( $_FILES["cover_image"]["name"] ) {
+				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
+			} else {
+				$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
+			}
 		}
+	}
+	
+	public function save_specs() {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		
+		$this->output->set_content_type("application/json");
+		$data = $this->input->post();
+		$this->db->where( "id", $data["id"] );
+		$this->db->update( "products", $data );
+		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 	}
 	
 	private function _uploadCoverImage() {
