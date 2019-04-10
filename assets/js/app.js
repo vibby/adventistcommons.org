@@ -1,3 +1,27 @@
+//Modified from:
+//https://webdesign.tutsplus.com/tutorials/how-to-add-deep-linking-to-the-bootstrap-4-tabs-component--cms-31180
+var url = location.href.replace( /\/$/, "" );
+if ( location.hash ) {
+	var hash = url.split( "#" );
+	$( 'a[href="#' + hash[1]+'"]' ).tab( "show" );
+	url = location.href.replace( /\/#/, "#" );
+	history.replaceState( null, null, url );
+	setTimeout( function() {
+		$(window).scrollTop(0);
+	}, 400);
+} 
+
+$( 'a[data-toggle="tab"]' ).on("click", function() {
+	var newUrl;
+	var hash = $(this).attr( "href" );
+	if( hash == "#home" ) {
+		newUrl = url.split("#")[0];
+	} else {
+		newUrl = url.split("#")[0] + hash;
+	}
+	history.replaceState( null, null, newUrl );
+});
+
 $( "time" ).timeago();
 
 function handleFormResponse( $form, message, type = "danger" ) {
@@ -33,7 +57,11 @@ $( "form.auto-submit" ).submit( function(e) {
 				return;
 			}
 			if( response.redirect ) {
-				window.location.href = response.redirect;
+				if( location.href.split(location.host)[1] == response.redirect ) {
+					location.reload();
+				} else {
+					window.location.href = response.redirect;
+				}
 			} else {
 				handleFormResponse( $response_target, response.success, "success" );
 			}
@@ -41,35 +69,6 @@ $( "form.auto-submit" ).submit( function(e) {
 		error: function() {
 			handleFormResponse( $response_target, "An error has occured" );
 			$btn.text( btn_text ).prop( "disabled", false );
-		}
-	});
-});
-
-$( "#add-product-form" ).submit( function(e) {
-	$form = $(this);
-	$modal = $form.find( ".modal-body" );
-	$btn = $form.find( "button[type='submit']" );
-	btn_text = $btn.text();
-	$btn.text( "..." ).prop( "disabled", true );
-	e.preventDefault();
-	$.ajax({
-		url: $form.attr( "action" ), 
-		type: "POST",             
-		data: new FormData( $form[0] ),
-		contentType: false,
-		cache: false,
-		processData: false,
-		success: function( response ) {
-			$btn.text( btn_text ).prop( "disabled", false );
-			if( response.error ) {
-				handleFormResponse( $modal, response.error );
-				return;
-			}
-			window.location.href = response.redirect;
-		},
-		error: function() {
-			$btn.text( btn_text ).prop( "disabled", false );
-			handleFormResponse( $modal, "An error has occured" );
 		}
 	});
 });

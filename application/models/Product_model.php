@@ -69,6 +69,7 @@ class Product_model extends CI_Model
 		$content = $this->db->select( "*" )
 			->from( "product_content" )
 			->where( "section_id", $section_id )
+			->where( "is_hidden", false )
 			->get()
 			->result_array();
 		
@@ -90,6 +91,8 @@ class Product_model extends CI_Model
 			}
 			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
+			$str_length = strlen( $content["content"] );
+			$content["textarea_height"] = $str_length > 60 ? ( $str_length / 60 ) + 1 : 2;
 			return $content;
 		}, $content );
 	}

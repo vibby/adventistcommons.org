@@ -4,7 +4,9 @@
 			<img src="/uploads/<?php echo $product["cover_image"]; ?>" width="140" class="float-left mr-3 rounded">
 			<div class="d-flex justify-content-between align-items-center">
 				<h2><?php echo $product["name"]; ?></h2>
-				<a href="/products/edit/<?php echo $product["id"]; ?>" class="btn btn-sm btn-secondary float-right"><i class="material-icons align-top text-small">edit</i> Edit</a>
+				<?php if( $this->ion_auth->is_admin() ) { ?>
+					<a href="/products/edit/<?php echo $product["id"]; ?>" class="btn btn-sm btn-secondary float-right"><i class="material-icons align-top text-small">edit</i> Edit</a>
+				<?php } ?>
 			</div>
 			<p><?php echo $product["description"]; ?></p>
 			<?php if( $product["type"] ) { ?>

@@ -9,18 +9,18 @@
 				<div class="card-list editor-item" data-content-id="<?php echo $p["id"]; ?>" data-project-id="<?php echo $project["id"]; ?>">
 					<div class="card-list-body row">
 						<div class="col-md-6">
-							<?php echo $p["content"]; ?>
+							<?php echo $p["content"]; ?><br><br>
 						</div>
-						<div class="col-md-6">
+						<div class="col-md-6 textarea-wrapper">
 							<div class="form-group">
-								<textarea class="form-control" rows="8"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
+								<textarea class="form-control" rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
 							</div>
 							<nav class="clearfix">
 								<div class="form-group float-left">
 									<button class="btn btn-outline-success btn-sm commit-paragraph">Commit</button>
 								</div>
 								<div class="form-group float-right">
-									<button class="btn btn-outline-danger btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_issues", $p["id"] ); ?>">2 issues</button>
+									<!--<button class="btn btn-outline-danger btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_issues", $p["id"] ); ?>">2 issues</button>-->
 									<button class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"><?php echo $p["total_revisions"] == 1 ? "1 revision" : sprintf( "%s revisions", $p["total_revisions"] ); ?></button>
 									<div class="dropdown float-right ml-1">
 										<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">

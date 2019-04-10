@@ -42,7 +42,7 @@
 </div>
 
 <?php if( $this->ion_auth->is_admin() ) { ?>
-<form class="modal fade" action="/products/save" id="add-product-form" tabindex="-1" role="dialog" enctype="multipart/form-data">
+<form class="modal fade auto-submit" action="/products/save" id="add-product-form" tabindex="-1" role="dialog" enctype="multipart/form-data">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">

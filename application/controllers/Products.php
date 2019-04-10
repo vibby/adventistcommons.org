@@ -7,7 +7,7 @@ class Products extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(["ion_auth", "form_validation"]);
+		$this->load->library(["ion_auth", "form_validation", "upload" ]);
 		$this->load->helper(["url"]);
 		$this->load->model( "product_model" );
 	}
@@ -86,6 +86,10 @@ class Products extends CI_Controller {
 	}
 	
 	public function edit( $product_id ) {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		
 		$product = $this->product_model->getProduct( $product_id );
 		if( ! $product ) show_404();
 		
@@ -137,12 +141,12 @@ class Products extends CI_Controller {
 		}
 		
 		if( $is_new ) {
-			/*$xliff_file = $this->_uploadXliff();
+			$xliff_file = $this->_uploadXliff();
 			if( ! $xliff_file ) {
 				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
 				return false;
-			}*/
-			//$data["xliff_file"] = $xliff_file["file_name"];
+			}
+			$data["xliff_file"] = $xliff_file["file_name"];
 		}
 		
 		if( $is_new ) {
@@ -158,6 +162,26 @@ class Products extends CI_Controller {
 				$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 			}
 		}
+	}
+	
+	public function save_xliff() {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		
+		$this->output->set_content_type("application/json");
+		
+		$xliff_file = $this->_uploadXliff();
+		if( ! $xliff_file ) {
+			$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		$data["xliff_file"] = $xliff_file["file_name"];
+		$this->db->where( "id", $data["id"] );
+		$this->db->update( "products", $data );
+		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] . "#advanced" ] ) );
 	}
 	
 	public function save_specs() {
@@ -209,6 +233,7 @@ class Products extends CI_Controller {
 		$config["encrypt_name"] = true;
 
 		$this->load->library( "upload", $config );
+		$this->upload->initialize( $config );
 
 		if ( ! $this->upload->do_upload( "cover_image" ) ) {
 			return false;
@@ -241,23 +266,85 @@ class Products extends CI_Controller {
 		$config["max_size"] = 50000;
 		$config["encrypt_name"] = true;
 
-		$this->load->library( "upload", $config );
+		$this->upload->initialize( $config );
 
 		if ( ! $this->upload->do_upload( "xliff_file" ) ) {
 			return false;
 		}
 		
 		$file = $this->upload->data();
+		$this->_parseXliff( $file["file_name"], 16 );
 		return $this->upload->data();
 	}
 	
+	private function _parseXliff( $file, $product_id ) {
+		$xml = simplexml_load_file( $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file );
+		foreach( $xml as $key => $region ) {
+			if( $key == "interior" ) {
+				$this->_parseXliffParagraphContent( $region, $product_id );
+			} else {
+				$this->_parseXliffTagContent( $region, $key, $product_id );
+			}
+		}
+	}
+	
+	private function _parseXliffParagraphContent( $region, $product_id ) {
+		$section_names = [
+			"maincontent" => "Main content",
+			"main" => "Main content",
+		];
+		foreach( $region as $region_name => $content ) {
+			$section_data = [
+				"product_id" => $product_id,
+				"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
+				"xliff_region" => $region_name,
+			];
+			$this->db->insert( "product_sections", $section_data );
+			$section_id = $this->db->insert_id();
+			$paragraphs = preg_split("/\R/u", $content);;
+			
+			foreach( $paragraphs as $p ) {
+				$content_data = [
+					"product_id" => $product_id,
+					"content" => $p,
+					"section_id" => $section_id,
+					"is_hidden" => empty( $p ),
+				];
+				$this->db->insert( "product_content", $content_data );
+			}
+		}
+	}
+	
+	private function _parseXliffTagContent( $region, $region_name, $product_id ) {
+		$section_names = [
+			"cover" => "Front cover",
+			"backcover" => "Back cover",
+		];
+		$section_data = [
+			"product_id" => $product_id,
+			"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
+			"xliff_region" => $region_name,
+		];
+		$this->db->insert( "product_sections", $section_data );
+		$section_id = $this->db->insert_id();
+		foreach( $region as $tag_key => $tag ) {
+			$content_data = [
+				"product_id" => $product_id,
+				"content" => $tag,
+				"section_id" => $section_id,
+				"xliff_tag" => $tag_key,
+			];
+			$this->db->insert( "product_content", $content_data );
+		}
+	}
+		
 	private function _uploadAttachment() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "pdf";
 		$config["max_size"] = 50000;
 		$config["encrypt_name"] = true;
 
-		$this->load->library( "upload", $config );
+		$this->upload->initialize( $config );
 
 		if ( ! $this->upload->do_upload( "file" ) ) {
 			return false;

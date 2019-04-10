@@ -7,6 +7,9 @@
 			<li class="nav-item">
 				<a class="nav-link" id="specs-tab" data-toggle="tab" href="#specs" role="tab">Specifications</a>
 			</li>
+			<li class="nav-item">
+				<a class="nav-link" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab">Advanced</a>
+			</li>
 		</ul>
 	</div>
 	<div class="col-xl-8 col-lg-9">
@@ -154,6 +157,25 @@
 								<button type="submit" class="btn btn-primary mr-2">Save</button>
 							</div>
 							<input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
+						</form>
+					</div>
+					<div class="tab-pane fade" role="tabpanel" id="advanced">
+						<form action="/products/save_xliff" method="post" class="auto-submit">
+							<h6>InDesign Translation File (.xliff)</h6>
+							<?php if( $product["xliff_file"] ) { ?>
+							<a href="/uploads/<?php echo $product["xliff_file"]; ?>">Download original XLIFF file</a>
+							<?php } else { ?>
+								<div class="input-group mb-3">
+									<div class="custom-file">
+										<input type="file" class="custom-file-input" id="xliff_file" name="xliff_file">
+										<label class="custom-file-label" for="xliff_file">Choose file</label>
+									</div>
+								</div>
+								<div class="row justify-content-end">
+									<button type="submit" class="btn btn-primary mr-2">Upload</button>
+								</div>
+								<input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
+							<?php } ?>
 						</form>
 					</div>
 				</div>
