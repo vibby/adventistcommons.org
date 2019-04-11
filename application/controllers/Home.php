@@ -13,6 +13,7 @@ class Home extends CI_Controller {
 	
 	public function index()
 	{
+		$this->template->set( "title", "Certified Adventist Resources, Culturally Relevant" );
 		$this->template->set( "is_home", true );
 		$this->template->load( "template", "home" );
 	}

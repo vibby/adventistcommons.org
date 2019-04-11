@@ -17,7 +17,7 @@
 
 		<div class="layout layout-nav-top">
 			<div class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
-				<a class="navbar-brand" href="/projects">
+				<a class="navbar-brand" href="/">
 					<img src="/assets/img/logo_text.png" height="40" />
 				</a>
 				<div class="d-flex align-items-center">
