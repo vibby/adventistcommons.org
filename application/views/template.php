@@ -8,6 +8,7 @@
 		<link rel="icon" href="/assets/img/favicon.png"> 
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
 		<link href="/assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
 		<link href="/assets/css/custom.css?v=5" rel="stylesheet" type="text/css" media="all" />
 	</head>
@@ -17,7 +18,7 @@
 		<div class="layout layout-nav-top">
 			<div class="navbar navbar-expand-lg bg-dark navbar-dark sticky-top">
 				<a class="navbar-brand" href="/projects">
-					<img src="/assets/img/logo.png" width="40" />
+					<img src="/assets/img/logo_text.png" height="40" />
 				</a>
 				<div class="d-flex align-items-center">
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,9 +99,9 @@
 				<?php if( isset( $is_home ) ) { ?>
 					<div class="jumbotron jumbotron-fluid bg-dark mb-0 banner">
 						<div class="container">
-							<h1 class="display-4">Adventist Commons</h1>
-							<p class="lead">Providing resources for the unreached people groups of the 10/40 window</p>
-							<a href="/projects" class="btn btn-light">Get Started</a>
+							<h1 class="display-4">Certified Adventist Resources<br><span style="color:#f9dc90">Culturally Relevant</span></h1>
+							<p class="lead">Translatable, Printable, Sharable.</p>
+							<a href="/projects" class="btn btn-light mb-5">Get Started</a>
 						</div>
 					</div>	
 					<div class="breadcrumb-bar navbar bg-white" style="min-height:20px"></div>

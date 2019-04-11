@@ -43,8 +43,10 @@
 	background-image:url(/assets/img/banner.jpg);
 	background-size: cover;
 	color: #eee;
+	font-family: 'Ubuntu', sans-serif;
 }
 
 .banner .display-4 {
 	color: #eee;
+	font-family: 'Ubuntu', sans-serif;
 }
