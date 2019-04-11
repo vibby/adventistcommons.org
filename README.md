@@ -53,9 +53,9 @@ Adventist Commons: resourcing the global church.
 
 Sources:
 
-[https://joshuaproject.net/filter](https://joshuaproject.net/filter)
+[joshuaproject.net](https://joshuaproject.net/filter)
 
-[http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf](http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf)
+[adventistarchives.org](http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf)
 
 ## Objectives
 
