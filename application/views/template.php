@@ -49,13 +49,13 @@
 				</div>
 				<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse">
 					<ul class="navbar-nav">
-						<li class="nav-item">
+						<li class="nav-item mr-2">
 							<a class="nav-link" href="/home">How It Works</a>
 						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="/products">Products</a>
+						<li class="nav-item mr-2">
+							<a class="nav-link" href="/products">Available Products</a>
 						</li>
-						<li class="nav-item">
+						<li class="nav-item mr-2">
 							<a class="nav-link" href="/projects">Translations In Progress</a>
 						</li>
 					</ul>
@@ -123,6 +123,7 @@
 				<?php echo $contents ?>
 			</div>
 		</div>
+		<footer class="text-small text-faded text-center p-3">Copyright © 2019 AdventistCommons.org. This website is an initiative of Adventist Mission, the official mission office of the Seventh-day Adventist Church.</footer>
 
 		<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 		<script type="text/javascript" src="/assets/js/autosize.min.js"></script>
