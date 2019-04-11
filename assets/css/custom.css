@@ -38,3 +38,13 @@
 .revision-content ins:empty, .revision-content del:empty {
 	display: none;
 }
+
+.banner {
+	background-image:url(/assets/img/banner.jpg);
+	background-size: cover;
+	color: #eee;
+}
+
+.banner .display-4 {
+	color: #eee;
+}

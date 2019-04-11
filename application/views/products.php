@@ -1,46 +1,47 @@
-<div class="row justify-content-center">
-	<div class="col-xl-10 col-lg-11">
-		<div class="page-header d-flex justify-content-between align-items-center">
-			<h1>Products</h1>
-			<?php if( $this->ion_auth->is_admin() ) { ?>
-				<button class="btn btn-primary d-flex" data-toggle="modal" data-target="#add-product-form">Add Product</button>
-			<?php } ?>
-		</div>
-		<hr>
-		<div class="content-list">
-			<div class="content-list-body row">
-				<?php foreach( $products as $product ) { ?>
-					<div class="col-md-6">
-						<div class="card card-project">
-							<div class="row no-gutters">
-								<div class="col" style="flex: 0 0 120px">
-									<img src="/uploads/<?php echo $product["cover_image"]; ?>" height="180" class="rounded-left">
-								</div>
-								<div class="col">
-									<div class="card-body">
-										<div class="card-title">
-											<a href="/products/<?php echo $product["id"]; ?>">
-												<h5 data-filter-by="text"><?php echo $product["name"]; ?></h5>
-											</a>
-										</div>
-										<div class="card-meta d-flex justify-content-between">
-											<div class="">
-												<span class="text-small">Author: <?php echo $product["author"]; ?></span><br>
-												<span class="text-small">Pages: <?php echo $product["page_count"]; ?></span><br>
-												<span class="text-small">Languages: <?php echo $product["languages"]; ?></span><br>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-xl-10 col-lg-11">
+			<div class="page-header d-flex justify-content-between align-items-center">
+				<h1>Products</h1>
+				<?php if( $this->ion_auth->is_admin() ) { ?>
+					<button class="btn btn-primary d-flex" data-toggle="modal" data-target="#add-product-form">Add Product</button>
+				<?php } ?>
+			</div>
+			<hr>
+			<div class="content-list">
+				<div class="content-list-body row">
+					<?php foreach( $products as $product ) { ?>
+						<div class="col-md-6">
+							<div class="card card-project">
+								<div class="row no-gutters">
+									<div class="col" style="flex: 0 0 120px">
+										<img src="/uploads/<?php echo $product["cover_image"]; ?>" height="180" class="rounded-left">
+									</div>
+									<div class="col">
+										<div class="card-body">
+											<div class="card-title">
+												<a href="/products/<?php echo $product["id"]; ?>">
+													<h5 data-filter-by="text"><?php echo $product["name"]; ?></h5>
+												</a>
+											</div>
+											<div class="card-meta d-flex justify-content-between">
+												<div class="">
+													<span class="text-small">Author: <?php echo $product["author"]; ?></span><br>
+													<span class="text-small">Pages: <?php echo $product["page_count"]; ?></span><br>
+													<span class="text-small">Languages: <?php echo $product["languages"]; ?></span><br>
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				<?php } ?>
+					<?php } ?>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
 <?php if( $this->ion_auth->is_admin() ) { ?>
 <form class="modal fade auto-submit" action="/products/save" id="add-product-form" tabindex="-1" role="dialog" enctype="multipart/form-data">
 	<div class="modal-dialog" role="document">

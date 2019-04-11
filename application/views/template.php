@@ -9,7 +9,7 @@
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
 		<link href="/assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
-		<link href="/assets/css/custom.css?v=3" rel="stylesheet" type="text/css" media="all" />
+		<link href="/assets/css/custom.css?v=5" rel="stylesheet" type="text/css" media="all" />
 	</head>
 
 	<body>
@@ -49,13 +49,13 @@
 				<div class="collapse navbar-collapse justify-content-between" id="navbar-collapse">
 					<ul class="navbar-nav">
 						<li class="nav-item">
-							<a class="nav-link" href="/projects">Translations In Progress</a>
+							<a class="nav-link" href="/home">How It Works</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/products">Products</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="#">How It Works</a>
+							<a class="nav-link" href="/projects">Translations In Progress</a>
 						</li>
 					</ul>
 					<div class="d-lg-flex align-items-center mx-lg-2">
@@ -95,24 +95,31 @@
 				</div>
 			</div>
 			<div class="main-container">
-
-				<div class="breadcrumb-bar navbar bg-white sticky-top">
-					<nav aria-label="breadcrumb">
-						<ol class="breadcrumb">
-							<?php foreach( $breadcrumbs as $item ) { ?>
-								<?php if( array_key_exists( "url", $item ) ) { ?>
-									<li class="breadcrumb-item active"><a href="<?php echo $item["url"]; ?>"><?php echo $item["label"]; ?></a></li>
-								<?php } else { ?>
-									<li class="breadcrumb-item"><?php echo $item["label"]; ?></li>
+				<?php if( isset( $is_home ) ) { ?>
+					<div class="jumbotron jumbotron-fluid bg-dark mb-0 banner">
+						<div class="container">
+							<h1 class="display-4">Adventist Commons</h1>
+							<p class="lead">Providing resources for the unreached people groups of the 10/40 window</p>
+							<a href="/projects" class="btn btn-light">Get Started</a>
+						</div>
+					</div>	
+					<div class="breadcrumb-bar navbar bg-white" style="min-height:20px"></div>
+				<?php } else { ?>
+					<div class="breadcrumb-bar navbar bg-white sticky-top">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb">
+								<?php foreach( $breadcrumbs as $item ) { ?>
+									<?php if( array_key_exists( "url", $item ) ) { ?>
+										<li class="breadcrumb-item active"><a href="<?php echo $item["url"]; ?>"><?php echo $item["label"]; ?></a></li>
+									<?php } else { ?>
+										<li class="breadcrumb-item"><?php echo $item["label"]; ?></li>
+									<?php } ?>
 								<?php } ?>
-							<?php } ?>
-						</ol>
-					</nav>
-				</div>
-				<div class="container">
-					<?php echo $contents ?>
-				</div>
-
+							</ol>
+						</nav>
+					</div>
+				<?php } ?>
+				<?php echo $contents ?>
 			</div>
 		</div>
 
@@ -128,7 +135,7 @@
 		<script type="text/javascript" src="/assets/js/selectize.min.js"></script>
 		<script type="text/javascript" src="/assets/js/jquery.timeago.js"></script>
 		<script type="text/javascript" src="/assets/js/theme.js"></script>
-		<script type="text/javascript" src="/assets/js/app.js?v=4"></script>
+		<script type="text/javascript" src="/assets/js/app.js?v=5"></script>
 		
 		<link href="/assets/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" media="all" />
 

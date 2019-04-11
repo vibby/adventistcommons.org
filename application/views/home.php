@@ -1,45 +1,49 @@
-<!doctype html>
-<html lang="en">
-
-	<head>
-		<meta charset="utf-8">
-		<title>AdventistCommons.org</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link href="assets/img/favicon.ico" rel="icon" type="image/x-icon">
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
-		<link href="assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
-	</head>
-
-	<body>
-		<div class="main-container fullscreen">
-			<div class="container">
-				<div class="row justify-content-center">
-					<div class="col-xl-5 col-lg-6 col-md-7">
-						<div class="text-center">
-							<h1 class="h2">AdventistCommons.org</h1>
-							<p class="lead">Something will be here eventually.</p>
-							<hr>
-							<a href="/login">Login</a> • <a href="/register">Create account</a>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-xl-10 col-lg-11 text-center">
+			<h1 class="mt-4">How it Works</h1>
+			<p class="lead">Training resources that are free, translatable, sharable.</p>
+			<div class="row mt-4">
+				<div class="col-md-4">
+					<div class="card mb-3">
+						<a href="#">
+							<img class="card-img-top mt-4 w-25" src="assets/img/browse.svg">
+						</a>
+						<div class="card-body">
+							<a class="card-title h6" href="#">Browse Products</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card mb-3">
+						<a href="#">
+							<img class="card-img-top mt-4 w-25" src="assets/img/translate.svg">
+						</a>
+						<div class="card-body">
+							<a class="card-title h6" href="#">Translate Products</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="card mb-3">
+						<a href="#">
+							<img class="card-img-top mt-4 w-25" src="assets/img/download.svg">
+						</a>
+						<div class="card-body">
+							<a class="card-title h6" href="#">Download Products</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<script type="text/javascript" src="assets/js/jquery.min.js"></script>
-		<script type="text/javascript" src="assets/js/autosize.min.js"></script>
-		<script type="text/javascript" src="assets/js/popper.min.js"></script>
-		<script type="text/javascript" src="assets/js/prism.js"></script>
-		<script type="text/javascript" src="assets/js/draggable.bundle.legacy.js"></script>
-		<script type="text/javascript" src="assets/js/swap-animation.js"></script>
-		<script type="text/javascript" src="assets/js/dropzone.min.js"></script>
-		<script type="text/javascript" src="assets/js/list.min.js"></script>
-		<script type="text/javascript" src="assets/js/bootstrap.js"></script>
-		<script type="text/javascript" src="assets/js/theme.js"></script>
-
-
-	</body>
-
-</html>
-
+	</div>
+</div>
+<div class="jumbotron jumbotron-fluid bg-dark text-white">
+	<div class="container text-center">
+		<p class="lead d-inline-block text-left">
+			<b>Ready to bring resources to the 10/40 window?</b><br>
+			<span>Adventist Commons needs your help</span>
+		</p>
+		<a href="/projects" class="btn btn-primary btn-lg ml-4">Get Started</a>
+	</div>
+</div>

@@ -469,7 +469,7 @@ class User extends CI_Controller
 
 		if ( $this->ion_auth->logged_in() )
 		{
-			redirect('auth', 'refresh');
+			redirect('/', 'refresh');
 		}
 
 		$tables = $this->config->item('tables', 'ion_auth');
