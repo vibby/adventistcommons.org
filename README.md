@@ -52,7 +52,9 @@ Adventist Commons: resourcing the global church.
 - Existing textual manuscripts and artwork are almost always under copyright and licensing restrictions that prevent free accessibility, usage, and translation in any location throughout the globe.
 
 Sources:
+
 [https://joshuaproject.net/filter](https://joshuaproject.net/filter)
+
 [http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf](http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf)
 
 ## Objectives
