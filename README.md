@@ -9,7 +9,9 @@ Adventist Commons, an initiative of Adventist Mission, is like the &quot;creativ
 You see, your talents are needed. No, let&#39;s rephrase that – your talents are _desperately_ needed. This is the mission opportunity you&#39;ve been waiting for! By collaborating with Adventist Commons, you can play an integral part in getting our distinctive Adventist message into the hands of unreached people, right from the comfort of your own home. Do you have skills in writing, translating, editing, proofreading, graphic design, or web development? 🖥📝🎨😀 Sign up below to become a valued contributor at Adventist Commons!
 
 Adventist Commons: resourcing the global church.
-[www.adventistcommons.org](http://www.adventistcommons.org)
+
+[AdventistCommons.org](http://www.adventistcommons.org)
+
 [https://www.facebook.com/adventistcommons/](https://www.facebook.com/adventistcommons/)
 
 &quot;The heaven-appointed purpose of giving the gospel to the world in this generation is the noblest that can appeal to any human being. It opens a field of effort to everyone whose heart Christ has touched.&quot; - Ellen White, _Education_ p.262
@@ -172,4 +174,4 @@ The code included in this repository is copyright protected. It may not be repro
 
 ## Donate
 
-AdventistCommons.org depends on generous donors for the development of Adventist resources that can be shared freely throughout the world. Your donation is highly appreciated and will make valuable Adventist resources accessible around the world. Please donate through AdventistCommons.org
+[AdventistCommons.org](http://www.adventistcommons.org) depends on generous donors for the development of Adventist resources that can be shared freely throughout the world. Your donation is highly appreciated and will make valuable Adventist resources accessible around the world. Please donate through [AdventistCommons.org](http://www.adventistcommons.org)
