@@ -9,8 +9,8 @@ Adventist Commons, an initiative of Adventist Mission, is like the &quot;creativ
 You see, your talents are needed. No, let&#39;s rephrase that – your talents are _desperately_ needed. This is the mission opportunity you&#39;ve been waiting for! By collaborating with Adventist Commons, you can play an integral part in getting our distinctive Adventist message into the hands of unreached people, right from the comfort of your own home. Do you have skills in writing, translating, editing, proofreading, graphic design, or web development? 🖥📝🎨😀 Sign up below to become a valued contributor at Adventist Commons!
 
 Adventist Commons: resourcing the global church.
-adventistcommons.org
-facebook.com/adventistcommons
+[www.adventistcommons.org](http://www.adventistcommons.org)
+[https://www.facebook.com/adventistcommons/](https://www.facebook.com/adventistcommons/)
 
 &quot;The heaven-appointed purpose of giving the gospel to the world in this generation is the noblest that can appeal to any human being. It opens a field of effort to everyone whose heart Christ has touched.&quot; - Ellen White, _Education_ p.262
 
@@ -30,7 +30,7 @@ facebook.com/adventistcommons
 
 ## Project Overview
 
-AdventistCommons.org is an initiative of Adventist Mission, the official mission office of the Seventh-day Adventist Church. Adventist Commons provides the global church with Adventist evangelistic and discipleship resources that are:
+[AdventistCommons.org](http://adventistcommons.org/) is an initiative of Adventist Mission, the official mission office of the Seventh-day Adventist Church. Adventist Commons provides the global church with Adventist evangelistic and discipleship resources that are:
 
 - Theologically sound, based on the present truth contained in the Three Angels&#39; Messages, with a core emphasis on Jesus Christ.
 - Culturally relevant for the people groups of the 10/40 window, prepared and reviewed by Adventist missiologists and theologians
@@ -38,7 +38,7 @@ AdventistCommons.org is an initiative of Adventist Mission, the official mission
 - Downloadable and printable from wherever you are in the world
 - Made available through crowd translation and an open-source platform
 
-AdventistCommons.org is an initiative created in response to one of the General Conference Mission Objectives for 2020-2025, which has placed a high church-wide priority on developing resources for mission to those within non-Christian belief systems.
+[AdventistCommons.org](http://adventistcommons.org/) is an initiative created in response to one of the General Conference Mission Objectives for 2020-2025, which has placed a high church-wide priority on developing resources for mission to those within non-Christian belief systems.
 
 ## The Problem
 
@@ -80,7 +80,7 @@ Authors:
 
 - Send us manuscripts that you personally created and own and are willing to release to Adventist Mission.
 - If you have experience with religious groups that are predominant in the 10/40 window and have an idea of a helpful resource that you believe you could write, send us a summary of your idea and let&#39;s brainstorm together.
-- [Add your name to a list](adventistcommons.org/) of volunteers who can write Adventist content for a culturally and religiously diverse audience.
+- [Add your name to a list](http://.adventistcommons.org/) of volunteers who can write Adventist content for a culturally and religiously diverse audience.
 
 Artists:
 
