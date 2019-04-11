@@ -52,7 +52,9 @@ Adventist Commons: resourcing the global church.
 - Existing textual manuscripts and artwork are almost always under copyright and licensing restrictions that prevent free accessibility, usage, and translation in any location throughout the globe.
 
 Sources:
+
 [https://joshuaproject.net/filter](https://joshuaproject.net/filter)
+
 [http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf](http://documents.adventistarchives.org/Statistics/ASR/ASR2018.pdf)
 
 ## Objectives
@@ -82,7 +84,7 @@ Authors:
 
 - Send us manuscripts that you personally created and own and are willing to release to Adventist Mission.
 - If you have experience with religious groups that are predominant in the 10/40 window and have an idea of a helpful resource that you believe you could write, send us a summary of your idea and let&#39;s brainstorm together.
-- [Add your name to a list](http://.adventistcommons.org/) of volunteers who can write Adventist content for a culturally and religiously diverse audience.
+- [Add your name to a list](http://adventistcommons.org/) of volunteers who can write Adventist content for a culturally and religiously diverse audience.
 
 Artists:
 
