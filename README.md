@@ -12,7 +12,7 @@ Adventist Commons: resourcing the global church.
 
 [AdventistCommons.org](http://www.adventistcommons.org)
 
-[https://www.facebook.com/adventistcommons/](https://www.facebook.com/adventistcommons/)
+[facebook.com/adventistcommons/](https://www.facebook.com/adventistcommons/)
 
 &quot;The heaven-appointed purpose of giving the gospel to the world in this generation is the noblest that can appeal to any human being. It opens a field of effort to everyone whose heart Christ has touched.&quot; - Ellen White, _Education_ p.262
 
@@ -115,7 +115,7 @@ The code included in this repository is copyright protected. It may not be repro
 ## Acknowledgments
 
 - Inspired by Creative Commons: &quot;When we share, everyone wins&quot;
-- Theme by [https://pipeline.mediumra.re/nav-top-project.html](https://pipeline.mediumra.re/nav-top-project.html)
+- Theme by [Medium Rare](http://mediumra.re/)
 - [Codeigniter framework](https://codeigniter.com/)
 - [Bootstrap](https://getbootstrap.com/)
 - [SASS](https://sass-lang.com/)
