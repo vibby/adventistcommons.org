@@ -41,6 +41,29 @@ class User extends CI_Controller
 		$this->template->set( "breadcrumbs", $this->breadcrumbs );
 		$this->template->load( "template", "auth/list", $this->data );
 	}
+    
+    public function edit( $user_id = null )
+	{
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+        
+        $data = [
+			"user" => $this->ion_auth->user( $user_id )->row(),
+		];
+        
+		$this->breadcrumbs[] = [
+            "label" => "Edit",
+        ];
+        
+        $this->breadcrumbs[] = [
+            "label" => $data["user"]->first_name . " " . $data["user"]->last_name,
+        ];
+
+		$this->template->set( "title", "Edit User" );
+		$this->template->set( "breadcrumbs", $this->breadcrumbs );
+		$this->template->load( "template", "account", $data );
+	}
 
 	/**
 	 * Log the user in
@@ -686,10 +709,10 @@ class User extends CI_Controller
 		
 		if( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
-		} else {
-			$user_id = $this->ion_auth->user()->row()->id;
+		} else {	
 			$data = $this->input->post();
-			$data["username"] = $data["email"];
+            $user_id = $this->ion_auth->is_admin() ? $data["id"] : $this->ion_auth->user()->row()->id;
+            $data["username"] = $data["email"];
 			$this->db->where( "id", $user_id );
 			$this->db->update( "users", $data );
 			$this->output->set_output( json_encode( [ "success" => "Account info updated" ] ) );
@@ -699,16 +722,23 @@ class User extends CI_Controller
 	public function save_password() {
 		$this->output->set_content_type('application/json');
 		
-		$this->form_validation->set_rules( "current_password", "Current password", "required" );
+		if( ! $this->ion_auth->is_admin() ) {
+			$this->form_validation->set_rules( "current_password", "Current password", "required" );
+		}
 		$this->form_validation->set_rules( "new_password", "New password", "required|min_length[" . $this->config->item( "min_password_length", "ion_auth" ) . "]|matches[confirm_password]" );
 		$this->form_validation->set_rules( "confirm_password", "Confirm password", "required" );
 
-		$user = $this->ion_auth->user()->row();
+		$user = $user_id = $this->ion_auth->is_admin() ? $this->ion_auth->user( $this->input->post( "id" ) )->row() : $this->ion_auth->user()->row();
 
 		if ( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
 		} else {
-			$change = $this->ion_auth->change_password( $user->email, $this->input->post( "current_password" ), $this->input->post( "new_password" ) );
+			if( $this->ion_auth->is_admin() ) {
+                $change = $this->ion_auth->_set_password_db( $user->email, $this->input->post( "new_password" ) );
+            } else {
+                $change = $this->ion_auth->change_password( $user->email, $this->input->post( "current_password" ), $this->input->post( "new_password" ) );
+            }
+            
 			if( ! $change ) {
 				$this->output->set_output( json_encode( [ "error" => $this->ion_auth->errors() ] ) );
 			} else {

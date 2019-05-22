@@ -16,14 +16,14 @@
 					<div class="tab-content">
 						<div class="tab-pane fade show active" role="tabpanel" id="profile" aria-labelledby="profile-tab">
 							<div class="media mb-4">
-								<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=144"; ?>" class="avatar avatar-lg" />
+								<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->email ) ) ) . "?s=144"; ?>" class="avatar avatar-lg" />
 								<div class="media-body ml-3">
 									<strong>Profile picture</strong><br>
 									<small>To change your profile picture, visit <a href="https://en.gravatar.com/">Gravatar.com</a></small>
 								</div>
 							</div>
 							<!--end of avatar-->
-							<form class="auto-submit" action="/account/save" method="post">
+							<form class="auto-submit" action="/account/save" method="post" autocomplete="off">
 								<div class="form-group row align-items-center">
 									<label class="col-3">First Name</label>
 									<div class="col">
@@ -55,6 +55,7 @@
 										<small>This will be displayed on your public profile</small>
 									</div>
 								</div>
+                                <input type="hidden" name="id" value="<?php echo $user->id; ?>">
 								<div class="row justify-content-end">
 									<button type="submit" class="btn btn-primary mr-2">Save</button>
 								</div>
@@ -62,12 +63,14 @@
 						</div>
 						<div class="tab-pane fade" role="tabpanel" id="password" aria-labelledby="password-tab">
 							<form action="/account/save_password" method="post" class="auto-submit">
-								<div class="form-group row align-items-center">
-									<label class="col-3">Current Password</label>
-									<div class="col">
-										<input type="password" placeholder="Enter your current password" name="current_password" class="form-control" />
+								<?php if( ! $this->ion_auth->is_admin() ) { ?>
+									<div class="form-group row align-items-center">
+										<label class="col-3">Current Password</label>
+										<div class="col">
+											<input type="password" placeholder="Enter your current password" name="current_password" class="form-control" />
+										</div>
 									</div>
-								</div>
+								<?php } ?>
 								<div class="form-group row align-items-center">
 									<label class="col-3">New Password</label>
 									<div class="col">
@@ -81,6 +84,7 @@
 										<input type="password" placeholder="Confirm your new password" name="confirm_password" class="form-control" />
 									</div>
 								</div>
+                                <input type="hidden" name="id" value="<?php echo $user->id; ?>">
 								<div class="row justify-content-end">
 									<button type="submit" class="btn btn-primary mr-2">Change Password</button>
 								</div>

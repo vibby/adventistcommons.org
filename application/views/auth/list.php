@@ -27,7 +27,7 @@
 									<?php endforeach ?>
 								</td>
 								<td>
-									<!--<a href="<?php echo "auth/edit_user/" . $user->id; ?>" class="btn btn-sm btn-outline-secondary">Edit</a>-->
+									<a href="<?php echo "/user/edit/" . $user->id; ?>" class="btn btn-sm btn-outline-secondary">Edit</a>
 								</td>
 							</tr>
 						<?php endforeach;?>

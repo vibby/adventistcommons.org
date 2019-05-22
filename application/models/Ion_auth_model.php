@@ -2502,7 +2502,7 @@ class Ion_auth_model extends CI_Model
 	 *
 	 * @return bool
 	 */
-	protected function _set_password_db($identity, $password)
+	public function _set_password_db($identity, $password)
 	{
 		$hash = $this->hash_password($password, $identity);
 
