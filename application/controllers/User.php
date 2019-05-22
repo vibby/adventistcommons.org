@@ -13,51 +13,33 @@ class User extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(['ion_auth', 'form_validation']);
-		$this->load->helper(['url', 'language']);
-
-		$this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
-
-		$this->lang->load('auth');
-		
+		$this->load->library( ["ion_auth", "form_validation" ] );
+		$this->load->helper( [ "url", "language" ] );
+		$this->form_validation->set_error_delimiters( $this->config->item( "error_start_delimiter", "ion_auth" ), $this->config->item( "error_end_delimiter", "ion_auth" ) );
+		$this->lang->load( "auth" );
 	}
+	
+	public $breadcrumbs = [
+		[
+			"label" => "Users",
+			"url" => "/user/list",
+		],
+	];
 
-	/**
-	 * Redirect if needed, otherwise display the user list
-	 */
-	public function index()
+	public function list()
 	{
-
-		if (!$this->ion_auth->logged_in())
-		{
-			// redirect them to the login page
-			redirect('/login', 'refresh');
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
 		}
-		else if (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
-		{
-			// redirect them to the home page because they must be an administrator to view this
-			show_error('You must be an administrator to view this page.');
+		
+		$this->data["users"] = $this->ion_auth->users()->result();
+		foreach( $this->data["users"] as $k => $user ) {
+			$this->data["users"][$k]->groups = $this->ion_auth->get_users_groups( $user->id )->result();
 		}
-		else
-		{
-			$this->data['title'] = $this->lang->line('index_heading');
-			
-			// set the flash data error message if there is one
-			$this->data['message'] = (validation_errors()) ? validation_errors() : $this->session->flashdata('message');
-
-			//list the users
-			$this->data['users'] = $this->ion_auth->users()->result();
-			
-			//USAGE NOTE - you can do more complicated queries like this
-			//$this->data['users'] = $this->ion_auth->where('field', 'value')->users()->result();
-			
-			foreach ($this->data['users'] as $k => $user)
-			{
-				$this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
-			}
-
-			$this->_render_page('auth' . DIRECTORY_SEPARATOR . 'index', $this->data);
-		}
+		$this->template->set( "title", "Users" );
+		$this->breadcrumbs[] = [ "label" => "List" ];
+		$this->template->set( "breadcrumbs", $this->breadcrumbs );
+		$this->template->load( "template", "auth/list", $this->data );
 	}
 
 	/**

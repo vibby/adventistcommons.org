@@ -32,6 +32,9 @@
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<a href="/account" class="dropdown-item">Account Settings</a>
+									<?php if ( $this->ion_auth->is_admin() ) { ?>
+										<a href="/user/list" class="dropdown-item">Manage Users</a>
+									<?php } ?>
 									<a href="/logout" class="dropdown-item">Log Out</a>
 								</div>
 							</div>
@@ -78,6 +81,9 @@
 									</a>
 									<div class="dropdown-menu dropdown-menu-right">
 										<a href="/account" class="dropdown-item">Account Settings</a>
+										<?php if ( $this->ion_auth->is_admin() ) { ?>
+											<a href="/user/list" class="dropdown-item">Manage Users</a>
+										<?php } ?>
 										<a href="/logout" class="dropdown-item">Log Out</a>
 									</div>
 								</div>
