@@ -1,3 +1,6 @@
+a {
+	cursor: pointer;
+}
 .custom-file-label::after {
 	height: auto;
 }

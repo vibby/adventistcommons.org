@@ -16,7 +16,7 @@
 					<div class="tab-content">
 						<div class="tab-pane fade show active" role="tabpanel" id="profile" aria-labelledby="profile-tab">
 							<div class="media mb-4">
-								<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->email ) ) ) . "?s=144"; ?>" class="avatar avatar-lg" />
+								<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->email ) ) ) . "?s=144&d=mp"; ?>" class="avatar avatar-lg" />
 								<div class="media-body ml-3">
 									<strong>Profile picture</strong><br>
 									<small>To change your profile picture, visit <a href="https://en.gravatar.com/">Gravatar.com</a></small>

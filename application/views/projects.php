@@ -51,7 +51,7 @@
 										<?php foreach( $project["members"] as $member ) { ?>
 											<li>
 												<a href="#" data-toggle="tooltip" title="<?php $member["first_name"] . " " . $member["last_name"]; ?>">
-													<img class="avatar" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ) ) ) . "?s=80"; ?>" data-filter-by="alt" />
+													<img class="avatar" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ) ) ) . "?s=80&d=mp"; ?>" data-filter-by="alt" />
 												</a>
 											</li>
 										<?php } ?>

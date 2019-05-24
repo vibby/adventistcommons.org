@@ -64,6 +64,27 @@ class User extends CI_Controller
 		$this->template->set( "breadcrumbs", $this->breadcrumbs );
 		$this->template->load( "template", "account", $data );
 	}
+	
+	public function search( $query )
+	{
+		$query = urldecode( $query );
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		$users = $this->db->select( "*" )
+			->from( "users" )
+			->like( "concat(first_name, ' ', last_name)", $query )
+			->or_like( "email", $query )
+			->limit( 10 )
+			->get()
+			->result_array();
+		$users = array_map( function( $user ) {
+			$user["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user["email"] ) ) ) . "?s=72&d=mp";
+			return $user;
+		}, $users );
+		$this->output->set_content_type( "application/json" );
+		$this->output->set_output( json_encode( $users ) );
+	}
 
 	/**
 	 * Log the user in

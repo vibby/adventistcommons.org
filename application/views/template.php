@@ -28,7 +28,7 @@
 						<?php if ( $this->ion_auth->logged_in() ) { ?>
 							<div class="dropdown">
 								<a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
+									<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80&d=mp"; ?>" class="avatar" />
 								</a>
 								<div class="dropdown-menu dropdown-menu-right">
 									<a href="/account" class="dropdown-item">Account Settings</a>
@@ -77,7 +77,7 @@
 							<?php if ( $this->ion_auth->logged_in() ) { ?>
 								<div class="dropdown">
 									<a href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80"; ?>" class="avatar" />
+										<img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ) . "?s=80&d=mp"; ?>" class="avatar" />
 									</a>
 									<div class="dropdown-menu dropdown-menu-right">
 										<a href="/account" class="dropdown-item">Account Settings</a>

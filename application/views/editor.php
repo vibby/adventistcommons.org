@@ -41,7 +41,7 @@
 										<?php foreach( $p["revisions"] as $revision ) { ?>
 											<div class="card mb-0">
 												<div class="card-header p-2 revision-header">
-													<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $revision["email"] ) ) ) . "?s=60"; ?>" class="avatar mr-1" />
+													<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $revision["email"] ) ) ) . "?s=60&d=mp"; ?>" class="avatar mr-1" />
 													<?php echo $revision["first_name"] . " " . $revision["last_name"]; ?>
 													<time class="text-small float-right" datetime="<?php echo $revision["created_at"]; ?>"><?php echo $revision["created_at_formatted"]; ?></time>
 												</div>

@@ -49,7 +49,7 @@ class Projects extends CI_Controller {
 	
 	public function get_languages() {
 		$languages = $this->project_model->getLanguages();
-		$this->output->set_content_type("application/json");
+		$this->output->set_content_type( "application/json" );
 		$this->output->set_output( json_encode( $languages ) );
 	}
 	
@@ -86,5 +86,30 @@ class Projects extends CI_Controller {
 		$this->db->insert( "projects", $data );
 		$id = $this->db->insert_id();
 		$this->output->set_output( json_encode( [ "redirect" => "/projects/$id" ] ) );
+	}
+	
+	public function add_member() {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		$this->output->set_content_type( "application/json" );
+		$this->form_validation->set_rules( "type", "Member type", "required" );
+		$this->form_validation->set_rules( "user_id", "User ID", "required" );
+		$this->form_validation->set_rules( "project_id", "Project ID", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		
+		$this->db->where( "user_id", $data["user_id"] )
+			->where( "project_id", $data["project_id"] )
+			->delete( "project_members" );
+		
+		$this->db->insert( "project_members", $data );
+		$id = $this->db->insert_id();
+		$this->output->set_output( json_encode( [ "member_id" => $id ] ) );
 	}
 }

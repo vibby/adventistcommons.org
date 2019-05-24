@@ -17,7 +17,7 @@
 						</tr>
 						<?php foreach ($users as $user):?>
 							<tr>
-								<td><img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->email ) ) ) . "?s=80"; ?>" class="avatar" /></td>
+								<td><img alt="Image" width="40" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user->email ) ) ) . "?s=80&d=mp"; ?>" class="avatar" /></td>
 								<td><?php echo $user->first_name; ?></td>
 								<td><?php echo $user->last_name; ?></td>
 								<td><?php echo $user->email; ?></td>

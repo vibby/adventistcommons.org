@@ -121,3 +121,38 @@ $( ".commit-paragraph" ).click( function(e) {
 $( ".revision-header" ).click( function() {
 	$(this).next().slideToggle();
 });
+
+$( ".user-search .search" ).keyup( function() {
+	$widget = $(this).parents( ".user-search" );
+	query = $(this).val().trim();
+	if( query.length == 0 ) {
+		return false;
+	}
+	$.getJSON( "/user/search/" + query, function( users ) {
+		$widget.find( ".user-list" ).empty();
+		$.each( users, function( key, user ) {
+			html = '<div class="custom-control custom-checkbox"><span class="d-flex align-items-center"><img src="' + user.avatar + '" class="avatar mr-2" /><span class="h6 mb-0" data-filter-by="text">' + user.first_name + ' ' + user.last_name + '</span><div class="dropdown ml-auto"><button class="btn btn-primary btn-sm text-light dropdown-toggle" type="button" data-toggle="dropdown">Add</button><div class="dropdown-menu"><a class="dropdown-item select-member" data-id="' + user.id + '" data-type="translator">Translator</a><a class="dropdown-item select-member" data-id="' + user.id + '" data-type="reviewer">Reviewer</a></div></div></span></div>';
+			$widget.find( ".user-list" ).append( html );
+		});
+	});
+});
+
+$( document ).on( "click", ".select-member", function() {
+	$modal = $(this).parents( ".modal-body" );
+	var data = {
+		"type": $(this).data( "type" ),
+		"user_id": $(this).data( "id" ),
+		"project_id": $(this).parents( ".modal" ).data( "project-id" ),
+	}
+	$.post( "/projects/add_member", data, function( response ) {
+		console.log(response);
+		if( response.error ) {
+			handleFormResponse( $modal, response.error );
+			return;
+		}
+		location.reload();
+	})
+	.fail(function() {
+		handleFormResponse( $modal, "An error has occured" );
+	});
+});
