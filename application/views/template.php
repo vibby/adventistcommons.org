@@ -10,7 +10,7 @@
 		<link href="https://fonts.googleapis.com/css?family=Gothic+A1" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet">
 		<link href="/assets/css/theme.css" rel="stylesheet" type="text/css" media="all" />
-		<link href="/assets/css/custom.css?v=5" rel="stylesheet" type="text/css" media="all" />
+		<link href="/assets/css/custom.css?v=6" rel="stylesheet" type="text/css" media="all" />
 	</head>
 
 	<body>
@@ -143,7 +143,7 @@
 		<script type="text/javascript" src="/assets/js/selectize.min.js"></script>
 		<script type="text/javascript" src="/assets/js/jquery.timeago.js"></script>
 		<script type="text/javascript" src="/assets/js/theme.js"></script>
-		<script type="text/javascript" src="/assets/js/app.js?v=5"></script>
+		<script type="text/javascript" src="/assets/js/app.js?v=6"></script>
 		
 		<link href="/assets/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" media="all" />
 
