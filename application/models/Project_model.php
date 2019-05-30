@@ -100,6 +100,17 @@ class Project_model extends CI_Model
 			->result_array();
 	}
 	
+	public function getMembershipByUserId( $user_id ) {
+		return $this->db->select( "*, products.name as product_name, languages.name as language_name, project_members.type as member_type" )
+			->from( "project_members" )
+			->where( "user_id", $user_id )
+			->join( "projects", "project_members.project_id = projects.id" )
+			->join( "products", "projects.product_id = products.id" )
+			->join( "languages", "projects.language_id = languages.id" )
+			->get()
+			->result_array();
+	}
+	
 	private function _projectsQuery() {
 		return $this->db->select( "projects.*, products.name as product_name, languages.name as language_name" )
 			->from( "projects" )
