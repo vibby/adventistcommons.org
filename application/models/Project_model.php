@@ -117,4 +117,15 @@ class Project_model extends CI_Model
 			->join( "products", "projects.product_id = products.id" )
 			->join( "languages", "projects.language_id = languages.id" );
 	}
+	
+	public function isReviewer( $user_id, $project_id ) {
+		$count_existing = $this->db->select( "id" )
+			->where( "user_id", $user_id )
+			->where( "project_id", $project_id )
+			->where( "type", "reviewer" )
+			->from( "project_members" )
+			->count_all_results();
+		
+		return $count_existing > 0;
+	}
 }

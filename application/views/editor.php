@@ -7,35 +7,47 @@
 			<hr>
 			<div class="content-list-body">
 				<?php foreach( $content as $p ) { ?>
-					<div class="card-list editor-item" data-content-id="<?php echo $p["id"]; ?>" data-project-id="<?php echo $project["id"]; ?>">
+					<div class="card-list editor-item" id="p<?php echo $p["id"]; ?>" data-content-id="<?php echo $p["id"]; ?>" data-project-id="<?php echo $project["id"]; ?>">
 						<div class="card-list-body row">
 							<div class="col-md-6">
 								<?php echo $p["content"]; ?><br><br>
 							</div>
 							<div class="col-md-6 textarea-wrapper">
+								<?php if( $p["status"]["type"] == "approved" ) { ?>
+									<small class="status-locked"><i class="material-icons text-small align-middle">lock</i> <?php echo sprintf( "approved by %s %s", $p["status"]["first_name"], $p["status"]["last_name"] ); ?></small>
+								<?php } ?>
+								<?php foreach( $p["errors"] as $error ) { ?>
+									<div class="alert alert-warning revision-request" data-log-id="<?php echo $error["id"]; ?>">
+										<?php echo $error["comment"]; ?>
+										<button class="btn btn-outline-secondary btn-sm float-right resolve-error">Resolve</button>
+									</div>
+								<?php } ?>
 								<div class="form-group">
-									<textarea class="form-control" rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
+									<textarea class="form-control" <?php if( $p["status"]["type"] == "approved" ) { echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
 								</div>
 								<nav class="clearfix">
 									<div class="form-group float-left">
-										<button class="btn btn-outline-success btn-sm commit-paragraph">Commit</button>
+										<?php if( $is_reviewer ) { ?>
+											<?php if( $p["status"]["type"] !== "approved" ) { ?><button class="btn btn-outline-success btn-sm approve-paragraph">Approve</button><?php } ?>
+											<button class="btn btn-outline-secondary btn-sm request-revision">Request Revision</button>
+										<?php } elseif( ! $p["status"]["type"] == "approved" ) { ?>
+											<button class="btn btn-outline-success btn-sm commit-paragraph">Commit</button>
+										<?php } ?>
 									</div>
 									<div class="form-group float-right">
-										<!--<button class="btn btn-outline-danger btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_issues", $p["id"] ); ?>">2 issues</button>-->
 										<button class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"><?php echo $p["total_revisions"] == 1 ? "1 revision" : sprintf( "%s revisions", $p["total_revisions"] ); ?></button>
-										<div class="dropdown float-right ml-1">
-											<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-												<i class="material-icons align-top text-small">settings</i>
-											</button>
-											<div class="dropdown-menu">
-												<a class="dropdown-item" href="#">Auto Translate</a>
-											</div>
-										</div>
+										<?php if( ! $is_reviewer ) { ?>
+											<!--<div class="dropdown float-right ml-1">
+												<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+													<i class="material-icons align-top text-small">settings</i>
+												</button>
+												<div class="dropdown-menu">
+													<a class="dropdown-item" href="#">Auto Translate</a>
+												</div>
+											</div>-->
+										<?php } ?>
 									</div>
 								</nav>
-								<div id="<?php echo sprintf( "p_%s_issues", $p["id"] ); ?>" class="collapse">
-									<div class="alert alert-danger">There is an issue you need to fix</div>
-								</div>
 								<div id="<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>" class="collapse">
 									<div class="accordion" id="<?php echo sprintf( "p_%s_revisions_accordian", $p["id"] ); ?>">
 										<?php foreach( $p["revisions"] as $revision ) { ?>
@@ -63,3 +75,30 @@
 		</div>
 	</div>
 </div>
+
+<?php if( $is_reviewer ) { ?>
+<form class="modal fade auto-submit" action="/editor/suggest_revision" id="suggest-revision-form" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Suggest Revision</h5>
+				<button type="button" class="close btn btn-round" data-dismiss="modal">
+					<i class="material-icons">close</i>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<textarea class="form-control col" name="comment" placeholder="What needs revising?"></textarea>
+				</div>
+				<input type="hidden" name="content_id">
+				<input type="hidden" name="project_id">
+			</div>
+			<div class="modal-footer">
+				<button role="button" class="btn btn-primary" type="submit">
+					Submit
+				</button>
+			</div>
+		</div>
+	</div>
+</form>
+<?php } ?>

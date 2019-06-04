@@ -1,6 +1,11 @@
 a {
 	cursor: pointer;
 }
+
+.hidden {
+	display: none;
+}
+
 .custom-file-label::after {
 	height: auto;
 }
@@ -52,4 +57,9 @@ a {
 .banner .display-4 {
 	color: #eee;
 	font-family: 'Ubuntu', sans-serif;
+}
+
+.resolve-error {
+	padding: 0.10rem 0.5rem !important;
+	font-size: 75%;
 }

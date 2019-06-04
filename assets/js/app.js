@@ -1,7 +1,7 @@
 //Modified from:
 //https://webdesign.tutsplus.com/tutorials/how-to-add-deep-linking-to-the-bootstrap-4-tabs-component--cms-31180
 var url = location.href.replace( /\/$/, "" );
-if ( location.hash ) {
+if ( location.hash && $( ".tab-content").length > 0 ) {
 	var hash = url.split( "#" );
 	$( 'a[href="#' + hash[1]+'"]' ).tab( "show" );
 	url = location.href.replace( /\/#/, "#" );
@@ -9,7 +9,12 @@ if ( location.hash ) {
 	setTimeout( function() {
 		$(window).scrollTop(0);
 	}, 400);
-} 
+} else if ( location.hash ) {
+	setTimeout( function() {
+		$( location.hash )[0].scrollIntoView();
+		window.scrollBy(0, -100); 
+	}, 100);
+}
 
 $( 'a[data-toggle="tab"]' ).on("click", function() {
 	var newUrl;
@@ -57,10 +62,12 @@ $( "form.auto-submit" ).submit( function(e) {
 				return;
 			}
 			if( response.redirect ) {
+				$btn.text( btn_text ).prop( "disabled", true );
 				if( location.href.split(location.host)[1] == response.redirect ) {
 					location.reload();
 				} else {
 					window.location.href = response.redirect;
+					location.reload(); //Be sure page reloads with # in response.redirect
 				}
 			} else {
 				handleFormResponse( $response_target, response.success, "success" );
@@ -120,6 +127,62 @@ $( ".commit-paragraph" ).click( function(e) {
 
 $( ".revision-header" ).click( function() {
 	$(this).next().slideToggle();
+});
+
+$( ".approve-paragraph" ).click( function(e) {
+	$parent = $(this).parents( ".editor-item" );
+	$btn = $(this);
+	btn_text = $btn.text();
+	$btn.text( "..." ).prop( "disabled", true );
+	e.preventDefault();
+	var data = {
+		"project_id": $parent.attr( "data-project-id" ),
+		"content_id": $parent.attr( "data-content-id" ),
+	}
+	$.post( "/editor/approve", data, function( response ) {
+		if( response.error ) {
+			handleFormResponse( $parent.find( ".response" ), response.error );
+			return;
+		}
+		$btn.text( btn_text ).addClass( "hidden" );
+		$parent.find( "textarea" ).prop( "disabled", true );
+		$parent.find( ".textarea-wrapper" ).prepend( '<small class="status-locked"><i class="material-icons text-small align-middle">lock</i> approved by ' + response.reviewer_name + '</small>' );
+		$parent.find( ".revision-request" ).remove();
+	})
+	.fail(function() {
+		handleFormResponse( $parent.find( ".response" ), "An error has occured" );
+		$btn.text( btn_text ).prop( "disabled", false );
+	});
+});
+
+$( ".resolve-error" ).click( function(e) {
+	$parent = $(this).parents( ".editor-item" );
+	$alert = $(this).parents( ".alert" );
+	$btn = $(this);
+	btn_text = $btn.text();
+	$btn.text( "..." ).prop( "disabled", true );
+	e.preventDefault();
+	var data = {
+		"log_id": $alert.attr( "data-log-id" ),
+	}
+	$.post( "/editor/resolve", data, function( response ) {
+		if( response.error ) {
+			$btn.text( btn_text ).prop( "disabled", false );
+			return;
+		}
+		$alert.slideUp();
+	})
+	.fail(function() {
+		$btn.text( btn_text ).prop( "disabled", false );
+	});
+});
+
+$( ".request-revision" ).click( function() {
+	$parent = $(this).parents( ".editor-item" );
+	$( "#suggest-revision-form" ).find( "input[name='project_id']" ).val( $parent.attr( "data-project-id" ) );
+	$( "#suggest-revision-form" ).find( "input[name='content_id']" ).val( $parent.attr( "data-content-id" ) );
+	$( "#suggest-revision-form" ).find( "textarea[name='comment']" ).val( "" );
+	$( "#suggest-revision-form" ).modal( "show" );
 });
 
 $( ".user-search .search" ).keyup( function() {

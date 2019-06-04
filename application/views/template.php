@@ -129,7 +129,7 @@
 				<?php echo $contents ?>
 			</div>
 		</div>
-		<footer class="text-small text-faded text-center p-3">Copyright © 2019 AdventistCommons.org. This website is an initiative of the Middle East and North Africa Union, the official mission office of Seventh-day Adventists.</footer>
+		<footer class="text-small text-faded text-center p-3">Copyright © 2019 AdventistCommons.org. This website is an initiative of the Middle East and North Africa Union of Seventh-day Adventists.</footer>
 
 		<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 		<script type="text/javascript" src="/assets/js/autosize.min.js"></script>

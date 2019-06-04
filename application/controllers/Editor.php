@@ -39,6 +39,7 @@ class Editor extends CI_Controller {
 			"project" => $project,
 			"product" => $product,
 			"section" => $section,
+			"is_reviewer" => $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $project_id ),
 		];
 		$this->template->set( "title", "Dashboard" );
 		$this->breadcrumbs[] = [ "label" => $product["name"] . " (" . $project["language_name"] . ")", "url" => "/projects/" . $project["id"]  ];
@@ -75,5 +76,99 @@ class Editor extends CI_Controller {
 		$this->db->insert( "product_content_revisions", $data );
 		$id = $this->db->insert_id();
 		$this->output->set_output( json_encode( [ "success" => "Paragraph committed" ] ) );
+	}
+	
+	public function approve() {
+		
+		$this->output->set_content_type("application/json");
+		
+		$this->form_validation->set_rules( "project_id", "Project ID", "required|numeric" );
+		$this->form_validation->set_rules( "content_id", "Content ID", "required|numeric" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		
+		if( ! $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $data["project_id"] ) ) {
+			show_404();
+		}
+		
+		$data["user_id"] = $this->ion_auth->user()->row()->id;
+		$data["type"] = "approved";
+		
+		$this->db->insert( "product_content_log", $data );
+		$id = $this->db->insert_id();
+		
+		$resolve_error_data = [
+			"resolved_by" => $this->ion_auth->user()->row()->id,
+			"resolved_on" => date( "Y-m-d H:i:s" ),
+			"is_resolved" => true,
+		];
+		
+		$this->db->where( "type", "error" );
+		$this->db->where( "project_id", $data["project_id"] );
+		$this->db->where( "content_id", $data["content_id"] );
+		$this->db->update( "product_content_log", $resolve_error_data );
+		
+		$this->output->set_output( json_encode( [ "reviewer_name" => $this->ion_auth->row()->first_name . " " . $this->ion_auth->row()->last_name ] ) );
+	}
+	
+	public function suggest_revision() {
+		
+		$this->output->set_content_type("application/json");
+		
+		$this->form_validation->set_rules( "project_id", "Project ID", "required|numeric" );
+		$this->form_validation->set_rules( "content_id", "Content ID", "required|numeric" );
+		$this->form_validation->set_rules( "comment", "comment", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		
+		if( ! $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $data["project_id"] ) ) {
+			show_404();
+		}
+		
+		$data["user_id"] = $this->ion_auth->user()->row()->id;
+		$data["type"] = "error";
+		
+		$this->db->insert( "product_content_log", $data );
+		$id = $this->db->insert_id();
+		$this->output->set_output( json_encode( [ "redirect" => "/editor/" . $data["project_id"] . "/" . $this->product_model->getSectionId( $data["content_id"] ) . "#p" . $data["content_id"] ] ) );
+	}
+	
+	public function resolve() {
+		
+		$this->output->set_content_type("application/json");
+		
+		$this->form_validation->set_rules( "log_id", "Log ID", "required|numeric" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		$error = $this->product_model->getContentLog( $data["log_id"] );
+		
+		if( ! $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $error["project_id"] ) ) {
+			show_404();
+		}
+		
+		$update_data = [
+			"resolved_by" => $this->ion_auth->user()->row()->id,
+			"resolved_on" => date( "Y-m-d H:i:s" ),
+			"is_resolved" => true,
+		];
+		
+		$this->db->where( "id", $data["log_id"] );
+		$this->db->update( "product_content_log", $update_data );
+		$this->output->set_output( json_encode( [ "success" => "Issue resolved" ] ) );
 	}
 }

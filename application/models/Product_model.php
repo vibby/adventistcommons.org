@@ -77,6 +77,7 @@ class Product_model extends CI_Model
 			$revisions = $this->db->select( "*" )
 				->from( "product_content_revisions" )
 				->where( "content_id", $content["id"] )
+				->where( "project_id", $project_id )
 				->order_by( "created_at", "desc" )
 				->join( "users", "product_content_revisions.user_id = users.id" )
 				->get()
@@ -91,10 +92,52 @@ class Product_model extends CI_Model
 			}
 			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
+			
+			$status = $this->db->select( "*" )
+				->from( "product_content_log" )
+				->where( "content_id", $content["id"] )
+				->where( "project_id", $project_id )
+				->order_by( "created_at", "desc" )
+				->join( "users", "product_content_log.user_id = users.id" )
+				->limit( 1 )
+				->get()
+				->row_array();			
+			
+			$content["status"] = $status;
+			
+			$errors = $this->db->select( "*" )
+				->from( "product_content_log" )
+				->where( "content_id", $content["id"] )
+				->where( "project_id", $project_id )
+				->where( "type", "error" )
+				->where( "is_resolved", false )
+				->order_by( "created_at", "desc" )
+				->get()
+				->result_array();	
+			
+			$content["errors"] = $errors;
+			
 			$str_length = strlen( $content["content"] );
 			$content["textarea_height"] = $str_length > 60 ? ( $str_length / 60 ) + 1 : 2;
 			return $content;
 		}, $content );
+	}
+	
+	public function getSectionId( $content_id ) {
+		$section = $this->db->select( "section_id" )
+			->from( "product_content" )
+			->where( "id", $content_id )
+			->get()
+			->row_array();
+		return $section["section_id"];
+	}
+	
+	public function getContentLog( $id ) {
+		return $this->db->select( "*" )
+			->from( "product_content_log" )
+			->where( "id", $id )
+			->get()
+			->row_array();
 	}
 	
 	//https://github.com/paulgb/simplediff
