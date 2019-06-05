@@ -43,7 +43,7 @@ class Project_model extends CI_Model
 			->result_array();
 		return array_map( function( $project ) {
 			$project["total_strings"] = $this->_getTotalStringCount( $project["product_id"] );
-			$project["completed_strings"] = $this->_getCompletedStringCount( $project_id );
+			$project["completed_strings"] = $this->_getCompletedStringCount( $project["id"] );
 			$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
 			$project["status"] = $this->status[$project["status"]];
 			return $project;
