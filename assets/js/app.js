@@ -219,3 +219,8 @@ $( document ).on( "click", ".select-member", function() {
 		handleFormResponse( $modal, "An error has occured" );
 	});
 });
+
+$( ".confirm-dialog" ).click( function() {
+	$message = $(this).data( "confirm-message" );
+	return confirm( $message );
+});

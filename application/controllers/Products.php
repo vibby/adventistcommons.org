@@ -226,6 +226,17 @@ class Products extends CI_Controller {
 		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $data["product_id"] ] ) );
 	}
 	
+	public function delete( $product_id ) {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		
+		$this->db->where( "id", $product_id )
+			->delete( "products" );
+		
+		redirect( "/products", "refresh" );
+	}
+	
 	private function _uploadCoverImage() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "jpg|png";

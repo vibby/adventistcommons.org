@@ -112,4 +112,15 @@ class Projects extends CI_Controller {
 		$id = $this->db->insert_id();
 		$this->output->set_output( json_encode( [ "member_id" => $id ] ) );
 	}
+	
+	public function delete( $project_id ) {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		
+		$this->db->where( "id", $project_id )
+			->delete( "projects" );
+		
+		redirect( "/projects", "refresh" );
+	}
 }

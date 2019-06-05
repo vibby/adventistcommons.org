@@ -34,14 +34,16 @@
 								</div>
 
 								<div class="card-body">
-									<div class="dropdown card-options">
-										<button class="btn-options" type="button" id="project-dropdown-button-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-											<i class="material-icons">more_vert</i>
-										</button>
-										<div class="dropdown-menu dropdown-menu-right">
-											<a class="dropdown-item" href="#">Edit</a>
+									<?php if( $this->ion_auth->is_admin() ) { ?>
+										<div class="dropdown card-options">
+											<button class="btn-options" type="button" data-toggle="dropdown">
+												<i class="material-icons">more_vert</i>
+											</button>
+											<div class="dropdown-menu dropdown-menu-right">
+												<a href="/projects/delete/<?php echo $project["id"]; ?>" class="dropdown-item confirm-dialog" data-confirm-message="Are you sure? All translated content will be destroyed.">Delete</a>
+											</div>
 										</div>
-									</div>
+									<?php } ?>
 									<div class="card-title">
 										<a href="/projects/<?php echo $project["id"]; ?>">
 											<h5 data-filter-by="text"><?php echo $project["product_name"]; ?><span class="badge badge-light text-secondary ml-1"><?php echo $project["language_name"]; ?></span></h5>

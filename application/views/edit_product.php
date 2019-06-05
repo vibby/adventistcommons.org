@@ -164,7 +164,7 @@
 							<form action="/products/save_xliff" method="post" class="auto-submit">
 								<h6>InDesign Translation File (.xliff)</h6>
 								<?php if( $product["xliff_file"] ) { ?>
-								<a href="/uploads/<?php echo $product["xliff_file"]; ?>">Download original XLIFF file</a>
+									<a href="/uploads/<?php echo $product["xliff_file"]; ?>">Download original XLIFF file</a>
 								<?php } else { ?>
 									<div class="input-group mb-3">
 										<div class="custom-file">
@@ -177,6 +177,8 @@
 									</div>
 									<input type="hidden" name="id" value="<?php echo $product["id"]; ?>">
 								<?php } ?>
+								<hr>
+								<a href="/products/delete/<?php echo $product["id"]; ?>" class="text-danger confirm-dialog" data-confirm-message="WARNING: This cannot be undone. All translations and associated content will be lost forever.">Delete product</a>
 							</form>
 						</div>
 					</div>
