@@ -13,8 +13,8 @@
 								<?php echo $p["content"]; ?><br><br>
 							</div>
 							<div class="col-md-6 textarea-wrapper">
-								<?php if( $p["status"]["type"] == "approved" ) { ?>
-									<small class="status-locked"><i class="material-icons text-small align-middle">lock</i> <?php echo sprintf( "approved by %s %s", $p["status"]["first_name"], $p["status"]["last_name"] ); ?></small>
+								<?php if( $p["is_approved"] ) { ?>
+									<small class="status-locked"><i class="material-icons text-small align-middle">lock</i> <?php echo sprintf( "approved by %s %s", $p["first_name"], $p["last_name"] ); ?></small>
 								<?php } ?>
 								<?php foreach( $p["errors"] as $error ) { ?>
 									<div class="alert alert-warning revision-request" data-log-id="<?php echo $error["id"]; ?>">
@@ -23,14 +23,14 @@
 									</div>
 								<?php } ?>
 								<div class="form-group">
-									<textarea class="form-control" <?php if( $p["status"]["type"] == "approved" ) { echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
+									<textarea class="form-control" <?php if( $p["is_approved"] ) { echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
 								</div>
 								<nav class="clearfix">
 									<div class="form-group float-left">
 										<?php if( $is_reviewer ) { ?>
-											<?php if( $p["status"]["type"] !== "approved" ) { ?><button class="btn btn-outline-success btn-sm approve-paragraph">Approve</button><?php } ?>
+											<?php if( ! $p["is_approved"] ) { ?><button class="btn btn-outline-success btn-sm approve-paragraph">Approve</button><?php } ?>
 											<button class="btn btn-outline-secondary btn-sm request-revision">Request Revision</button>
-										<?php } elseif( ! $p["status"]["type"] == "approved" ) { ?>
+										<?php } elseif( ! $p["is_approved"] ) { ?>
 											<button class="btn btn-outline-success btn-sm commit-paragraph">Commit</button>
 										<?php } ?>
 									</div>

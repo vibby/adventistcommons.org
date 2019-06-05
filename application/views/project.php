@@ -17,12 +17,12 @@
 				</div>
 				<div>
 					<div class="progress">
-						<div class="progress-bar bg-success" style="width:<?php $project["percent_complete"]; ?>%;"></div>
+						<div class="progress-bar bg-success" style="width:<?php echo $project["percent_complete"]; ?>%;"></div>
 					</div>
 					<div class="d-flex justify-content-between text-small">
 						<div class="d-flex align-items-center">
 							<i class="material-icons">playlist_add_check</i>
-							<span><?php echo $project["completed_strings"] . " / " . $project["total_strings"]; ?></span>
+							<span><?php echo $project["completed_strings"] . " / " . $project["total_strings"] . "(" . $project["percent_complete"] . "%)"; ?></span>
 						</div>
 						<span><?php echo $project["status"]; ?></span>
 					</div>
@@ -50,7 +50,7 @@
 								<?php foreach( $sections as $section ) { ?>
 									<div class="card card-task">
 										<div class="progress">
-											<div class="progress-bar bg-danger" role="progressbar" style="width: <?php $section["percent_complete"]; ?>%"></div>
+											<div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $section["percent_complete"]; ?>%"></div>
 										</div>
 										<div class="card-body">
 											<div class="card-title">

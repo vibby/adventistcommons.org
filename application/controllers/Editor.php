@@ -75,6 +75,9 @@ class Editor extends CI_Controller {
 		
 		$this->db->insert( "product_content_revisions", $data );
 		$id = $this->db->insert_id();
+		
+		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], false );
+		
 		$this->output->set_output( json_encode( [ "success" => "Paragraph committed" ] ) );
 	}
 	
@@ -113,6 +116,8 @@ class Editor extends CI_Controller {
 		$this->db->where( "content_id", $data["content_id"] );
 		$this->db->update( "product_content_log", $resolve_error_data );
 		
+		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], true, $data["user_id"] );
+		
 		$this->output->set_output( json_encode( [ "reviewer_name" => $this->ion_auth->row()->first_name . " " . $this->ion_auth->row()->last_name ] ) );
 	}
 	
@@ -140,6 +145,9 @@ class Editor extends CI_Controller {
 		
 		$this->db->insert( "product_content_log", $data );
 		$id = $this->db->insert_id();
+		
+		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], false );
+		
 		$this->output->set_output( json_encode( [ "redirect" => "/editor/" . $data["project_id"] . "/" . $this->product_model->getSectionId( $data["content_id"] ) . "#p" . $data["content_id"] ] ) );
 	}
 	

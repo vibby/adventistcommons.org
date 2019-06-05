@@ -11,19 +11,19 @@ class Project_model extends CI_Model
 	}
 	
 	public $status = [
-		0 => "Not started",
-		1 => "In progress",
-		2 => "Awaiting review",
-		3 => "Approved",
-		4 => "Finalized",
+		0 => "In progress",
+		1 => "Awaiting review",
+		2 => "Approved",
+		3 => "Finalized",
 	];
 	
 	public function getProjects() {
 		$projects = $this->_projectsQuery()->get()->result_array();
-		
-		return array_map( function( $project ) {
-			$project["total_strings"] = 5;
-			$project["completed_strings"] = 2;
+		$total_strings = $this->_getTotalStringCountsByProduct();
+		$completed_strings = $this->_getCompletedStringCountsByProject();
+		return array_map( function( $project ) use( $total_strings, $completed_strings ) {
+			$project["total_strings"] = $total_strings[$project["id"]] ?? 0;
+			$project["completed_strings"] = $completed_strings[$project["id"]] ?? 0;
 			$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
 			$project["status"] = $this->status[$project["status"]];
 			$project["members"] = $this->db->select( "*" )
@@ -42,8 +42,8 @@ class Project_model extends CI_Model
 			->get()
 			->result_array();
 		return array_map( function( $project ) {
-			$project["total_strings"] = 5;
-			$project["completed_strings"] = 2;
+			$project["total_strings"] = $this->_getTotalStringCount( $project["product_id"] );
+			$project["completed_strings"] = $this->_getCompletedStringCount( $project_id );
 			$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
 			$project["status"] = $this->status[$project["status"]];
 			return $project;
@@ -59,8 +59,8 @@ class Project_model extends CI_Model
 			->get()
 			->row_array();
 		if( ! $project ) show_404();
-		$project["total_strings"] = 5;
-			$project["completed_strings"] = 2;
+		$project["total_strings"] = $this->_getTotalStringCount( $project["product_id"] );
+			$project["completed_strings"] = $this->_getCompletedStringCount( $project_id );
 		$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
 		$project["status"] = $this->status[$project["status"]];
 		return $project;
@@ -82,15 +82,101 @@ class Project_model extends CI_Model
 			->where( "projects.id", $project_id )
 			->get()
 			->result_array();
-		return array_map( function( $section ) {
-			$section["total_strings"] = 0;
-			$section["completed_strings"] = 0;
-			$section["percent_complete"] = $section["total_strings"] > 0 ? $section["completed_strings"] / $section["total_strings"] : 0 * 100;
+		
+		$project = $this->db->select( "*" )
+			->from( "projects" )
+			->where( "id", $project_id )
+			->get()
+			->row_array();
+		
+		$total_strings = $this->_getTotalStringCountsBySection( $project["product_id"] );
+		$completed_strings = $this->_getCompletedStringCountsBySection( $project_id );
+		
+		return array_map( function( $section ) use( $total_strings, $completed_strings ) {
+			$section["total_strings"] = $total_strings[$section["id"]] ?? 0;
+			$section["completed_strings"] = $completed_strings[$section["id"]] ?? 0;
+			$section["percent_complete"] = $section["total_strings"] > 0 ? $section["completed_strings"] / $section["total_strings"] * 100: 0;
 			$section["last_activity"] = "today";
 			return $section;
 		}, $sections );
 		
 		return $sections;
+	}
+	
+	private function _getCompletedStringCountsByProject() {
+		$strings = $this->db->select( "project_id, COUNT(id) as count" )
+			->where( "is_approved", true )
+			->group_by( "project_id" )
+			->from( "project_content_status" )
+			->get()
+			->result_array();
+		
+		$array = [];
+		foreach( $strings as $string ) {
+			$array[$string["project_id"]] = $string["count"];
+		}
+		return $array;
+	}
+	
+	private function _getCompletedStringCountsBySection( $project_id ) {
+		$strings = $this->db->select( "product_content.section_id, COUNT(project_content_status.id) as count" )
+			->where( "project_content_status.project_id", $project_id )
+			->where( "project_content_status.is_approved", true )
+			->join( "product_content", "product_content.id = project_content_status.content_id" )
+			->group_by( "product_content.section_id" )
+			->from( "project_content_status" )
+			->get()
+			->result_array();
+		
+		$array = [];
+		foreach( $strings as $string ) {
+			$array[$string["section_id"]] = $string["count"];
+		}
+		return $array;
+	}
+	
+	private function _getTotalStringCountsByProduct() {
+		$strings = $this->db->select( "product_id, COUNT(id) as count" )
+			->group_by( "product_id" )
+			->from( "product_content" )
+			->get()
+			->result_array();
+		
+		$array = [];
+		foreach( $strings as $string ) {
+			$array[$string["product_id"]] = $string["count"];
+		}
+		return $array;
+	}
+	
+	private function _getTotalStringCountsBySection( $product_id ) {
+		$strings = $this->db->select( "section_id, COUNT(id) as count" )
+			->where( "product_id", $product_id )
+			->group_by( "section_id" )
+			->from( "product_content" )
+			->get()
+			->result_array();
+		
+		$array = [];
+		foreach( $strings as $string ) {
+			$array[$string["section_id"]] = $string["count"];
+		}
+		return $array;
+	}
+	
+	private function _getTotalStringCount( $product_id ) {
+		return $this->db->select( "id" )
+			->where( "product_id", $product_id )
+			->from( "product_content" )
+			->count_all_results();
+	}
+	
+	private function _getCompletedStringCount( $project_id ) {
+		return $this->db->select( "id" )
+			->where( "project_id", $project_id )
+			->where( "is_approved", true )
+			->from( "project_content_status" )
+			->count_all_results();
 	}
 	
 	public function getLanguages() {
@@ -127,5 +213,28 @@ class Project_model extends CI_Model
 			->count_all_results();
 		
 		return $count_existing > 0;
+	}
+	
+	public function updateContentStatus( $content_id, $project_id, $is_approved, $user_id = null ) {
+		$project_content = $this->db->select( "*" )
+			->from( "project_content_status" )
+			->where( "content_id", $content_id )
+			->where( "project_id", $project_id )
+			->get()
+			->row_array();
+		
+		$data = [
+			"content_id" => $content_id,
+			"project_id" => $project_id,
+			"is_approved" => $is_approved,
+			"approved_by" => $user_id,
+		];
+		
+		if( $project_content ) {
+			$this->db->where( "id", $project_content["id"] );
+			$this->db->update( "project_content_status", $data );
+		} else {
+			$this->db->insert( "project_content_status", $data );
+		}
 	}
 }

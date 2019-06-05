@@ -66,10 +66,12 @@ class Product_model extends CI_Model
 	}
 	
 	public function getSectionContent( $project_id, $section_id ) {
-		$content = $this->db->select( "*" )
+		$content = $this->db->select( "*, product_content.id as id" )
 			->from( "product_content" )
 			->where( "section_id", $section_id )
 			->where( "is_hidden", false )
+			->join( "project_content_status", "project_content_status.content_id = product_content.id", "left" )
+			->join( "users", "project_content_status.approved_by = users.id", "left" )
 			->get()
 			->result_array();
 		
@@ -92,18 +94,6 @@ class Product_model extends CI_Model
 			}
 			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
-			
-			$status = $this->db->select( "*" )
-				->from( "product_content_log" )
-				->where( "content_id", $content["id"] )
-				->where( "project_id", $project_id )
-				->order_by( "created_at", "desc" )
-				->join( "users", "product_content_log.user_id = users.id" )
-				->limit( 1 )
-				->get()
-				->row_array();			
-			
-			$content["status"] = $status;
 			
 			$errors = $this->db->select( "*" )
 				->from( "product_content_log" )

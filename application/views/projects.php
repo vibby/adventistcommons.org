@@ -30,7 +30,7 @@
 							<div class="card card-project">
 
 								<div class="progress">
-									<div class="progress-bar bg-danger" role="progressbar" style="width: <?php echo $project["percent_complete"]; ?>%"></div>
+									<div class="progress-bar bg-success" role="progressbar" style="width: <?php echo $project["percent_complete"]; ?>%"></div>
 								</div>
 
 								<div class="card-body">
