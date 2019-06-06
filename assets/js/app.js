@@ -67,7 +67,9 @@ $( "form.auto-submit" ).submit( function(e) {
 					location.reload();
 				} else {
 					window.location.href = response.redirect;
-					location.reload(); //Be sure page reloads with # in response.redirect
+					setTimeout(function() {
+						location.reload(); //Be sure page reloads with # in response.redirect
+					}, 500);
 				}
 			} else {
 				handleFormResponse( $response_target, response.success, "success" );
@@ -91,14 +93,20 @@ $( ".custom-file input" ).change( function (e) {
 if( $( ".language-select" ).length > 0 ) {
 	$.getJSON( "/projects/get_languages", function( languages ) {
 		$( ".language-select" ).each( function( index ) {
+			ids = $(this).attr( "data-selected-ids" );
+			selected_ids = ( ids ? ids.split( "|" ) : [] );
+			selected_ids.push( $(this).attr( "data-selected-id" ) );
 			$item = $(this);
 			$.each( languages, function( key, item ) {
-				$item.append( "<option value='" + item.id + "'>" + item.name + "</option>" );
+				var is_selected = ( selected_ids.indexOf( item.id ) !== -1 ? "selected" : "" );
+				$item.append( "<option value='" + item.id + "' " + is_selected + ">" + item.name + "</option>" );
 			});
 			$item.selectize();
 		});
 	});
 }
+
+$( ".selectize" ).selectize();
 
 $( ".commit-paragraph" ).click( function(e) {
 	$parent = $(this).parents( ".editor-item" );

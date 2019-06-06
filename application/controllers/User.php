@@ -8,6 +8,14 @@
 class User extends CI_Controller
 {
 	public $data = [];
+	
+	public $skills = [
+		"Graphic design",
+		"Web development",
+		"Software development",
+		"Writing/editing",
+		"Video editing",
+	];
 
 	public function __construct()
 	{
@@ -513,7 +521,7 @@ class User extends CI_Controller
 		{
 			if ($this->ion_auth->login($identity, $password))
 			{
-				redirect('/projects', 'refresh');
+				redirect('/user/register_profile', 'refresh');
 			}
 		}
 		else
@@ -527,6 +535,68 @@ class User extends CI_Controller
 		}
 	}
 
+	public function register_profile()
+	{
+		if( ! $this->ion_auth->logged_in() ) {
+			show_404();
+		}
+		
+		$user_id = $this->ion_auth->user()->row()->id;
+		
+		$languages = $this->db->select( "*" )
+			->from( "user_languages" )
+			->where( "user_id", $user_id )
+			->get()
+			->result_array();
+		
+		$languages = array_map( function( $language ) {
+			return $language["language_id"];
+		}, $languages );
+		
+		$data = [
+			"user" => $this->ion_auth->user()->row(),
+			"languages" => $languages,
+			"skills" => $this->skills,
+			"selected_skills" => unserialize( $this->ion_auth->user()->row()->skills ),
+		];
+		
+		$this->template->set( "title", "Almost done" );
+		$this->template->load( "utility_template", "auth/register_profile", $data );
+	}
+	
+	public function register_profile_save() {
+		$this->output->set_content_type( "application/json" );
+		
+		$this->form_validation->set_rules( "mother_language_id", "Mother language", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+		} else {	
+			$post_data = $this->input->post();
+			$user_id = $this->ion_auth->user()->row()->id;
+			$data = [
+				"bio" => $post_data["bio"],
+				"location" => $post_data["location"],
+				"mother_language_id" => $post_data["mother_language_id"],
+				"skills" => serialize( $post_data["skills"] ),
+			];
+			$this->db->where( "id", $user_id );
+			$this->db->update( "users", $data );
+			
+			$this->db->where( "user_id", $user_id )
+				->delete( "user_languages" );
+			
+			foreach( $post_data["languages"] as $language ) {
+				$data = [
+					"user_id" => $user_id,
+					"language_id" => $language,
+				];
+				$this->db->insert( "user_languages", $data );
+			}
+			
+			$this->output->set_output( json_encode( [ "redirect" => "/projects" ] ) );
+		}
+	}
 	
 	public function account()
 	{

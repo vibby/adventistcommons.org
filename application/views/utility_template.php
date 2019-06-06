@@ -33,8 +33,11 @@
         <script type="text/javascript" src="/assets/js/dropzone.min.js"></script>
         <script type="text/javascript" src="/assets/js/list.min.js"></script>
         <script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+		<script type="text/javascript" src="/assets/js/selectize.min.js"></script>
         <script type="text/javascript" src="/assets/js/theme.js"></script>
-
+		<script type="text/javascript" src="/assets/js/jquery.timeago.js"></script>
+		<script type="text/javascript" src="/assets/js/app.js?v=1"></script>
+		<link href="/assets/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" media="all" />
 
     </body>
 
