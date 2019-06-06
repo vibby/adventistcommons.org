@@ -22,7 +22,7 @@
 					<div class="d-flex justify-content-between text-small">
 						<div class="d-flex align-items-center">
 							<i class="material-icons">playlist_add_check</i>
-							<span><?php echo $project["completed_strings"] . " / " . $project["total_strings"] . "(" . $project["percent_complete"] . "%)"; ?></span>
+							<span><?php echo $project["completed_strings"] . " / " . $project["total_strings"] . " (" . $project["percent_complete"] . "%)"; ?></span>
 						</div>
 						<span><?php echo $project["status"]; ?></span>
 					</div>
@@ -33,7 +33,7 @@
 					<a class="nav-link active" data-toggle="tab" href="#content" role="tab">Content</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" data-toggle="tab" href="#members" role="tab">Members</a>
+					<a class="nav-link" data-toggle="tab" href="#members" role="tab">Contributors</a>
 				</li>
 			</ul>
 			
@@ -76,7 +76,7 @@
 					<div class="content-list">
 						<div class="row content-list-head">
 							<div class="col-auto">
-								<h3>Members</h3>
+								<h3>Contributors</h3>
 								<?php if( $this->ion_auth->is_admin() ) { ?>
 									<button class="btn btn-round" data-toggle="modal" data-target="#member-add-modal">
 										<i class="material-icons">add</i>

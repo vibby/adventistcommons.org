@@ -77,6 +77,7 @@ class Editor extends CI_Controller {
 		$id = $this->db->insert_id();
 		
 		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], false );
+		$this->project_model->addMember( $data["user_id"], $data["project_id"], "translator" );
 		
 		$this->output->set_output( json_encode( [ "success" => "Paragraph committed" ] ) );
 	}

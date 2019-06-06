@@ -103,13 +103,7 @@ class Projects extends CI_Controller {
 		}
 		
 		$data = $this->input->post();
-		
-		$this->db->where( "user_id", $data["user_id"] )
-			->where( "project_id", $data["project_id"] )
-			->delete( "project_members" );
-		
-		$this->db->insert( "project_members", $data );
-		$id = $this->db->insert_id();
+		$id = $this->project_model->addMember( $data["user_id"], $data["project_id"], $data["type"] );
 		$this->output->set_output( json_encode( [ "member_id" => $id ] ) );
 	}
 	

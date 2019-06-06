@@ -237,4 +237,19 @@ class Project_model extends CI_Model
 			$this->db->insert( "project_content_status", $data );
 		}
 	}
+	
+	public function addMember( $user_id, $project_id, $type = "translator" ) {
+		$data = [
+			"user_id" => $user_id,
+			"project_id" => $project_id,
+			"type" => $type,
+		];
+		
+		$this->db->where( "user_id", $user_id )
+			->where( "project_id", $project_id )
+			->delete( "project_members" );
+		
+		$this->db->insert( "project_members", $data );
+		return $this->db->insert_id();
+	}
 }
