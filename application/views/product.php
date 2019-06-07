@@ -61,16 +61,20 @@
 											</div>
 											<div class="card-meta">
 												<?php if( array_key_exists( "attachments", $language ) ) { ?>
-													<div class="dropdown">
-														<button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-															Download
-														</button>
-														<div class="dropdown-menu">
-															<?php foreach( $language["attachments"] as $attachment ) { ?>
-																<a class="dropdown-item" href="/uploads/<?php echo $attachment["file"]; ?>"><?php echo $attachment["file_type"]; ?></a>
-															<?php } ?>
+													<?php if ( $this->ion_auth->logged_in() ) { ?>
+														<div class="dropdown">
+															<button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
+																Download
+															</button>
+															<div class="dropdown-menu">
+																<?php foreach( $language["attachments"] as $attachment ) { ?>
+																	<a class="dropdown-item" href="/uploads/<?php echo $attachment["file"]; ?>"><?php echo $attachment["file_type"]; ?></a>
+																<?php } ?>
+															</div>
 														</div>
-													</div>
+													<?php } else { ?>
+														<a href="/login" class="text-secondary">Login to download</a>
+													<?php } ?>
 												<?php } else { ?>
 													<a href="/projects/<?php echo $language["project"]["id"]; ?>" class="btn btn-secondary">Start Translating</a>
 												<?php } ?>
