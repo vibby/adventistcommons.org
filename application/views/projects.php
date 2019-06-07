@@ -14,17 +14,24 @@
 					<div class="col-auto">
 						<div class="dropdown">
 							<button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
-								<i class="material-icons align-top">language</i> All Languages
+								<i class="material-icons align-top">language</i> <?php echo $selected_language ? $selected_language["name"] : "All Languages"; ?>
 							</button>
 							<div class="dropdown-menu">
-								<a class="dropdown-item" href="#">Spanish</a>
-								<a class="dropdown-item" href="#">French</a>
+								<?php foreach( $languages as $language ) { ?>
+									<a class="dropdown-item" href="/projects?language=all">All languages</a>
+									<a class="dropdown-item" href="/projects?language=<?php echo $language["id"]; ?>"><?php echo $language["name"]; ?></a>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
 				</div>
 				<!--end of content list head-->
 				<div class="content-list-body row">
+					<?php if( count( $projects ) == 0 ) { ?>
+						<p class="lead m-auto p-5">
+							<?php echo $selected_language ? sprintf( "No translations in progress for %s.", $selected_language["name"] . " – <a href='/projects?language=all'>view all languages</a>" ) : "No translations in progress."; ?>
+						</p>
+					<?php } ?>
 					<?php foreach( $projects as $project ) { ?>
 						<div class="col-lg-6">
 							<div class="card card-project">

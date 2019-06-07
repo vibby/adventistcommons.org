@@ -17,8 +17,14 @@ class Project_model extends CI_Model
 		3 => "Finalized",
 	];
 	
-	public function getProjects() {
-		$projects = $this->_projectsQuery()->get()->result_array();
+	public function getProjects( $language_id = null ) {
+		if( is_numeric( $language_id ) ) {
+			$projects = $this->_projectsQuery()
+				->where( "languages.id", $language_id )
+				->get()->result_array();
+		} else {
+			$projects = $this->_projectsQuery()->get()->result_array();
+		}
 		$total_strings = $this->_getTotalStringCountsByProduct();
 		$completed_strings = $this->_getCompletedStringCountsByProject();
 		return array_map( function( $project ) use( $total_strings, $completed_strings ) {
@@ -34,6 +40,14 @@ class Project_model extends CI_Model
 				->result_array();
 			return $project;
 		}, $projects );
+	}
+	
+	public function getProjectLanguages() {
+		return $this->db->select( "languages.id, languages.name" )
+			->from( "languages" )
+			->join( "projects", "projects.language_id = languages.id" )
+			->get()
+			->result_array();
 	}
 	
 	public function getProjectsByProductId( $product_id ) {
@@ -184,6 +198,14 @@ class Project_model extends CI_Model
 			->from( "languages" )
 			->get()
 			->result_array();
+	}
+	
+	public function getLanguageName( $language_id ) {
+		return $this->db->select( "*" )
+			->from( "languages" )
+			->where( "id", $language_id )
+			->get()
+			->row_array();
 	}
 	
 	public function getMembershipByUserId( $user_id ) {

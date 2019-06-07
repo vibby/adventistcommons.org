@@ -21,9 +21,15 @@ class Projects extends CI_Controller {
 	
 	public function index( $project_id = null )
 	{
+		$language_id = $_GET["language"];
+		$language = $this->project_model->getLanguageName( $language_id );
 		$data = [
-			"projects" => $this->project_model->getProjects(),
+			"projects" => $this->project_model->getProjects( $language_id ),
+			"languages" => $this->project_model->getProjectLanguages(),
+			"selected_language" => $language,
+			
 		];
+		
 		$this->template->set( "title", "Dashboard" );
 		$this->breadcrumbs[] = [ "label" => "All"  ];
 		$this->template->set( "breadcrumbs", $this->breadcrumbs );
