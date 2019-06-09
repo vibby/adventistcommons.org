@@ -6,31 +6,31 @@
 			<div class="row mt-4">
 				<div class="col-md-4">
 					<div class="card mb-3">
-						<a href="#">
+						<a href="/products">
 							<img class="card-img-top mt-4 w-25" src="assets/img/browse.svg">
 						</a>
 						<div class="card-body">
-							<a class="card-title h6" href="#">Browse Products</a>
+							<a class="card-title h6" href="/products">Browse Products</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="card mb-3">
-						<a href="#">
+						<a href="/projects">
 							<img class="card-img-top mt-4 w-25" src="assets/img/translate.svg">
 						</a>
 						<div class="card-body">
-							<a class="card-title h6" href="#">Translate Products</a>
+							<a class="card-title h6" href="/projects">Translate Products</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="card mb-3">
-						<a href="#">
+						<a href="/products">
 							<img class="card-img-top mt-4 w-25" src="assets/img/download.svg">
 						</a>
 						<div class="card-body">
-							<a class="card-title h6" href="#">Download Products</a>
+							<a class="card-title h6" href="/products">Download Products</a>
 						</div>
 					</div>
 				</div>
