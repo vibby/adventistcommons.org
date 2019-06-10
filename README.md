@@ -135,7 +135,7 @@ The code included in this repository is copyright protected. It may not be repro
 
 - How can I download print files?
   - Go to adventistcommons.org and select the product you would like to download. If it already exists in your language, you will see a button to download the print file directly. If the translation does not exist or is still in progress, you will see a prompt to contribute to its completion. You will not be able to download print files until the translation is complete.
-- he translation for a certain product is complete but the print file does not appear. Why is that?
+- The translation for a certain product is complete but the print file does not appear. Why is that?
   - After a translation is completed, it takes us several days to make sure that the final layout is perfectly adjusted for your language. Please check back after a few days.
 - What format of files are offered for download?
   - The files will be available online and in PDF format.
@@ -146,9 +146,9 @@ The code included in this repository is copyright protected. It may not be repro
 
 - When will you have products available in my language?
   - We depend on volunteers to translate materials. Join us, recruit others in your church, and help us to get these materials available sooner.
-- ill the website platform be made available in my language?
+- Will the website platform be made available in my language?
   - We depend on volunteer translators and programmers to make the Adventist Commons platform available in new languages. Check back often to see if your language is available, or sign up to translate the website.
-- ho ensures the quality of the translations?
+- Who ensures the quality of the translations?
   - We rely on a team of volunteer collaborators for each language group to cross-check and approve a translation.
 
 ## Copyrights, Licensing, and Usage
