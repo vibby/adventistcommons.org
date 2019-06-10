@@ -140,7 +140,7 @@ class Products extends CI_Controller {
 			$data["cover_image"] = $cover_image["file_name"];
 		}
 		
-		if( $is_new ) {
+		if( $is_new && $_FILES["xliff_file"]["name"] ) {
 			$xliff_file = $this->_uploadXliff();
 			if( ! $xliff_file ) {
 				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
