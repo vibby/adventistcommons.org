@@ -21,7 +21,7 @@ class Projects extends CI_Controller {
 	
 	public function index( $project_id = null )
 	{
-		$language_id = $_GET["language"];
+		$language_id = $_GET["language"] ?? null;
 		$language = $this->project_model->getLanguageName( $language_id );
 		$data = [
 			"projects" => $this->project_model->getProjects( $language_id ),

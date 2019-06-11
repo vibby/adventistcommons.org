@@ -4,12 +4,12 @@
 	<div class="alert alert-warning"><?php echo $message; ?></div>
 <?php } ?>
 
-<form action="/reset_password/<?php echo $code; ?>" method="post">
+<form action="/user/reset_password/<?php echo $code; ?>" method="post">
 	<div class="form-group">
-		<input class="form-control" type="password" placeholder="New password" name="new_password" />
+		<input class="form-control" type="password" placeholder="New password" name="new" />
 	</div>
 	<div class="form-group">
-		<input class="form-control" type="password" placeholder="Confirm new password" name="new_password_confirm" />
+		<input class="form-control" type="password" placeholder="Confirm new password" name="new_confirm" />
 	</div>
 	<?php echo form_input($user_id);?>
 	<?php echo form_hidden($csrf); ?>
