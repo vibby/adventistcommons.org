@@ -30,7 +30,7 @@ class Project_model extends CI_Model
 		return array_map( function( $project ) use( $total_strings, $completed_strings ) {
 			$project["total_strings"] = $total_strings[$project["id"]] ?? 0;
 			$project["completed_strings"] = $completed_strings[$project["id"]] ?? 0;
-			$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
+			$project["percent_complete"] = round( $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0, 0 );
 			$project["status"] = $this->status[$project["status"]];
 			$project["members"] = $this->db->select( "*" )
 				->from( "project_members" )
@@ -58,7 +58,7 @@ class Project_model extends CI_Model
 		return array_map( function( $project ) {
 			$project["total_strings"] = $this->_getTotalStringCount( $project["product_id"] );
 			$project["completed_strings"] = $this->_getCompletedStringCount( $project["id"] );
-			$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
+			$project["percent_complete"] = round( $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0, 0 );
 			$project["status"] = $this->status[$project["status"]];
 			return $project;
 		}, $projects );
@@ -75,7 +75,7 @@ class Project_model extends CI_Model
 		if( ! $project ) show_404();
 		$project["total_strings"] = $this->_getTotalStringCount( $project["product_id"] );
 			$project["completed_strings"] = $this->_getCompletedStringCount( $project_id );
-		$project["percent_complete"] = $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0;
+		$project["percent_complete"] = round( $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0, 0 );
 		$project["status"] = $this->status[$project["status"]];
 		return $project;
 	}
@@ -109,7 +109,7 @@ class Project_model extends CI_Model
 		return array_map( function( $section ) use( $total_strings, $completed_strings ) {
 			$section["total_strings"] = $total_strings[$section["id"]] ?? 0;
 			$section["completed_strings"] = $completed_strings[$section["id"]] ?? 0;
-			$section["percent_complete"] = $section["total_strings"] > 0 ? $section["completed_strings"] / $section["total_strings"] * 100: 0;
+			$section["percent_complete"] = round( $section["total_strings"] > 0 ? $section["completed_strings"] / $section["total_strings"] * 100: 0, 0 );
 			$section["last_activity"] = "today";
 			return $section;
 		}, $sections );

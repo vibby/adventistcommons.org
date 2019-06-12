@@ -27,7 +27,6 @@ class Projects extends CI_Controller {
 			"projects" => $this->project_model->getProjects( $language_id ),
 			"languages" => $this->project_model->getProjectLanguages(),
 			"selected_language" => $language,
-			
 		];
 		
 		$this->template->set( "title", "Dashboard" );
