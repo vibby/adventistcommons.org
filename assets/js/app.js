@@ -60,19 +60,23 @@ $( "form.auto-submit" ).submit( function(e) {
 			if( response.error ) {
 				handleFormResponse( $response_target, response.error );
 				return;
+			} else if( response.success ) {
+				handleFormResponse( $response_target, response.success, "success" );
 			}
 			if( response.redirect ) {
 				$btn.text( btn_text ).prop( "disabled", true );
 				if( location.href.split(location.host)[1] == response.redirect ) {
 					location.reload();
 				} else {
-					window.location.href = response.redirect;
+					var delay = ( response.redirect_delay ? response.redirect_delay : 0 );
 					setTimeout(function() {
-						location.reload(); //Be sure page reloads with # in response.redirect
-					}, 500);
+						window.location.href = response.redirect;
+						setTimeout(function() {
+							location.reload(); //Be sure page reloads with # in response.redirect
+						}, 500);
+					}, delay );
+					
 				}
-			} else {
-				handleFormResponse( $response_target, response.success, "success" );
 			}
 		},
 		error: function() {
