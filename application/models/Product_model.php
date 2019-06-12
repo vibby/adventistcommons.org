@@ -70,7 +70,7 @@ class Product_model extends CI_Model
 			->from( "product_content" )
 			->where( "section_id", $section_id )
 			->where( "is_hidden", false )
-			->join( "project_content_status", "project_content_status.content_id = product_content.id", "left" )
+			->join( "project_content_status", "project_content_status.content_id = product_content.id AND project_content_status.project_id = " . $project_id, "left" )
 			->join( "users", "project_content_status.approved_by = users.id", "left" )
 			->get()
 			->result_array();
