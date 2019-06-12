@@ -95,6 +95,15 @@
 							<label class="col-3">Page count</label>
 							<input class="form-control col" type="number" name="page_count" />
 						</div>
+						<div class="form-group row align-items-center">
+							<label class="col-3">Series</label>
+							<select class="series-select col" name="series_id" data-placeholder="Search for a series...">
+								<option value="">None</option>
+								<?php foreach( $series as $item ) { ?>
+									<option value="<?php echo $item["id"]; ?>"><?php echo $item["name"]; ?></option>
+								<?php } ?>
+							</select>
+						</div>
 						<hr>
 						<h6>Product type</h6>
 						<div class="row">

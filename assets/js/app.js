@@ -106,7 +106,13 @@ if( $( ".language-select" ).length > 0 ) {
 	});
 }
 
-$( ".selectize" ).selectize();
+$( ".selectize" ).selectize( {
+	"allowEmptyOption": true,
+});
+
+$( ".series-select" ).selectize( {
+	"create": true,
+});
 
 $( ".commit-paragraph" ).click( function(e) {
 	$parent = $(this).parents( ".editor-item" );

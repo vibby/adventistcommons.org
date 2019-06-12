@@ -25,6 +25,10 @@ a {
 	border-color: #495057 transparent transparent transparent !important;
 }
 
+.selectize-control.col {
+	padding: 0 !important;
+}
+
 .revision-header {
 	cursor: pointer;
 }

@@ -50,6 +50,7 @@ class Products extends CI_Controller {
 			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_binding,
+			"series" => $this->product_model->getSeriesItems(),
 		];
 		$this->template->set( "title", "Products" );
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
@@ -98,6 +99,7 @@ class Products extends CI_Controller {
 			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_binding,
+			"series" => $this->product_model->getSeriesItems(),
 		];
 		$this->template->set( "title", "Edit Product" );
 		$this->breadcrumbs[] = [
@@ -147,6 +149,13 @@ class Products extends CI_Controller {
 				return false;
 			}
 			$data["xliff_file"] = $xliff_file["file_name"];
+		}
+		
+		if( $data["series_id"] == "" ) {
+			$data["series_id"] = null;
+		} elseif( ! is_numeric( $data["series_id"] ) ) {
+			$this->db->insert( "series", [ "name" => $data["series_id"] ] );
+			$data["series_id"] = $this->db->insert_id();
 		}
 		
 		if( $is_new ) {

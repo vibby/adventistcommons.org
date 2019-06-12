@@ -130,6 +130,13 @@ class Product_model extends CI_Model
 			->row_array();
 	}
 	
+	public function getSeriesItems() {
+		return $this->db->select( "*" )
+			->from( "series" )
+			->get()
+			->result_array();
+	}
+	
 	//https://github.com/paulgb/simplediff
 	private function _diff($old, $new){
 		$matrix = array();
