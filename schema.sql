@@ -308,7 +308,7 @@ CREATE TABLE `products` (
   PRIMARY KEY (`id`),
   KEY `series_id` (`series_id`),
   CONSTRAINT `products_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `project_content_status` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -385,6 +385,7 @@ CREATE TABLE `users` (
   `mother_language_id` int(11) unsigned DEFAULT NULL,
   `skills` text,
   `product_notify` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `pro_translator` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `uc_email` (`email`),
   UNIQUE KEY `uc_activation_selector` (`activation_selector`),

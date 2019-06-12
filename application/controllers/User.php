@@ -520,6 +520,7 @@ class User extends CI_Controller
 				"location" => $post_data["location"],
 				"mother_language_id" => $post_data["mother_language_id"],
 				"skills" => serialize( $post_data["skills"] ),
+				"pro_translator" => $post_data[ "pro_translator" ] ?? false,
 			];
 			$this->db->where( "id", $user_id );
 			$this->db->update( "users", $data );

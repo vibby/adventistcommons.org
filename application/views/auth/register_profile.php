@@ -20,6 +20,12 @@
 			<option value="">None</option>
 		</select>
 	</div>
+	<div class="form-group text-left">
+		<div class="form-check">
+			<input class="form-check-input" type="checkbox" value="1" name="pro_translator" id="pro_translator" <?php echo $user->pro_translator ? "checked" : ""; ?>>
+				<label class="form-check-label" for="pro_translator">I'm a professional translator</label>
+		</div>
+	</div>
 	<div class="form-group">
 		<label>Other skills</label>
 		<select class="selectize" multiple name="skills[]" data-placeholder="Select skills...">
