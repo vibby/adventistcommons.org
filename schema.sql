@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.7.25)
 # Database: adventistcommons
-# Generation Time: 2019-06-09 15:25:03 +0000
+# Generation Time: 2019-06-12 16:13:47 +0000
 # ************************************************************
 
 
@@ -22,8 +22,6 @@
 
 # Dump of table groups
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `groups`;
 
 CREATE TABLE `groups` (
   `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
@@ -46,8 +44,6 @@ UNLOCK TABLES;
 
 # Dump of table languages
 # ------------------------------------------------------------
-
-DROP TABLE IF EXISTS `languages`;
 
 CREATE TABLE `languages` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -251,220 +247,267 @@ UNLOCK TABLES;
 # Dump of table login_attempts
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `login_attempts`;
+CREATE TABLE `login_attempts` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `time` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `login_attempts` WRITE;
-/*!40000 ALTER TABLE `login_attempts` DISABLE KEYS */;
-
-INSERT INTO `login_attempts` (`id`, `ip_address`, `login`, `time`)
-VALUES
-	(1,'::1','bob@jones.bob',1559787186);
-
-/*!40000 ALTER TABLE `login_attempts` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table product_attachments
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `product_attachments`;
+CREATE TABLE `product_attachments` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `language_id` int(11) unsigned DEFAULT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `file_type` enum('pdf_printing','pdf_personal','indd') DEFAULT NULL,
+  `product_id` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `language_id` (`language_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_attachments_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`),
+  CONSTRAINT `product_attachments_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `product_attachments` WRITE;
-/*!40000 ALTER TABLE `product_attachments` DISABLE KEYS */;
-
-INSERT INTO `product_attachments` (`id`, `language_id`, `file`, `file_type`, `product_id`)
-VALUES
-	(2,3,'83eccf6fc5ca3effb79173a9e6aad2e9.pdf','pdf_printing',16);
-
-/*!40000 ALTER TABLE `product_attachments` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table product_content
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `product_content`;
+CREATE TABLE `product_content` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `content` text,
+  `section_id` int(11) unsigned NOT NULL,
+  `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `section_id` (`section_id`),
+  CONSTRAINT `product_content_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `product_sections` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `product_content` WRITE;
-/*!40000 ALTER TABLE `product_content` DISABLE KEYS */;
-
-INSERT INTO `product_content` (`id`, `product_id`, `content`, `section_id`, `is_hidden`)
-VALUES
-	(5,16,'Hey there',3,0);
-
-/*!40000 ALTER TABLE `product_content` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table product_content_log
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `product_content_log`;
+CREATE TABLE `product_content_log` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content_id` int(11) unsigned DEFAULT NULL,
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `project_id` int(11) unsigned DEFAULT NULL,
+  `comment` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `type` enum('approved','error') DEFAULT NULL,
+  `is_resolved` tinyint(1) NOT NULL,
+  `resolved_by` int(11) unsigned DEFAULT NULL,
+  `resolved_on` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`),
+  KEY `resolved_by` (`resolved_by`),
+  CONSTRAINT `product_content_log_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `product_content_log_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_log_ibfk_4` FOREIGN KEY (`resolved_by`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `product_content_log` WRITE;
-/*!40000 ALTER TABLE `product_content_log` DISABLE KEYS */;
-
-INSERT INTO `product_content_log` (`id`, `content_id`, `user_id`, `project_id`, `comment`, `created_at`, `type`, `is_resolved`, `resolved_by`, `resolved_on`)
-VALUES
-	(50,5,3,6,NULL,'2019-06-05 19:06:19','approved',0,NULL,NULL),
-	(51,5,3,6,'h','2019-06-05 19:06:30','error',0,NULL,NULL),
-	(52,5,3,6,'6','2019-06-05 19:07:36','error',0,NULL,NULL);
-
-/*!40000 ALTER TABLE `product_content_log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table product_content_revisions
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `product_content_revisions`;
+CREATE TABLE `product_content_revisions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `content` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`),
+  CONSTRAINT `product_content_revisions_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_revisions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `product_content_revisions_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `product_content_revisions` WRITE;
-/*!40000 ALTER TABLE `product_content_revisions` DISABLE KEYS */;
-
-INSERT INTO `product_content_revisions` (`id`, `content_id`, `user_id`, `project_id`, `content`, `created_at`)
-VALUES
-	(16,5,3,6,'Test','2019-06-05 19:04:59'),
-	(17,5,3,6,'Test77','2019-06-06 12:32:50');
-
-/*!40000 ALTER TABLE `product_content_revisions` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table product_sections
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `product_sections`;
+CREATE TABLE `product_sections` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `xliff_region` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_sections_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `product_sections` WRITE;
-/*!40000 ALTER TABLE `product_sections` DISABLE KEYS */;
-
-INSERT INTO `product_sections` (`id`, `product_id`, `name`, `xliff_region`)
-VALUES
-	(3,16,'Test',NULL);
-
-/*!40000 ALTER TABLE `product_sections` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table products
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `products`;
+CREATE TABLE `products` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `cover_image` varchar(255) DEFAULT NULL,
+  `author` varchar(255) DEFAULT NULL,
+  `page_count` int(4) DEFAULT NULL,
+  `type` enum('book','booklet','magabook','tract') DEFAULT 'book',
+  `xliff_file` varchar(255) DEFAULT NULL,
+  `audience` varchar(32) DEFAULT NULL,
+  `publisher` varchar(255) DEFAULT NULL,
+  `format_open` varchar(32) DEFAULT NULL,
+  `format_closed` varchar(32) DEFAULT NULL,
+  `cover_colors` varchar(32) DEFAULT NULL,
+  `cover_paper` varchar(32) DEFAULT NULL,
+  `interior_colors` varchar(32) DEFAULT NULL,
+  `interior_paper` varchar(32) DEFAULT NULL,
+  `binding` varchar(32) DEFAULT NULL,
+  `finishing` varchar(32) DEFAULT NULL,
+  `publisher_website` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `products` WRITE;
-/*!40000 ALTER TABLE `products` DISABLE KEYS */;
-
-INSERT INTO `products` (`id`, `name`, `description`, `cover_image`, `author`, `page_count`, `type`, `xliff_file`, `audience`, `publisher`, `format_open`, `format_closed`, `cover_colors`, `cover_paper`, `interior_colors`, `interior_paper`, `binding`, `finishing`, `publisher_website`)
-VALUES
-	(16,'Bible Answers ','Violence, rape, tornadoes, floods, abuse, fires, random shootings. Is there hope? Do you have a future? Can you survive without God answering life’s greatest challenges?','89fb4ae4491c99f60b13ef212af65cfe.jpg','Unkown',120,'magabook',NULL,'Christian','Pacific Press','10.4 x 41 cm','10.4 x 20.5 cm','4 CMYK / 0','Intercoat 220 GSM','4 CMYK / 4 CMYK','Woodfree 100 GSM','Spiral Bound','Cellophane Glossy Recto',NULL);
-
-/*!40000 ALTER TABLE `products` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table project_content_status
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `project_content_status`;
+CREATE TABLE `project_content_status` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `is_approved` tinyint(1) unsigned NOT NULL,
+  `approved_by` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`),
+  KEY `project_id` (`project_id`),
+  KEY `approved_by` (`approved_by`),
+  CONSTRAINT `project_content_status_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_content_status_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_content_status_ibfk_3` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `project_content_status` WRITE;
-/*!40000 ALTER TABLE `project_content_status` DISABLE KEYS */;
-
-INSERT INTO `project_content_status` (`id`, `content_id`, `project_id`, `is_approved`, `approved_by`)
-VALUES
-	(9,5,6,0,NULL);
-
-/*!40000 ALTER TABLE `project_content_status` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table project_members
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `project_members`;
+CREATE TABLE `project_members` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `type` enum('translator','reviewer') DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`),
+  CONSTRAINT `project_members_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_members_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `project_members` WRITE;
-/*!40000 ALTER TABLE `project_members` DISABLE KEYS */;
-
-INSERT INTO `project_members` (`id`, `user_id`, `project_id`, `type`)
-VALUES
-	(8,4,6,'translator'),
-	(9,3,6,'translator');
-
-/*!40000 ALTER TABLE `project_members` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table projects
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `projects`;
+CREATE TABLE `projects` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `language_id` int(11) unsigned NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `language_id` (`language_id`),
+  CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `projects_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `projects` WRITE;
-/*!40000 ALTER TABLE `projects` DISABLE KEYS */;
-
-INSERT INTO `projects` (`id`, `product_id`, `language_id`, `status`)
-VALUES
-	(6,16,5,0);
-
-/*!40000 ALTER TABLE `projects` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table user_languages
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `user_languages`;
+CREATE TABLE `user_languages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `language_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `language_id` (`language_id`),
+  CONSTRAINT `user_languages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `user_languages_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `user_languages` WRITE;
-/*!40000 ALTER TABLE `user_languages` DISABLE KEYS */;
-
-INSERT INTO `user_languages` (`id`, `user_id`, `language_id`)
-VALUES
-	(32,3,2),
-	(33,3,3);
-
-/*!40000 ALTER TABLE `user_languages` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table users
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(254) NOT NULL,
+  `activation_selector` varchar(255) DEFAULT NULL,
+  `activation_code` varchar(255) DEFAULT NULL,
+  `forgotten_password_selector` varchar(255) DEFAULT NULL,
+  `forgotten_password_code` varchar(255) DEFAULT NULL,
+  `forgotten_password_time` int(11) unsigned DEFAULT NULL,
+  `remember_selector` varchar(255) DEFAULT NULL,
+  `remember_code` varchar(255) DEFAULT NULL,
+  `created_on` int(11) unsigned NOT NULL,
+  `last_login` int(11) unsigned DEFAULT NULL,
+  `active` tinyint(1) unsigned DEFAULT NULL,
+  `first_name` varchar(50) DEFAULT NULL,
+  `last_name` varchar(50) DEFAULT NULL,
+  `company` varchar(100) DEFAULT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `bio` text,
+  `mother_language_id` int(11) unsigned DEFAULT NULL,
+  `skills` text,
+  `product_notify` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_email` (`email`),
+  UNIQUE KEY `uc_activation_selector` (`activation_selector`),
+  UNIQUE KEY `uc_forgotten_password_selector` (`forgotten_password_selector`),
+  UNIQUE KEY `uc_remember_selector` (`remember_selector`),
+  KEY `mother_language_id` (`mother_language_id`),
+  CONSTRAINT `users_ibfk_1` FOREIGN KEY (`mother_language_id`) REFERENCES `languages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
-
-INSERT INTO `users` (`id`, `ip_address`, `username`, `password`, `email`, `activation_selector`, `activation_code`, `forgotten_password_selector`, `forgotten_password_code`, `forgotten_password_time`, `remember_selector`, `remember_code`, `created_on`, `last_login`, `active`, `first_name`, `last_name`, `company`, `phone`, `location`, `bio`, `mother_language_id`, `skills`)
-VALUES
-	(1,'127.0.0.1','administrator','$2y$12$BJo4uOfqIRXdRu4vcgpXBu6rDFuVfm2CZJfeeoFNtGs1I.Mqk1u9u','admin@admin.com',NULL,'',NULL,NULL,NULL,NULL,NULL,1268889823,1553122313,1,'Admin','istrator','ADMIN','0',NULL,NULL,NULL,NULL),
-	(3,'127.0.0.1','akjackson1@gmail.com','$2y$12$JwffLCBR46i/mYBlD5xpe.9Q6rYpcTVhfY2I14ysMYIGyvCLJRUi.','akjackson1@gmail.com',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1553183644,1559768138,1,'Adam','Jackson',NULL,NULL,'Oregon','Australian',3,'a:2:{i:0;s:14:\"Graphic design\";i:1;s:15:\"Web development\";}'),
-	(4,'212.36.208.50','eckertdm@gmail.com','$2y$10$S4KGFYo6ZUMk4sI/Uy5BI.PqbO/m3txePSwa7uW0ef4DRWEuz/IWy','eckertdm@gmail.com',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1553796703,1556630034,1,'Michael','Eckert',NULL,NULL,'Lebanon','Publishing director',NULL,NULL),
-	(5,'::1','bob@jones.com','$2y$10$1vpUAjKb4hXAawaDjh/lbuJrmgyRuNsu9iv9SeXo9OmOBVguw.3m2','bob@jones.com',NULL,NULL,NULL,NULL,NULL,NULL,NULL,1559786931,1559787191,1,'Bob','Jones',NULL,NULL,NULL,NULL,NULL,NULL);
-
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Dump of table users_groups
 # ------------------------------------------------------------
 
-DROP TABLE IF EXISTS `users_groups`;
+CREATE TABLE `users_groups` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `group_id` mediumint(8) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_users_groups` (`user_id`,`group_id`),
+  KEY `fk_users_groups_users1_idx` (`user_id`),
+  KEY `fk_users_groups_groups1_idx` (`group_id`),
+  CONSTRAINT `fk_users_groups_groups1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-LOCK TABLES `users_groups` WRITE;
-/*!40000 ALTER TABLE `users_groups` DISABLE KEYS */;
-
-INSERT INTO `users_groups` (`id`, `user_id`, `group_id`)
-VALUES
-	(2,1,2),
-	(4,3,1),
-	(7,4,2),
-	(8,5,2);
-
-/*!40000 ALTER TABLE `users_groups` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 

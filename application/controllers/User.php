@@ -451,12 +451,11 @@ class User extends CI_Controller
 			$email = strtolower($this->input->post('email'));
 			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
 			$password = $this->input->post('password');
-
+			
 			$additional_data = [
 				'first_name' => $this->input->post('first_name'),
 				'last_name' => $this->input->post('last_name'),
-				'company' => $this->input->post('company'),
-				'phone' => $this->input->post('phone'),
+				'product_notify' => $this->input->post('product_notify') ?? false,
 			];
 		}
 		if ($this->form_validation->run() === TRUE && $this->ion_auth->register($identity, $password, $email, $additional_data))
@@ -471,7 +470,7 @@ class User extends CI_Controller
 			// display the create user form
 			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
-
+			$this->data["post"] = $this->input->post();
 			$this->template->set( "title", "Register" );
 			$this->template->load( "utility_template", "auth/register", $this->data );
 		}
