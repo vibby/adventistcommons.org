@@ -239,7 +239,7 @@ class User extends CI_Controller
 		$this->form_validation->set_rules( "identity", $this->lang->line( "forgot_password_validation_email_label" ), "required|valid_email" );
 
 		if( $this->form_validation->run() === false ) {
-			$this->data["type"] = $this->config->item('identity', 'ion_auth');
+			$this->data["type"] = $this->config->item( "identity", "ion_auth" );
 			$this->data["message"] = validation_errors();
 			$this->template->set( "title", "Forgot password" );
 			$this->template->load( "utility_template", "auth/forgot_password", $this->data );
@@ -249,7 +249,7 @@ class User extends CI_Controller
 			$user = $this->ion_auth->where( "email", $this->input->post( "identity" ) )->users()->row();
 
 			if( empty( $user ) ) {
-				$this->ion_auth->set_error('forgot_password_email_not_found');
+				$this->ion_auth->set_error( "forgot_password_email_not_found" );
 				$this->session->set_flashdata( "message", $this->ion_auth->errors() );
 				redirect( "/forgot_password", "refresh" );
 			}
@@ -330,10 +330,10 @@ class User extends CI_Controller
 					$change = $this->ion_auth->reset_password( $identity, $this->input->post( "new" ) );
 					if( $change ) {
 						$this->session->set_flashdata( "message", $this->ion_auth->messages() );
-						redirect( "/login", 'refresh');
+						redirect( "/login", "refresh" );
 					} else {
-						$this->session->set_flashdata('message', $this->ion_auth->errors());
-						redirect('/user/reset_password/' . $code, 'refresh');
+						$this->session->set_flashdata( "message", $this->ion_auth->errors() );
+						redirect( "/user/reset_password/" . $code, "refresh" );
 					}
 				}
 			}
