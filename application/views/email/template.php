@@ -99,7 +99,7 @@
 													<tr>
 														<td style="width:600px;">
 
-															<img alt="" height="auto" src="http://xm40u.mjt.lu/tplimg/xm40u/b/x0soz/v5pk9.jpeg" style="border:none;border-radius:px;display:block;outline:none;text-decoration:none;height:auto;width:100%;" title="" width="600" />
+															<img height="auto" src="<?php echo base_url() . "assets/img/email_header.jpg"; ?>" style="border:none;border-radius:px;display:block;outline:none;text-decoration:none;height:auto;width:100%;" width="600" />
 
 														</td>
 													</tr>

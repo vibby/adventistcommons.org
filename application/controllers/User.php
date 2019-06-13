@@ -269,7 +269,7 @@ class User extends CI_Controller
 				$this->email->to( $user->email );
 				$this->email->message( $content );
 				$this->email->subject( "Password reset instructions" );
-				//$this->email->send();
+				$this->email->send();
 								
 				$this->session->set_flashdata( "message", $this->ion_auth->messages() );
 				redirect( "/login", "refresh" );
