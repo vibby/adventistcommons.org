@@ -219,6 +219,9 @@ $( ".user-search .search" ).keyup( function() {
 });
 
 $( document ).on( "click", ".select-member", function() {
+	$btn = $(this).parents( ".dropdown" ).find( ".btn" );
+	var btn_text = $btn.text();
+	$btn.text( "loading..." ).prop( "disabled", true );
 	$modal = $(this).parents( ".modal-body" );
 	var data = {
 		"type": $(this).data( "type" ),
@@ -226,7 +229,7 @@ $( document ).on( "click", ".select-member", function() {
 		"project_id": $(this).parents( ".modal" ).data( "project-id" ),
 	}
 	$.post( "/projects/add_member", data, function( response ) {
-		console.log(response);
+		$btn.text( btn_text ).prop( "disabled", false );
 		if( response.error ) {
 			handleFormResponse( $modal, response.error );
 			return;
@@ -235,10 +238,17 @@ $( document ).on( "click", ".select-member", function() {
 	})
 	.fail(function() {
 		handleFormResponse( $modal, "An error has occured" );
+		$btn.text( btn_text ).prop( "disabled", false );
 	});
 });
 
 $( ".confirm-dialog" ).click( function() {
 	$message = $(this).data( "confirm-message" );
 	return confirm( $message );
+});
+
+$( "form[data-loading-text]" ).on( "submit", function() {
+	$btn = $(this).find( "button[type='submit']" );
+	$btn.text( $(this).attr( "data-loading-text" ) );
+	$btn.prop( "disabled", true );
 });

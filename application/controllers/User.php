@@ -258,18 +258,18 @@ class User extends CI_Controller
 			
 			if( $data ) {
 				
-				$template_vars = [
+				$template_data = [
 					"user" => $user->first_name,
 					"link" => base_url() . "user/reset_password/" . $data["forgotten_password_code"],
 				];
 				
-				$this->email->set_header( "X-MJ-TemplateID", 867044 );
-				$this->email->set_header( "X-MJ-TemplateLanguage", true );
-				$this->email->set_header( "X-MJ-Vars", json_encode( $template_vars ) );
+				$this->template->set( "heading", "Password reset instructions" );
+				$content = $this->template->load( "email/template", "email/forgot_password", $template_data, true );
 				$this->email->from( "info@adventistcommons.org", "Adventist Commons" );
 				$this->email->to( $user->email );
+				$this->email->message( $content );
 				$this->email->subject( "Password reset instructions" );
-				$this->email->send();
+				//$this->email->send();
 								
 				$this->session->set_flashdata( "message", $this->ion_auth->messages() );
 				redirect( "/login", "refresh" );

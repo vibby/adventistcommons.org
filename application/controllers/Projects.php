@@ -109,6 +109,32 @@ class Projects extends CI_Controller {
 		
 		$data = $this->input->post();
 		$id = $this->project_model->addMember( $data["user_id"], $data["project_id"], $data["type"] );
+		
+		$user = $this->ion_auth->user()->row( $data["user_id"] );
+		
+		$project = $this->db->select( "projects.*, languages.name as language_name, products.name as product_name" )
+			->from( "projects" )
+			->join( "languages", "projects.language_id = languages.id" )
+			->join( "products", "projects.product_id = products.id" )
+			->where( "projects.id", $data["project_id"] )
+			->get()
+			->row_array();
+		
+		$template_data = [
+			"user" => $user->first_name,
+			"project_name" => $project["product_name"] . " (" . $project["language_name"]. ")",
+			"link" => base_url() . "projects/" . $project["id"],
+			"type" => $data["type"],
+		];
+		
+		$this->template->set( "heading", "You've been added to a new project!" );
+		$content = $this->template->load( "email/template", "email/added_contributor", $template_data, true );
+		$this->email->from( "info@adventistcommons.org", "Adventist Commons" );
+		$this->email->to( $user->email );
+		$this->email->message( $content );
+		$this->email->subject( "You've been added as a " . $template_data["type"] . " to " . $template_data["project_name"] );
+		$this->email->send();
+		
 		$this->output->set_output( json_encode( [ "member_id" => $id ] ) );
 	}
 	

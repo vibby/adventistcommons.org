@@ -3,7 +3,7 @@
 <?php if( $message ) { ?>
 	<div class="alert alert-warning"><?php echo $message; ?></div>
 <?php } ?>
-<form action="forgot_password" method="post">
+<form action="forgot_password" method="post" data-loading-text="loading...">
 	<div class="form-group">
 		<input class="form-control" type="email" placeholder="Email Address" name="identity" />
 	</div>

@@ -5,7 +5,7 @@
 	<div class="alert alert-warning"><?php echo $message; ?></div>
 <?php } ?>
 
-<form action="login" method="post">
+<form action="login" method="post" data-loading-text="loading...">
 	<div class="form-group">
 		<input class="form-control" name="identity" type="email" placeholder="Email Address" />
 	</div>

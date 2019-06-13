@@ -4,7 +4,7 @@
 	<div class="alert alert-warning"><?php echo $message; ?></div>
 <?php } ?>
 <hr>
-<form action="register" method="post">
+<form action="register" method="post" data-loading-text="loading...">
 	<div class="form-group">
 		<input class="form-control" type="text" placeholder="First name" value="<?php echo $post["first_name"] ?? ""; ?>" name="first_name" />
 	</div>

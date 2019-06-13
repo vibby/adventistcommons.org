@@ -4,7 +4,7 @@
 	<div class="alert alert-warning"><?php echo $message; ?></div>
 <?php } ?>
 
-<form action="/user/reset_password/<?php echo $code; ?>" method="post">
+<form action="/user/reset_password/<?php echo $code; ?>" method="post" data-loading-text="loading...">
 	<div class="form-group">
 		<input class="form-control" type="password" placeholder="New password" name="new" />
 	</div>
