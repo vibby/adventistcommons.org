@@ -94,6 +94,7 @@ class Product_model extends CI_Model
 			}
 			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
+			$content["latest_revision"] = $content["revisions"][0]["content"] ?? "";
 			
 			$errors = $this->db->select( "*" )
 				->from( "product_content_log" )

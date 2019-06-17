@@ -1,5 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
+use Google\Cloud\Translate\TranslateClient;
 
 class Editor extends CI_Controller {
 
@@ -179,5 +180,36 @@ class Editor extends CI_Controller {
 		$this->db->where( "id", $data["log_id"] );
 		$this->db->update( "product_content_log", $update_data );
 		$this->output->set_output( json_encode( [ "success" => "Issue resolved" ] ) );
+	}
+	
+	public function translate() {
+		$this->output->set_content_type("application/json");
+		
+		$this->form_validation->set_rules( "project_id", "Project ID", "required|numeric" );
+		$this->form_validation->set_rules( "content_id", "Content ID", "required|numeric" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+			return false;
+		}
+		
+		$data = $this->input->post();
+		$data["user_id"] = $this->ion_auth->user()->row()->id;
+		$content = $this->project_model->getContent( $data["content_id"] );
+		$project = $project = $this->db->select( "projects.*, languages.google_code as google_code" )
+			->from( "projects" )
+			->join( "languages", "projects.language_id = languages.id" )
+			->where( "projects.id", $data["project_id"] )
+			->get()
+			->row_array();
+		
+		putenv( "GOOGLE_APPLICATION_CREDENTIALS=" . APPPATH . "google_translate_authentication.json" );
+		$client = new TranslateClient();
+
+		$targetLanguage = $project["google_code"];
+		$result = $client->translate( $content["content"], [
+			"target" => $targetLanguage,
+		]);
+		$this->output->set_output( json_encode( [ "translated_text" => $result["text"] ] ) );
 	}
 }

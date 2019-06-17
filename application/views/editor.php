@@ -23,7 +23,7 @@
 									</div>
 								<?php } ?>
 								<div class="form-group">
-									<textarea class="form-control" <?php if( $p["is_approved"] ) { echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["revisions"][0]["content"] ?? ""; ?></textarea>
+									<textarea class="form-control" <?php if( $p["is_approved"] ) { echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["latest_revision"]; ?></textarea>
 								</div>
 								<nav class="clearfix">
 									<div class="form-group float-left">
@@ -37,14 +37,7 @@
 									<div class="form-group float-right">
 										<button class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"><?php echo $p["total_revisions"] == 1 ? "1 revision" : sprintf( "%s revisions", $p["total_revisions"] ); ?></button>
 										<?php if( ! $is_reviewer ) { ?>
-											<!--<div class="dropdown float-right ml-1">
-												<button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-													<i class="material-icons align-top text-small">settings</i>
-												</button>
-												<div class="dropdown-menu">
-													<a class="dropdown-item" href="#">Auto Translate</a>
-												</div>
-											</div>-->
+											<button class="btn btn-sm btn-outline-primary auto-translate <?php echo ( ! $is_reviewer and strlen( $p["latest_revision"] ) == 0 ) ? "" : "hidden"; ?>">Auto Translate</button>
 										<?php } ?>
 									</div>
 								</nav>

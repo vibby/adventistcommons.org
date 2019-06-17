@@ -252,3 +252,36 @@ $( "form[data-loading-text]" ).on( "submit", function() {
 	$btn.text( $(this).attr( "data-loading-text" ) );
 	$btn.prop( "disabled", true );
 });
+
+$( ".auto-translate" ).click( function(e) {
+	$parent = $(this).parents( ".editor-item" );
+	$btn = $(this);
+	btn_text = $btn.text();
+	$btn.text( "loading..." ).prop( "disabled", true );
+	e.preventDefault();
+	var data = {
+		"project_id": $parent.attr( "data-project-id" ),
+		"content_id": $parent.attr( "data-content-id" ),
+	}
+	$.post( "/editor/translate", data, function( response ) {
+		if( response.error ) {
+			handleFormResponse( $parent.find( ".response" ), response.error );
+			return;
+		}
+		$btn.text( btn_text ).prop( "disabled", false );
+		if( response.translated_text.length > 0 ) {
+			$parent.find( "textarea" ).val( response.translated_text );
+			$parent.find( ".auto-translate" ).addClass( "hidden" );
+		}
+	})
+	.fail(function() {
+		handleFormResponse( $parent.find( ".response" ), "An error has occured" );
+		$btn.text( btn_text ).prop( "disabled", false );
+	});
+});
+
+$( ".editor-item textarea" ).on( "keyup input", function() {
+	$parent = $(this).parents( ".editor-item" );
+	var is_empty = $(this).val().length == 0;
+	$parent.find( ".auto-translate" ).toggleClass( "hidden", ! is_empty );
+});

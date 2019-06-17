@@ -274,4 +274,12 @@ class Project_model extends CI_Model
 		$this->db->insert( "project_members", $data );
 		return $this->db->insert_id();
 	}
+	
+	public function getContent( $id ) {
+		return $this->db->select( "*" )
+			->from( "product_content" )
+			->where( "id", $id )
+			->get()
+			->row_array();
+	}
 }
