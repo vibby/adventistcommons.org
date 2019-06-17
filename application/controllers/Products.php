@@ -248,7 +248,7 @@ class Products extends CI_Controller {
 	
 	private function _uploadCoverImage() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
-		$config["allowed_types"] = "jpg|png";
+		$config["allowed_types"] = "jpg|jpeg|png";
 		$config["max_size"] = 10000;
 		$config["encrypt_name"] = true;
 

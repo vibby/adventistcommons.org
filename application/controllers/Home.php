@@ -52,7 +52,7 @@ class Home extends CI_Controller {
 			<b>User agent</b>: {$user_agent}<br/>
 			<b>Referal page</b>: {$referer}<br/>
 			<b>IP address</b>: {$ip}<br/>
-		EOT;
+EOT;
 		
 		$this->email->from( "info@adventistcommons.org", "Adventist Commons" );
 		$this->email->to( "info@adventistcommons.org" );

@@ -209,6 +209,7 @@ class Editor extends CI_Controller {
 		$targetLanguage = $project["google_code"];
 		$result = $client->translate( $content["content"], [
 			"target" => $targetLanguage,
+			"format" => "text",
 		]);
 		$this->output->set_output( json_encode( [ "translated_text" => $result["text"] ] ) );
 	}
