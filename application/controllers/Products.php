@@ -34,6 +34,7 @@ class Products extends CI_Controller {
 		"Perfect Bound",
 		"Spiral Bound",
 		"Saddle Stitch",
+		"Folded",
 	];
 	
 	public $breadcrumbs = [
@@ -161,6 +162,11 @@ class Products extends CI_Controller {
 		if( $is_new ) {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
+			
+			if( $xliff_file ) {
+				$this->_parseXliff( $xliff_file["file_name"], $id );
+			}
+			
 			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
 		} else {
 			$this->db->where( "id", $data["id"] );
@@ -293,7 +299,6 @@ class Products extends CI_Controller {
 		}
 		
 		$file = $this->upload->data();
-		$this->_parseXliff( $file["file_name"], 16 );
 		return $this->upload->data();
 	}
 	
