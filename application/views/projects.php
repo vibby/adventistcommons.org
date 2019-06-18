@@ -17,8 +17,8 @@
 								<i class="material-icons align-top">language</i> <?php echo $selected_language ? $selected_language["name"] : "All Languages"; ?>
 							</button>
 							<div class="dropdown-menu">
+								<a class="dropdown-item" href="/projects?language=all">All languages</a>
 								<?php foreach( $languages as $language ) { ?>
-									<a class="dropdown-item" href="/projects?language=all">All languages</a>
 									<a class="dropdown-item" href="/projects?language=<?php echo $language["id"]; ?>"><?php echo $language["name"]; ?></a>
 								<?php } ?>
 							</div>

@@ -36,7 +36,7 @@
 									</div>
 									<div class="form-group float-right">
 										<button class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"><?php echo $p["total_revisions"] == 1 ? "1 revision" : sprintf( "%s revisions", $p["total_revisions"] ); ?></button>
-										<?php if( ! $is_reviewer ) { ?>
+										<?php if( ! $is_reviewer && $project["google_code"] ) { ?>
 											<button class="btn btn-sm btn-outline-primary auto-translate <?php echo ( ! $is_reviewer and strlen( $p["latest_revision"] ) == 0 ) ? "" : "hidden"; ?>">Auto Translate</button>
 										<?php } ?>
 									</div>

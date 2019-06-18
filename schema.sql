@@ -49,7 +49,7 @@ VALUES
 	(27,'Chamorro','cha',NULL),
 	(28,'Chechen','che',NULL),
 	(29,'Chichewa, Chewa, Nyanja','nya',NULL),
-	(30,'Chinese','chi','ch-CN'),
+	(30,'Chinese','chi','zh'),
 	(31,'Chuvash','chv',NULL),
 	(32,'Cornish','cor',NULL),
 	(33,'Corsican','cos',NULL),
