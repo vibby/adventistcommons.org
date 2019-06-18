@@ -18,6 +18,7 @@ CREATE TABLE `languages` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 INSERT INTO `languages` (`id`, `name`, `code`, `google_code`)
 VALUES
 	(1,'Abkhazian','abk',NULL),
@@ -203,163 +204,6 @@ VALUES
 	(181,'Zhuang, Chuang','zha',NULL),
 	(182,'Zulu','zul',NULL);
 
-CREATE TABLE `login_attempts` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `ip_address` varchar(45) NOT NULL,
-  `login` varchar(100) NOT NULL,
-  `time` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `product_attachments` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `language_id` int(11) unsigned DEFAULT NULL,
-  `file` varchar(255) DEFAULT NULL,
-  `file_type` enum('pdf_printing','pdf_personal','indd') DEFAULT NULL,
-  `product_id` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `language_id` (`language_id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `product_attachments_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`),
-  CONSTRAINT `product_attachments_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `product_content` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) unsigned NOT NULL,
-  `content` text,
-  `section_id` int(11) unsigned NOT NULL,
-  `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`),
-  KEY `section_id` (`section_id`),
-  CONSTRAINT `product_content_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `product_content_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `product_sections` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `product_content_log` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `content_id` int(11) unsigned DEFAULT NULL,
-  `user_id` int(11) unsigned DEFAULT NULL,
-  `project_id` int(11) unsigned DEFAULT NULL,
-  `comment` text,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `type` enum('approved','error') DEFAULT NULL,
-  `is_resolved` tinyint(1) NOT NULL,
-  `resolved_by` int(11) unsigned DEFAULT NULL,
-  `resolved_on` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `content_id` (`content_id`),
-  KEY `user_id` (`user_id`),
-  KEY `project_id` (`project_id`),
-  KEY `resolved_by` (`resolved_by`),
-  CONSTRAINT `product_content_log_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `product_content_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `product_content_log_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `product_content_log_ibfk_4` FOREIGN KEY (`resolved_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `product_content_revisions` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `content_id` int(11) unsigned NOT NULL,
-  `user_id` int(11) unsigned NOT NULL,
-  `project_id` int(11) unsigned NOT NULL,
-  `content` text,
-  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `content_id` (`content_id`),
-  KEY `user_id` (`user_id`),
-  KEY `project_id` (`project_id`),
-  CONSTRAINT `product_content_revisions_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `product_content_revisions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `product_content_revisions_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `product_sections` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) unsigned NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `xliff_region` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`),
-  CONSTRAINT `product_sections_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `products` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `description` text,
-  `cover_image` varchar(255) DEFAULT NULL,
-  `author` varchar(255) DEFAULT NULL,
-  `page_count` int(4) DEFAULT NULL,
-  `type` enum('book','booklet','magabook','tract') DEFAULT 'book',
-  `xliff_file` varchar(255) DEFAULT NULL,
-  `audience` varchar(32) DEFAULT NULL,
-  `publisher` varchar(255) DEFAULT NULL,
-  `format_open` varchar(32) DEFAULT NULL,
-  `format_closed` varchar(32) DEFAULT NULL,
-  `cover_colors` varchar(32) DEFAULT NULL,
-  `cover_paper` varchar(32) DEFAULT NULL,
-  `interior_colors` varchar(32) DEFAULT NULL,
-  `interior_paper` varchar(32) DEFAULT NULL,
-  `binding` varchar(32) DEFAULT NULL,
-  `finishing` varchar(32) DEFAULT NULL,
-  `publisher_website` varchar(255) DEFAULT NULL,
-  `series_id` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `series_id` (`series_id`),
-  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `project_content_status` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `content_id` int(11) unsigned NOT NULL,
-  `project_id` int(11) unsigned NOT NULL,
-  `is_approved` tinyint(1) unsigned NOT NULL,
-  `approved_by` int(11) unsigned DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `content_id` (`content_id`),
-  KEY `project_id` (`project_id`),
-  KEY `approved_by` (`approved_by`),
-  CONSTRAINT `project_content_status_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `project_content_status_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `project_content_status_ibfk_3` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `project_members` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `project_id` int(11) unsigned NOT NULL,
-  `type` enum('translator','reviewer') DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `project_id` (`project_id`),
-  CONSTRAINT `project_members_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `project_members_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `projects` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) unsigned NOT NULL,
-  `language_id` int(11) unsigned NOT NULL,
-  `status` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`),
-  KEY `language_id` (`language_id`),
-  CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `projects_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `user_languages` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
-  `language_id` int(11) unsigned NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`),
-  KEY `language_id` (`language_id`),
-  CONSTRAINT `user_languages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
-  CONSTRAINT `user_languages_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -396,6 +240,157 @@ CREATE TABLE `users` (
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`mother_language_id`) REFERENCES `languages` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+CREATE TABLE `login_attempts` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(45) NOT NULL,
+  `login` varchar(100) NOT NULL,
+  `time` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `series` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `products` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `cover_image` varchar(255) DEFAULT NULL,
+  `author` varchar(255) DEFAULT NULL,
+  `page_count` int(4) DEFAULT NULL,
+  `type` enum('book','booklet','magabook','tract') DEFAULT 'book',
+  `xliff_file` varchar(255) DEFAULT NULL,
+  `audience` varchar(32) DEFAULT NULL,
+  `publisher` varchar(255) DEFAULT NULL,
+  `format_open` varchar(32) DEFAULT NULL,
+  `format_closed` varchar(32) DEFAULT NULL,
+  `cover_colors` varchar(32) DEFAULT NULL,
+  `cover_paper` varchar(32) DEFAULT NULL,
+  `interior_colors` varchar(32) DEFAULT NULL,
+  `interior_paper` varchar(32) DEFAULT NULL,
+  `binding` varchar(32) DEFAULT NULL,
+  `finishing` varchar(32) DEFAULT NULL,
+  `publisher_website` varchar(255) DEFAULT NULL,
+  `series_id` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `series_id` (`series_id`),
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `projects` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `language_id` int(11) unsigned NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `language_id` (`language_id`),
+  CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `projects_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `product_sections` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `xliff_region` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_sections_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `product_attachments` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `language_id` int(11) unsigned DEFAULT NULL,
+  `file` varchar(255) DEFAULT NULL,
+  `file_type` enum('pdf_printing','pdf_personal','indd') DEFAULT NULL,
+  `product_id` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `language_id` (`language_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `product_attachments_ibfk_1` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`),
+  CONSTRAINT `product_attachments_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `product_content` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `content` text,
+  `section_id` int(11) unsigned NOT NULL,
+  `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `section_id` (`section_id`),
+  CONSTRAINT `product_content_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `product_sections` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `project_content_status` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `is_approved` tinyint(1) unsigned NOT NULL,
+  `approved_by` int(11) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`),
+  KEY `project_id` (`project_id`),
+  KEY `approved_by` (`approved_by`),
+  CONSTRAINT `project_content_status_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_content_status_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_content_status_ibfk_3` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `project_members` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `type` enum('translator','reviewer') DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`),
+  CONSTRAINT `project_members_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_members_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `user_languages` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) unsigned NOT NULL,
+  `language_id` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`),
+  KEY `language_id` (`language_id`),
+  CONSTRAINT `user_languages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `user_languages_ibfk_2` FOREIGN KEY (`language_id`) REFERENCES `languages` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `product_content_revisions` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `content` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`),
+  CONSTRAINT `product_content_revisions_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_revisions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `product_content_revisions_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 CREATE TABLE `users_groups` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
@@ -408,8 +403,25 @@ CREATE TABLE `users_groups` (
   CONSTRAINT `fk_users_groups_users1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `series` (
+
+CREATE TABLE `product_content_log` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  `content_id` int(11) unsigned DEFAULT NULL,
+  `user_id` int(11) unsigned DEFAULT NULL,
+  `project_id` int(11) unsigned DEFAULT NULL,
+  `comment` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `type` enum('approved','error') DEFAULT NULL,
+  `is_resolved` tinyint(1) NOT NULL,
+  `resolved_by` int(11) unsigned DEFAULT NULL,
+  `resolved_on` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `content_id` (`content_id`),
+  KEY `user_id` (`user_id`),
+  KEY `project_id` (`project_id`),
+  KEY `resolved_by` (`resolved_by`),
+  CONSTRAINT `product_content_log_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `product_content_log_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_content_log_ibfk_4` FOREIGN KEY (`resolved_by`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
