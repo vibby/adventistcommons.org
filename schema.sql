@@ -338,21 +338,33 @@ CREATE TABLE `project_content_status` (
   `content_id` int(11) unsigned NOT NULL,
   `project_id` int(11) unsigned NOT NULL,
   `is_approved` tinyint(1) unsigned NOT NULL,
-  `approved_by` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `content_id` (`content_id`),
   KEY `project_id` (`project_id`),
-  KEY `approved_by` (`approved_by`),
   CONSTRAINT `project_content_status_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `project_content_status_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `project_content_status_ibfk_3` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  CONSTRAINT `project_content_status_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `project_content_approval` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `content_id` int(11) unsigned NOT NULL,
+  `project_id` int(11) unsigned NOT NULL,
+  `approved_by` int(11) unsigned NOT NULL,
+  `approved_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `approved_by` (`approved_by`),
+  KEY `content_id` (`content_id`),
+  KEY `project_id` (`project_id`),
+  CONSTRAINT `project_content_approval_ibfk_5` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`),
+  CONSTRAINT `project_content_approval_ibfk_6` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `project_content_approval_ibfk_7` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `project_members` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) unsigned NOT NULL,
   `project_id` int(11) unsigned NOT NULL,
-  `type` enum('translator','reviewer') DEFAULT NULL,
+  `type` enum('translator','reviewer', 'manager') DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),

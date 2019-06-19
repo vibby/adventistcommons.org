@@ -65,17 +65,16 @@ class Product_model extends CI_Model
 			->row_array();
 	}
 	
-	public function getSectionContent( $project_id, $section_id ) {
+	public function getSectionContent( $project_id, $section_id, $user_id = null ) {
 		$content = $this->db->select( "*, product_content.id as id" )
 			->from( "product_content" )
 			->where( "section_id", $section_id )
 			->where( "is_hidden", false )
 			->join( "project_content_status", "project_content_status.content_id = product_content.id AND project_content_status.project_id = " . $project_id, "left" )
-			->join( "users", "project_content_status.approved_by = users.id", "left" )
 			->get()
 			->result_array();
 		
-		return array_map( function( $content ) use( $project_id ) {
+		return array_map( function( $content ) use( $project_id, $user_id ) {
 			$revisions = $this->db->select( "*" )
 				->from( "product_content_revisions" )
 				->where( "content_id", $content["id"] )
@@ -92,9 +91,26 @@ class Product_model extends CI_Model
 				$old_content = array_key_exists( $key+1, $revisions ) ? $revisions[$key+1]["content"] : "";
 				$revisions[$key]["diff"] = $this->_htmlDiff( $old_content, $revision["content"] );
 			}
+			
+			$approvals = $this->db->select( "*" )
+				->from( "project_content_approval" )
+				->where( "content_id", $content["id"] )
+				->where( "project_id", $project_id )
+				->join( "users", "project_content_approval.approved_by = users.id" )
+				->get()
+				->result_array();
+			
 			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
 			$content["latest_revision"] = $content["revisions"][0]["content"] ?? "";
+			$content["approvals"] = $approvals;
+			$content["total_approvals"] = count( $approvals );
+			
+			if( $user_id ) {
+				$has_approved = $this->_user_has_approved_content( $content["id"], $project_id, $user_id );
+			}
+			
+			$content["user_has_approved"] = $has_approved;
 			
 			$errors = $this->db->select( "*" )
 				->from( "product_content_log" )
@@ -136,6 +152,15 @@ class Product_model extends CI_Model
 			->from( "series" )
 			->get()
 			->result_array();
+	}
+	
+	private function _user_has_approved_content( $content_id, $project_id, $user_id ) {
+		return $this->db->select( "*" )
+			->from( "project_content_approval" )
+			->where( "content_id", $content_id )
+			->where( "project_id", $project_id )
+			->where( "approved_by", $user_id )
+			->count_all_results() >= 1;
 	}
 	
 	//https://github.com/paulgb/simplediff

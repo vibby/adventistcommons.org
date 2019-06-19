@@ -13,31 +13,41 @@
 								<?php echo $p["content"]; ?><br><br>
 							</div>
 							<div class="col-md-6 textarea-wrapper">
-								<?php if( $p["is_approved"] ) { ?>
-									<small class="status-locked"><i class="material-icons text-small align-middle">lock</i> <?php echo sprintf( "approved by %s %s", $p["first_name"], $p["last_name"] ); ?></small>
-								<?php } ?>
+								<div class="locked-status <?php if( $p["total_approvals"] == 0 ) { echo "hidden"; } ?>">
+									<small class="status-locked"><i class="material-icons text-small align-middle">lock</i> locked for translators </small>
+									<span class="float-right badge badge-secondary"><span class="approval_count"><?php echo $p["total_approvals"]; ?></span>/<?php echo $num_required_approvals; ?></span>
+								</div>
 								<?php foreach( $p["errors"] as $error ) { ?>
 									<div class="alert alert-warning revision-request" data-log-id="<?php echo $error["id"]; ?>">
 										<?php echo $error["comment"]; ?>
-										<button class="btn btn-outline-secondary btn-sm float-right resolve-error">Resolve</button>
+										<?php if( $can_review ) { ?><button class="btn btn-outline-secondary btn-sm float-right resolve-error">Resolve</button><?php } ?>
 									</div>
 								<?php } ?>
 								<div class="form-group">
-									<textarea class="form-control" <?php if( $p["is_approved"] ) { echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["latest_revision"]; ?></textarea>
+									<textarea class="form-control" <?php if( ! $can_commit || $p["total_approvals"] > 0 && ! $can_always_commit ){ echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["latest_revision"]; ?></textarea>
 								</div>
 								<nav class="clearfix">
 									<div class="form-group float-left">
-										<?php if( $is_reviewer ) { ?>
-											<?php if( ! $p["is_approved"] ) { ?><button class="btn btn-outline-success btn-sm approve-paragraph">Approve</button><?php } ?>
-											<button class="btn btn-outline-secondary btn-sm request-revision">Request Revision</button>
-										<?php } elseif( ! $p["is_approved"] ) { ?>
+										<?php if( $can_always_commit || ( $can_commit && $p["total_approvals"] == 0 ) ) { ?>
 											<button class="btn btn-outline-success btn-sm commit-paragraph">Commit</button>
 										<?php } ?>
+										<?php if( $can_review ) { ?>
+											<div class="dropdown d-inline-block">		
+												<button class="btn btn-outline-<?php echo $p["user_has_approved"] ? "success" : "secondary"; ?> btn-sm dropdown-toggle review-toggle" type="button" data-toggle="dropdown"><?php echo $p["user_has_approved"] ? "Approved" : "Review"; ?></button>
+												<div class="dropdown-menu">
+													<?php if( ! $p["is_approved"] && ! $p["user_has_approved"] ) { ?>
+														<a class="dropdown-item approve-paragraph">Approve</a>
+													<?php } ?>
+													<a class="dropdown-item request-revision">Request Revision</a>
+												</div>
+											</div>
+										<?php } ?>
+										
 									</div>
 									<div class="form-group float-right">
 										<button class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"><?php echo $p["total_revisions"] == 1 ? "1 revision" : sprintf( "%s revisions", $p["total_revisions"] ); ?></button>
-										<?php if( ! $is_reviewer && $project["google_code"] ) { ?>
-											<button class="btn btn-sm btn-outline-primary auto-translate <?php echo ( ! $is_reviewer and strlen( $p["latest_revision"] ) == 0 ) ? "" : "hidden"; ?>">Auto Translate</button>
+										<?php if( $can_auto_translate ) { ?>
+											<button class="btn btn-sm btn-outline-primary auto-translate <?php echo strlen( $p["latest_revision"] ) == 0 ? "" : "hidden"; ?>">Auto Translate</button>
 										<?php } ?>
 									</div>
 								</nav>
@@ -69,7 +79,7 @@
 	</div>
 </div>
 
-<?php if( $is_reviewer ) { ?>
+<?php if( $can_review ) { ?>
 <form class="modal fade auto-submit" action="/editor/suggest_revision" id="suggest-revision-form" tabindex="-1" role="dialog">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">

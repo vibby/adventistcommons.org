@@ -45,6 +45,7 @@ class Projects extends CI_Controller {
 			"product" => $product,
 			"members" => $this->project_model->getMembers( $project["id"] ),
 			"sections" => $this->project_model->getSections( $project["id"] ),
+			"can_manage_members" => $this->_can_manage_members( $project["id"] ),
 		];
 		$this->template->set( "title", $title );
 		$this->breadcrumbs[] = [ "label" => $title  ];
@@ -94,9 +95,6 @@ class Projects extends CI_Controller {
 	}
 	
 	public function add_member() {
-		if( ! $this->ion_auth->is_admin() ) {
-			show_404();
-		}
 		$this->output->set_content_type( "application/json" );
 		$this->form_validation->set_rules( "type", "Member type", "required" );
 		$this->form_validation->set_rules( "user_id", "User ID", "required" );
@@ -108,6 +106,11 @@ class Projects extends CI_Controller {
 		}
 		
 		$data = $this->input->post();
+		
+		if( ! $this->_can_manage_members( $data["project_id"] ) || ( "type" == "manager" && ! $this->ion_auth->is_admin() ) ) {
+			show_404();
+		}
+		
 		$id = $this->project_model->addMember( $data["user_id"], $data["project_id"], $data["type"] );
 		
 		$user = $this->ion_auth->user()->row( $data["user_id"] );
@@ -147,5 +150,9 @@ class Projects extends CI_Controller {
 			->delete( "projects" );
 		
 		redirect( "/projects", "refresh" );
+	}
+	
+	private function _can_manage_members( $project_id ) {
+		return $this->project_model->isManager( $this->ion_auth->user()->row()->id, $project_id ) || $this->ion_auth->is_admin();
 	}
 }

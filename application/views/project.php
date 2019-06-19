@@ -77,7 +77,7 @@
 						<div class="row content-list-head">
 							<div class="col-auto">
 								<h3>Contributors</h3>
-								<?php if( $this->ion_auth->is_admin() ) { ?>
+								<?php if( $can_manage_members ) { ?>
 									<button class="btn btn-round" data-toggle="modal" data-target="#member-add-modal">
 										<i class="material-icons">add</i>
 									</button>
@@ -121,7 +121,7 @@
 								<i class="material-icons">filter_list</i>
 							</span>
 						</div>
-						<input type="search" class="form-control search" placeholder="Find users by name or email">
+						<input type="search" class="form-control search" placeholder="Find users by name or email" <?php if( $this->ion_auth->is_admin() ) { echo "data-is-admin='true'"; } ?> data-project-id="<?php echo $project["id"]; ?>">
 					</div>
 					<div class="form-group-users user-list" style="overflow:visible"></div>
 				</div>

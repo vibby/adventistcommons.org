@@ -18,6 +18,8 @@ class Editor extends CI_Controller {
 		}
 	}
 	
+	public $num_required_approvals = 2;
+	
 	public $breadcrumbs = [
 		[
 			"label" => "Projects",
@@ -36,11 +38,16 @@ class Editor extends CI_Controller {
 		}
 		
 		$data = [
-			"content" => $this->product_model->getSectionContent( $project_id, $section_id ),
+			"content" => $this->product_model->getSectionContent( $project_id, $section_id, $this->ion_auth->user()->row()->id ),
 			"project" => $project,
 			"product" => $product,
 			"section" => $section,
-			"is_reviewer" => $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $project_id ),
+			"can_commit" => $this->_can_commit( $project_id ),
+			"can_always_commit" => $this->_can_always_commit( $project_id ),
+			"can_review" => $this->_can_review( $project_id ),
+			"can_auto_translate" => $this->_can_auto_translate( $project ),
+			"is_reviewer" => $this->_is_reviewer( $project_id ),
+			"num_required_approvals" => $this->num_required_approvals,
 		];
 		$this->template->set( "title", "Dashboard" );
 		$this->breadcrumbs[] = [ "label" => $product["name"] . " (" . $project["language_name"] . ")", "url" => "/projects/" . $project["id"]  ];
@@ -77,8 +84,20 @@ class Editor extends CI_Controller {
 		$this->db->insert( "product_content_revisions", $data );
 		$id = $this->db->insert_id();
 		
-		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], false );
-		$this->project_model->addMember( $data["user_id"], $data["project_id"], "translator" );
+		if( ! $this->_can_always_commit( $data["project_id"] ) ) {
+			$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], false );
+			$this->project_model->removeContentApprovals( $data["content_id"], $data["project_id"] );
+		}
+		
+		$member_exists = $this->db->select( "*" )
+			->from( "project_members" )
+			->where( "project_id", $data["project_id"] )
+			->where( "user_id", $data["user_id"] )
+			->count_all_results();
+		
+		if( ! $member_exists ) {
+			$this->project_model->addMember( $data["user_id"], $data["project_id"], "translator" );
+		}
 		
 		$this->output->set_output( json_encode( [ "success" => "Paragraph committed" ] ) );
 	}
@@ -97,9 +116,11 @@ class Editor extends CI_Controller {
 		
 		$data = $this->input->post();
 		
-		if( ! $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $data["project_id"] ) ) {
+		if( ! $this->_can_review( $data["project_id"] ) ) {
 			show_404();
 		}
+		
+		$can_always_edit = $this->_can_always_commit( $data["project_id"] );
 		
 		$data["user_id"] = $this->ion_auth->user()->row()->id;
 		$data["type"] = "approved";
@@ -118,9 +139,14 @@ class Editor extends CI_Controller {
 		$this->db->where( "content_id", $data["content_id"] );
 		$this->db->update( "product_content_log", $resolve_error_data );
 		
-		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], true, $data["user_id"] );
+		$this->project_model->addContentApproval( $data["content_id"], $data["project_id"], $this->ion_auth->user()->row()->id );
 		
-		$this->output->set_output( json_encode( [ "reviewer_name" => $this->ion_auth->row()->first_name . " " . $this->ion_auth->row()->last_name ] ) );
+		$approvals = $this->project_model->getContentApprovals( $data["content_id"], $data["project_id"] );
+		if( count( $approvals ) >= $this->num_required_approvals ) {
+			$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], true );
+		}
+		
+		$this->output->set_output( json_encode( [ "reviewer_name" => $this->ion_auth->user()->row()->first_name . " " . $this->ion_auth->user()->row()->last_name, "lock_editing" => ! $can_always_edit, "total_approvals" => count( $approvals ) ] ) );
 	}
 	
 	public function suggest_revision() {
@@ -138,7 +164,7 @@ class Editor extends CI_Controller {
 		
 		$data = $this->input->post();
 		
-		if( ! $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $data["project_id"] ) ) {
+		if( ! $this->_can_review( $data["project_id"] ) ) {
 			show_404();
 		}
 		
@@ -149,6 +175,7 @@ class Editor extends CI_Controller {
 		$id = $this->db->insert_id();
 		
 		$this->project_model->updateContentStatus( $data["content_id"], $data["project_id"], false );
+		$this->project_model->removeContentApprovals( $data["content_id"], $data["project_id"] );
 		
 		$this->output->set_output( json_encode( [ "redirect" => "/editor/" . $data["project_id"] . "/" . $this->product_model->getSectionId( $data["content_id"] ) . "#p" . $data["content_id"] ] ) );
 	}
@@ -167,7 +194,7 @@ class Editor extends CI_Controller {
 		$data = $this->input->post();
 		$error = $this->product_model->getContentLog( $data["log_id"] );
 		
-		if( ! $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $error["project_id"] ) ) {
+		if( ! $this->_can_review( $error["project_id"] ) ) {
 			show_404();
 		}
 		
@@ -212,5 +239,29 @@ class Editor extends CI_Controller {
 			"format" => "text",
 		]);
 		$this->output->set_output( json_encode( [ "translated_text" => $result["text"] ] ) );
+	}
+	
+	private function _is_reviewer( $project_id ) {
+		return $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $project_id );
+	}
+	
+	private function _is_manager( $project_id ) {
+		return $this->project_model->isManager( $this->ion_auth->user()->row()->id, $project_id );
+	}
+	
+	private function _can_review( $project_id ) {
+		return $this->_is_reviewer( $project_id ) || $this->_is_manager( $project_id );
+	}
+	
+	private function _can_commit( $project_id ) {
+		return ! $this->_is_reviewer( $project_id );
+	}
+	
+	private function _can_always_commit( $project_id ) {
+		return $this->_is_manager( $project_id );
+	}
+	
+	private function _can_auto_translate( $project ) {
+		return ! $this->_is_reviewer( $project["id"] ) && $project["google_code"];
 	}
 }

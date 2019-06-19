@@ -237,7 +237,18 @@ class Project_model extends CI_Model
 		return $count_existing > 0;
 	}
 	
-	public function updateContentStatus( $content_id, $project_id, $is_approved, $user_id = null ) {
+	public function isManager( $user_id, $project_id ) {
+		$count_existing = $this->db->select( "id" )
+			->where( "user_id", $user_id )
+			->where( "project_id", $project_id )
+			->where( "type", "manager" )
+			->from( "project_members" )
+			->count_all_results();
+		
+		return $count_existing > 0;
+	}
+	
+	public function updateContentStatus( $content_id, $project_id, $is_approved ) {
 		$project_content = $this->db->select( "*" )
 			->from( "project_content_status" )
 			->where( "content_id", $content_id )
@@ -249,7 +260,6 @@ class Project_model extends CI_Model
 			"content_id" => $content_id,
 			"project_id" => $project_id,
 			"is_approved" => $is_approved,
-			"approved_by" => $user_id,
 		];
 		
 		if( $project_content ) {
@@ -257,6 +267,40 @@ class Project_model extends CI_Model
 			$this->db->update( "project_content_status", $data );
 		} else {
 			$this->db->insert( "project_content_status", $data );
+		}
+	}
+	
+	public function getContentApprovals( $content_id, $project_id ) {
+		return $this->db->select( "*" )
+			->from( "project_content_approval" )
+			->where( "content_id", $content_id )
+			->where( "project_id", $project_id )
+			->get()
+			->result_array();
+	}
+	
+	public function removeContentApprovals( $content_id, $project_id ) {
+		$this->db->where( "content_id", $content_id )
+			->where( "project_id", $project_id )
+			->delete( "project_content_approval" );
+	}
+	
+	public function addContentApproval( $content_id, $project_id, $user_id ) {
+		$approval_exists = $this->db->select( "*" )
+			->from( "project_content_approval" )
+			->where( "content_id", $content_id )
+			->where( "project_id", $project_id )
+			->where( "approved_by", $user_id )
+			->count_all_results();
+		
+		if( ! $approval_exists ) {
+			$data = [
+				"content_id" => $content_id,
+				"project_id" => $project_id,
+				"approved_by" => $user_id,
+			];
+
+			$this->db->insert( "project_content_approval", $data );
 		}
 	}
 	

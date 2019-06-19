@@ -78,10 +78,11 @@ class User extends CI_Controller
 		$this->template->load( "template", "account", $data );
 	}
 	
-	public function search( $query )
+	public function search( $project_id, $query )
 	{
+		$this->load->model( "project_model" );
 		$query = urldecode( $query );
-		if( ! $this->ion_auth->is_admin() ) {
+		if( ! $this->project_model->isManager( $this->ion_auth->user()->row()->id, $project_id ) || $this->ion_auth->is_admin() ) {
 			show_404();
 		}
 		$users = $this->db->select( "*" )
