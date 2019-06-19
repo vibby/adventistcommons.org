@@ -78,7 +78,7 @@ Ready to get started? Here&#39;s how you can help:
 
 Developers:
 
-- The translation platform being developed is built on the Codeigniter 3 PHP framework and Bootstrap 4. Though Codeigniter may not be the most advanced framework out there, it allows us to get a minimum viable product out the door sooner due to its simplicity. We're still in the early stages of development and in the process of determining the best way to implement the various features we need. If you're familiar with PHP development, feel free to check out the [Github issues](https://github.com/AdventistCommons/adventistcommons.org/issues) to see how you can help.
+- The translation platform being developed is built on the Codeigniter 3 PHP framework and Bootstrap 4. Though Codeigniter may not be the most advanced framework out there, it allows us to get a minimum viable product out the door sooner due to its simplicity. We're still in the early stages of development and in the process of determining the best way to implement the various features we need. If you're familiar with PHP development, feel free to check out the [Github issues](https://github.com/AdventistCommons/adventistcommons.org/issues) or our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see how you can help. We also have a [Slack workspace](https://join.slack.com/t/adventistcommons/shared_invite/enQtNjYzNjAxNTUwMzA1LTEzOTRlMzZkY2ZjYTlmZTRlYThmNzZhMjMxNmQ1NWE5MWNmZDEwYjE3YTA1YWVkMTFmYmQ5YzE5NjIwMGM0MjM) where development ideas and issues can be discussed.
 
 Authors:
 
