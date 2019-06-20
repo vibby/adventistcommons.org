@@ -153,6 +153,6 @@ class Projects extends CI_Controller {
 	}
 	
 	private function _can_manage_members( $project_id ) {
-		return $this->project_model->isManager( $this->ion_auth->user()->row()->id, $project_id ) || $this->ion_auth->is_admin();
+		return $this->ion_auth->logged_in() && $this->project_model->isManager( $this->ion_auth->user()->row()->id, $project_id ) || $this->ion_auth->is_admin();
 	}
 }
