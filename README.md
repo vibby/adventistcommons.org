@@ -164,7 +164,7 @@ The code included in this repository is copyright protected. It may not be repro
 ## Copyrights, Licensing, and Usage
 
 - Who owns the copyright for these products?
-  - All products are owned by the Middle East and North Africa Union. Each product will be licensed under the [Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/).
+  - All products are owned by the Middle East and North Africa Union. Each product will be licensed under the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
 - Do we need to pay for anything on this platform?
   - There is never any fee for downloading, printing, or sharing any of the available resources on this website.
 - Am I allowed to adapt the text?
