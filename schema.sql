@@ -325,6 +325,7 @@ CREATE TABLE `product_content` (
   `content` text,
   `section_id` int(11) unsigned NOT NULL,
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
+  `xliff_tag` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `section_id` (`section_id`),
@@ -343,7 +344,7 @@ CREATE TABLE `project_content_status` (
   KEY `project_id` (`project_id`),
   CONSTRAINT `project_content_status_ibfk_1` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
   CONSTRAINT `project_content_status_ibfk_2` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `project_content_approval` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -358,7 +359,7 @@ CREATE TABLE `project_content_approval` (
   CONSTRAINT `project_content_approval_ibfk_5` FOREIGN KEY (`approved_by`) REFERENCES `users` (`id`),
   CONSTRAINT `project_content_approval_ibfk_6` FOREIGN KEY (`content_id`) REFERENCES `product_content` (`id`) ON DELETE CASCADE,
   CONSTRAINT `project_content_approval_ibfk_7` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `project_members` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
