@@ -1,16 +1,14 @@
 Hello, there. 😀
 
-We&#39;ve seen people like you before. Mission-minded Adventist professionals trapped in the body of someone who is financially or situationally unable to work as a full-time missionary. It&#39;s hard, we know – you have all these incredible talents like writing, translating, editing, proofreading, graphic design, or programming, but you&#39;re just not sure how these can be used for God.
+We&#39;ve seen people like you before. Mission-minded Adventist professionals trapped in the body of someone who is financially or situationally unable to work as a full-time missionary. It&#39;s hard, we know – you have all these incredible talents like writing, translating, editing, proofreading, graphic design, drawing, or programming, but you&#39;re just not sure how these can be used for God.
 
 We&#39;re here to help you fulfil your dream. ✨
 
 Adventist Commons, an initiative of the Middle East and North Africa Union, is like the &quot;creative commons&quot; of Adventist mission resources for the unreached people groups of the 10/40 window and the world. You would be surprised to know that in many of the world&#39;s major language groups, there isn&#39;t a single Adventist tract or booklet. Or, in places where a few outreach materials have been translated, they are inappropriate for the religious context because they only answer the questions that Western Christians ask.
 
-You see, your talents are needed. No, let&#39;s rephrase that – your talents are _desperately_ needed. This is the mission opportunity you&#39;ve been waiting for! By collaborating with Adventist Commons, you can play an integral part in getting our distinctive Adventist message into the hands of unreached people, right from the comfort of your own home. Do you have skills in writing, translating, editing, proofreading, graphic design, or web development? 🖥📝🎨😀 Sign up below to become a valued contributor at Adventist Commons!
+You see, your talents are needed. No, let&#39;s rephrase that – your talents are _desperately_ needed. This is the mission opportunity you&#39;ve been waiting for! By collaborating with Adventist Commons, you can play an integral part in getting our distinctive Adventist message into the hands of unreached people, right from the comfort of your own home. Do you have skills in writing, translating, editing, proofreading, graphic design, or web development? 🖥📝🎨😀 Click [here to contribute to Adventist Commons!](#contribute)
 
-Adventist Commons: resourcing the global church.
-
-[AdventistCommons.org](http://www.adventistcommons.org)
+[AdventistCommons.org](https://www.adventistcommons.org)
 
 [facebook.com/adventistcommons](https://www.facebook.com/adventistcommons)
 
@@ -19,16 +17,16 @@ Adventist Commons: resourcing the global church.
 
 ## Table of Contents
 
-- Project Overview
-- The Problem
-- Objectives
-- Features
-- Contributing
-- License
-- Team
-- Acknowledgements
-- FAQ
-- Donate
+- [Project Overview](#project-overview)
+- [The Problem](#the-problem)
+- [Objectives](#objectives)
+- [Features](#features)
+- [Contribute](#contribute)
+- [Development Setup Guide](#development-setup-guide)
+- [License](#license)
+- [Acknowledgements](#acknowledgments)
+- [FAQ](#faq)
+- [Donate](#donate)
 
 ## Project Overview
 
@@ -38,7 +36,7 @@ Adventist Commons: resourcing the global church.
 - Culturally relevant for the people groups of the 10/40 window, prepared and reviewed by Adventist missiologists and theologians
 - Unhindered by copyrights that restrict free translation and distribution
 - Downloadable and printable from wherever you are in the world
-- Made available through crowd translation and an open-source platform
+- Made available through an open-source crowd translation platform
 
 [AdventistCommons.org](http://adventistcommons.org/) is an initiative created in response to one of the General Conference Mission Objectives for 2020-2025, which has placed a high church-wide priority on developing resources for mission to those within non-Christian belief systems.
 
@@ -69,7 +67,7 @@ AdventistCommons.org provides the following features:
 
 - Free print file downloads of culturally relevant evangelism and discipleship resources.
 - A multilingual translation platform that allows anyone around the globe to translate and download resources into their own language and dialect.
-- Collaboration opportunities for writers, editors, proofreaders, graphic designers, and web developers.
+- Collaboration opportunities for writers, editors, proofreaders, graphic designers, illustrators, and web developers.
 
 
 ## Contribute
@@ -78,29 +76,29 @@ Ready to get started? Here&#39;s how you can help:
 
 Developers:
 
-- The translation platform being developed is built on the Codeigniter 3 PHP framework and Bootstrap 4. Though Codeigniter may not be the most advanced framework out there, it allows us to get a minimum viable product out the door sooner due to its simplicity. We're still in the early stages of development and in the process of determining the best way to implement the various features we need. If you're familiar with PHP development, feel free to check out the [Github issues](https://github.com/AdventistCommons/adventistcommons.org/issues) or view our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see what we're up to. You can join the Trello board [here](https://trello.com/invite/b/6aSyzetB/eff6e13d9c874e7474d889ffec9afb09/adventist-commons-management). We also have a [Slack workspace](https://join.slack.com/t/adventistcommons/shared_invite/enQtNjYzNjAxNTUwMzA1LTEzOTRlMzZkY2ZjYTlmZTRlYThmNzZhMjMxNmQ1NWE5MWNmZDEwYjE3YTA1YWVkMTFmYmQ5YzE5NjIwMGM0MjM) where development ideas and issues can be discussed.
+- The translation platform being developed is built on the Codeigniter 3 PHP framework and Bootstrap 4. Though Codeigniter may not be the most advanced framework out there, it allows us to get a minimum viable product out the door sooner due to its simplicity. We're still in the early stages of development and in the process of determining the best way to implement the various features we need. 
+- If you're familiar with PHP development, feel free to check out our current [Github issues](https://github.com/AdventistCommons/adventistcommons.org/issues). 
+- View our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see what we're up to. You can join the Trello board [here](https://trello.com/invite/b/6aSyzetB/eff6e13d9c874e7474d889ffec9afb09/adventist-commons-management).
+- Communicate and collaborate through our [Slack workspace](https://join.slack.com/t/adventistcommons/shared_invite/enQtNjYzNjAxNTUwMzA1LTEzOTRlMzZkY2ZjYTlmZTRlYThmNzZhMjMxNmQ1NWE5MWNmZDEwYjE3YTA1YWVkMTFmYmQ5YzE5NjIwMGM0MjM) where development ideas and issues can be discussed. 
+- Learn how to contribute through Github with [Github's Guide to Open Source](https://opensource.guide/how-to-contribute).
 
 Authors:
 
-- Send us manuscripts that you personally created and own and are willing to release to the Middle East and North Africa Union.
-- If you have experience with religious groups that are predominant in the 10/40 window and have an idea of a helpful resource that you believe you could write, send us a summary of your idea and let&#39;s brainstorm together.
-- [Add your name to a list](http://adventistcommons.org/) of volunteers who can write Adventist content for a culturally and religiously diverse audience.
+- Send us manuscripts that you personally created and own and are willing to release exclusively to the Middle East and North Africa Union. You can contact us through our [feedback form](https://adventistcommons.org/feedback).
+- If you have experience with religious groups that are predominant in the 10/40 window and have an idea of a helpful resource that you believe you could write, send us a summary of your idea and let&#39;s brainstorm together. You can contact us through our [feedback form](https://adventistcommons.org/feedback).
+- Add your name to a list of volunteers who can write Adventist content for a culturally and religiously diverse audience. You can add your name by [signing up](https://adventistcommons.org/register) at Adventist Commons and by selecting the "writing/editing" skill in the second part of the sign up process.
 
 Artists:
 
-- Send us Bible art or graphics that you personally created and own and are willing to release to the Middle East and North Africa Union.
-- Add your name to a list of volunteers who can create customized Bible art for resources currently under production.
+- Send us Bible art or graphics that you personally created and own and are willing to release exclusively to the Middle East and North Africa Union. You can contact us through our [feedback form](https://adventistcommons.org/feedback).
+- Add your name to a list of volunteers who can create customized Bible art for resources currently under production. You can add your name by [signing up](https://adventistcommons.org/register) at Adventist Commons and by selecting the "Illustration (digital art)" skill in the second part of the sign up process.
 
 Graphic Designers:
 
-- Volunteer to help us layout the print files of new products as they are translated.
-- Volunteer to create new book and tract designs that will be distributed freely around the world.
+- Volunteer to help us layout the print files of new products as they are translated or create new book and tract designs that will be distributed freely around the world. You can add your name to a list of volunteers by [signing up](https://adventistcommons.org/register) at Adventist Commons and by selecting the "Graphic design" skill in the second part of the sign up process.
 
-Donate:
+## Development Setup Guide
 
-- Please refer to the details at the end of this document.
-
-## Development setup guide
 Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with PHP and MySQL installed.
 
 - Clone the repository to the public directory of your localhost environment
@@ -117,10 +115,6 @@ All resources on AdventistCommons.org are licensed under the [Creative Commons A
 The CC BY-ND 4.0 license gives you permission to download, print, distribute, and sell our products without obtaining permission from AdventistCommons.org. You may not use our products to create derivative works our products. If you remix, transform, or build upon the material, you are legally prohibited to distribute and sell the modified material.
 
 The code included in this repository is copyright protected. It may not be reproduced, distributed, or used to create derivative works.
-
-## Team
-
-- Coming soon
 
 ## Acknowledgments
 
@@ -161,29 +155,29 @@ The code included in this repository is copyright protected. It may not be repro
 - Who ensures the quality of the translations?
   - We rely on a team of volunteer collaborators for each language group to cross-check and approve a translation.
 
-## Copyrights, Licensing, and Usage
+**Copyrights, Licensing, and Usage**
 
 - Who owns the copyright for these products?
-  - All products are owned by the Middle East and North Africa Union. Each product will be licensed under the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+  - All products are owned by the Middle East and North Africa Union. Each product will be licensed under the [Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/) (CC BY-ND 4.0).
 - Do we need to pay for anything on this platform?
   - There is never any fee for downloading, printing, or sharing any of the available resources on this website.
 - Am I allowed to adapt the text?
   - You are always permitted to share the products as they are, free of charge. However, adapting the text is not permitted. If there is something in the text that you think could be improved, please contact us with your suggestions, and we will be happy to try and make improvements or offer you an adapted product.
 
-## Donations
+**Donations**
 
 - How can I donate?
-  - Please follow this link.
--  How are my donations used?
-  - If you donate towards a specific project on adventistcommons.org, your donations will be strictly used for this purpose only. If you give a general donation, it may be used for the development of tracts, booklets, or other resources that you see on this website.
+  - Please donate through [AdventistCommons.org](http://www.adventistcommons.org).
+- How are my donations used?
+  - If you donate towards a specific project on [AdventistCommons.org](http://www.adventistcommons.org), your donations will be strictly used for this purpose only. If you give a general donation, it may be used for the development of tracts, booklets, or other resources available on the website.
 - Are donations tax-deductible?
   - All donations are processed through the Middle East and North Africa Union. Donations are tax deductable if sent to the Middle East and North Africa Union through the General Conference. Funds should be marked for "MENA Publishing – Adventist Commons".
 
-## General
+**General**
 
 - How does this project relate to current publishing operations around the world?
   - This initiative is complementary to current publishing operations, in that it focuses primarily on evangelistic and discipleship resources for unreached people groups.
 
 ## Donate
 
-[AdventistCommons.org](http://www.adventistcommons.org) depends on generous donors for the development of Adventist resources that can be shared freely throughout the world. Your donation is highly appreciated and will make valuable Adventist resources accessible around the world. Please donate through [AdventistCommons.org](http://www.adventistcommons.org)
+[AdventistCommons.org](http://www.adventistcommons.org) depends on generous donors for the development of Adventist resources that can be shared freely throughout the world. Your donation is highly appreciated and will make valuable Adventist resources accessible around the world. Please donate through [AdventistCommons.org](http://www.adventistcommons.org).
