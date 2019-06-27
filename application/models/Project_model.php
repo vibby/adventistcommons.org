@@ -28,7 +28,7 @@ class Project_model extends CI_Model
 		$total_strings = $this->_getTotalStringCountsByProduct();
 		$completed_strings = $this->_getCompletedStringCountsByProject();
 		return array_map( function( $project ) use( $total_strings, $completed_strings ) {
-			$project["total_strings"] = $total_strings[$project["id"]] ?? 0;
+			$project["total_strings"] = $total_strings[$project["product_id"]] ?? 0;
 			$project["completed_strings"] = $completed_strings[$project["id"]] ?? 0;
 			$project["percent_complete"] = round( $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0, 0 );
 			$project["status"] = $this->status[$project["status"]];
