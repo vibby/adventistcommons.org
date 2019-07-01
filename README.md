@@ -78,7 +78,7 @@ Developers:
 
 - The translation platform being developed is built on the Codeigniter 3 PHP framework and Bootstrap 4. Though Codeigniter may not be the most advanced framework out there, it allows us to get a minimum viable product out the door sooner due to its simplicity. We're still in the early stages of development and in the process of determining the best way to implement the various features we need. 
 - If you're familiar with PHP development, feel free to check out our current [Github issues](https://github.com/AdventistCommons/adventistcommons.org/issues). 
-- View our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see what we're up to. You can join the Trello board [here](https://trello.com/invite/b/6aSyzetB/eff6e13d9c874e7474d889ffec9afb09/adventist-commons-management).
+- View our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see what we're up to. You can join the Trello board [here](https://trello.com/invite/b/cCdSmpc0/4527547fa5dedeee84a0ccae33d08865/adventist-commons-development).
 - Communicate and collaborate through our [Slack workspace](https://join.slack.com/t/adventistcommons/shared_invite/enQtNjYzNjAxNTUwMzA1LTEzOTRlMzZkY2ZjYTlmZTRlYThmNzZhMjMxNmQ1NWE5MWNmZDEwYjE3YTA1YWVkMTFmYmQ5YzE5NjIwMGM0MjM) where development ideas and issues can be discussed. 
 - Learn how to contribute through Github with [Github's Guide to Open Source](https://opensource.guide/how-to-contribute).
 
