@@ -103,9 +103,10 @@ Follow the steps below to setup AdventistCommons on your local development envir
 
 - Clone the repository to the public directory of your localhost environment
 - I recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository. If you are using the default "localhost" server address, update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) to `http://localhost`.
-- Point your terminal client to the application/ directory, and run `php composer.phar update`
+- Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
 - Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) in your favorite MySQL client.
 - Update [these lines](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/database.php#L78-L81) with your database credentials.
+- Update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) with the alias you used to access the Adventist Commons install (eg. "localhost" or "adventistcommons.local").
 - Let us know if you have any issues with these steps.
 
 ## License
