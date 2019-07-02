@@ -6,7 +6,7 @@
 		<input class="form-control" type="text" placeholder="Location" name="location" value="<?php echo $user->location; ?>">
 	</div>
 	<div class="form-group">
-		<textarea class="form-control" type="text" placeholder="Bio" name="bio"><?php echo $user->bio; ?></textarea>
+		<textarea class="form-control" type="text" placeholder="Tell us a little about yourself, this will be displayed on your public profile" name="bio"><?php echo $user->bio; ?></textarea>
 	</div>
 	<div class="form-group">
 		<label>What is your mother language?</label>
