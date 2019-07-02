@@ -65,3 +65,4 @@ $route['account/save_password'] = 'user/save_password';
 $route['editor/(:num)/(:num)'] = 'editor/index/$1/$2';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+$route['revert/(:num)'] = 'editor/revert/$1';

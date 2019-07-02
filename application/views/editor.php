@@ -63,7 +63,17 @@
 												<div class="revision-content collapse">
 													<div class="card-body text-small p-2">
 														<?php echo $revision["diff"]; ?>
-													</div>
+                                                    </div>
+                                                    <form class="card-body text-small p-2" action="/revert/<?php echo $revision['id']; ?>" method="POST">
+                                                        <button class='btn btn-primary btn-sm confirm-dialog'
+                                                                type="submit"
+                                                                name="remove_levels"
+                                                                value="revert"
+                                                                data-confirm-message="Are you sure? A new version will be added to history."
+                                                        >
+                                                            Revert to this version
+                                                        </button>
+                                                    </form>
 												</div>
 											</div>
 										<?php } ?>

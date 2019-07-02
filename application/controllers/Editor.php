@@ -12,7 +12,6 @@ class Editor extends CI_Controller {
 		$this->load->helper( [ "url" ] );
 		$this->load->model( "product_model" );
 		$this->load->model( "project_model" );
-		
 		if ( ! $this->ion_auth->logged_in() ) {
 			redirect( "/login", "refresh" );
 		}
@@ -240,6 +239,26 @@ class Editor extends CI_Controller {
 		]);
 		$this->output->set_output( json_encode( [ "translated_text" => $result["text"] ] ) );
 	}
+
+	public function revert($revision_id) {
+
+        $revision = $this->db->select( 'product_content_revisions.*, product_content.section_id' )
+            ->from( "product_content_revisions" )
+            ->join( "product_content", "product_content_revisions.content_id = product_content.id" )
+            ->where( "product_content_revisions.id", $revision_id )
+            ->get()
+            ->row_array();
+
+        $section_id = $revision['section_id'];
+
+        unset($revision['id']);
+        unset($revision['created_at']);
+        unset($revision['section_id']);
+
+        $this->db->insert( "product_content_revisions", $revision );
+
+        redirect( sprintf('/editor/%d/%d', $revision['project_id'], $section_id), "refresh" );
+    }
 	
 	private function _is_reviewer( $project_id ) {
 		return $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $project_id );

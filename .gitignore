@@ -2,3 +2,6 @@
 /application/vendor
 .idea
 composer.phar
+/uploads
+/application/config/config.php
+/application/config/database.php
