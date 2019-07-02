@@ -15,22 +15,50 @@ class Home extends CI_Controller {
 		parent::__construct();
 		$this->load->database();
 		$this->load->library( "ion_auth" );
+		$this->load->library('twig');
 		$this->load->model( "product_model" );
+		$this->data = array(
+            'ion_auth' =>  $this->ion_auth->logged_in(),
+        );
 	}
 	
 	public function index()
 	{
-		$this->template->set( "title", "Certified Adventist Resources, Culturally Relevant" );
-		$this->template->set( "is_home", true );
-		$this->template->load( "template", "home" );
+		// Old version
+		// $this->template->set( "title", "Certified Adventist Resources, Culturally Relevant" );
+		// $this->template->set( "is_home", true );
+		// $this->template->load( "template", "home" );
+		// new version
+		$this->twig->addGlobal('title', 'Certified Adventist Resources, Culturally Relevant');
+		$this->twig->addGlobal('is_home', true);
+		$this->twig->addGlobal('breadcrumbs', $this->breadcrumbs);
+		$ion_auth = $this->data['ion_auth'];
+		$this->twig->addGlobal('ion_auth', $ion_auth);
+		if($ion_auth){
+			$this->twig->addGlobal('ion_auth_image',  md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ));
+			$this->twig->addGlobal('ion_auth_is_admin',  $this->ion_auth->is_admin());
+		}
+		$this->twig->display('twigs/home');
 	}
 	
 	public function feedback()
 	{
+		// Old version
+		// $this->breadcrumbs[] = [ "label" => "Feedback" ];
+		// $this->template->set( "breadcrumbs", $this->breadcrumbs );
+		// $this->template->set( "title", "Feedback" );
+		// $this->template->load( "template", "feedback" );
+		// new version
 		$this->breadcrumbs[] = [ "label" => "Feedback" ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->set( "title", "Feedback" );
-		$this->template->load( "template", "feedback" );
+		$this->twig->addGlobal('title', 'Feedback');
+		$this->twig->addGlobal('breadcrumbs', $this->breadcrumbs);
+		$ion_auth = $this->data['ion_auth'];
+		if( $ion_auth ){
+			$this->twig->addGlobal('ion_auth_row', $this->ion_auth->user()->row());
+		}
+		$this->twig->addGlobal('ion_auth', $ion_auth);
+		$this->twig->addGlobal('http_referer', $_SERVER["HTTP_REFERER"]);
+		$this->twig->display('twigs/feedback');
 	}
 	
 	public function send_feedback()

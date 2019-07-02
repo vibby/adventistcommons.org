@@ -8,6 +8,7 @@ class Products extends CI_Controller {
 		parent::__construct();
 		$this->load->database();
 		$this->load->library(["ion_auth", "form_validation", "upload" ]);
+		$this->load->library('twig');
 		$this->load->helper(["url"]);
 		$this->load->model( "product_model" );
 	}
@@ -46,17 +47,33 @@ class Products extends CI_Controller {
 	
 	public function index( $product_id = null )
 	{
-		$data = [
-			"products" => $this->product_model->getProducts(),
-			"audience_options" => $this->audience,
-			"product_types" => $this->product_types,
-			"product_binding" => $this->product_binding,
-			"series" => $this->product_model->getSeriesItems(),
-		];
-		$this->template->set( "title", "Products" );
+		// Old version
+		// $data = [
+		// 	"products" => $this->product_model->getProducts(),
+		// 	"audience_options" => $this->audience,
+		// 	"product_types" => $this->product_types,
+		// 	"product_binding" => $this->product_binding,
+		// 	"series" => $this->product_model->getSeriesItems(),
+		// ];
+		// $this->template->set( "title", "Products" );
+		// $this->breadcrumbs[] = [ "label" => "All Products"  ];
+		// $this->template->set( "breadcrumbs", $this->breadcrumbs );
+		// $this->template->load( "template", "products", $data );
+		// new version
+		$this->twig->addGlobal('products', $this->product_model->getProducts());
+		$this->twig->addGlobal('audience_options', $this->audience);
+		$this->twig->addGlobal('product_types', $this->product_types);
+		$this->twig->addGlobal('product_binding', $this->product_binding);
+		$this->twig->addGlobal('series', $this->product_model->getSeriesItems());
+		$this->twig->addGlobal('title', "Products");
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "products", $data );
+		$this->twig->addGlobal('breadcrumbs', $this->breadcrumbs);
+		$ion_auth = $this->ion_auth->logged_in();
+		$this->twig->addGlobal('ion_auth', $ion_auth);
+		if($ion_auth){
+			$this->twig->addGlobal('ion_auth_is_admin',  $this->ion_auth->is_admin());
+		}
+		$this->twig->display('twigs/products');
 	}
 	
 	public function detail( $product_id ) {

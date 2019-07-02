@@ -7,9 +7,12 @@ class Projects extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation" ] );
+		$this->load->library( [ "ion_auth", "form_validation",'twig' ] );
 		$this->load->helper( [ "url" ] );
 		$this->load->model( "project_model" );
+		$this->data = array(
+            'ion_auth' =>  $this->ion_auth->logged_in(),
+        );
 	}
 	
 	public $breadcrumbs = [
@@ -21,18 +24,36 @@ class Projects extends CI_Controller {
 	
 	public function index( $project_id = null )
 	{
+		// Old Version
+		// $language_id = $_GET["language"] ?? null;
+		// $language = $this->project_model->getLanguageName( $language_id );
+		// $data = [
+		// 	"projects" => $this->project_model->getProjects( $language_id ),
+		// 	"languages" => $this->project_model->getProjectLanguages(),
+		// 	"selected_language" => $language,
+		// ];
+		// $this->template->set( "title", "Dashboard" );
+		// $this->breadcrumbs[] = [ "label" => "All"  ];
+		// $this->template->set( "breadcrumbs", $this->breadcrumbs );
+		// $this->template->load( "template", "projects", $data );
+		// new Version
 		$language_id = $_GET["language"] ?? null;
+		$projects =  $this->project_model->getProjects( $language_id );
+		foreach( $projects as $key => $project ){
+			foreach($project['members'] as $key1=>$member){
+				$projects[$key]['members'][$key1]['md5email'] = md5( strtolower( trim( $member["email"] ) ) );
+			}
+		}
 		$language = $this->project_model->getLanguageName( $language_id );
-		$data = [
-			"projects" => $this->project_model->getProjects( $language_id ),
-			"languages" => $this->project_model->getProjectLanguages(),
-			"selected_language" => $language,
-		];
-		
-		$this->template->set( "title", "Dashboard" );
+		$ion_auth = $this->data['ion_auth'];
 		$this->breadcrumbs[] = [ "label" => "All"  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "projects", $data );
+		$this->twig->addGlobal('title', "Dashboard");
+		$this->twig->addGlobal('ion_auth', $ion_auth);
+		$this->twig->addGlobal('projects', $projects);
+		$this->twig->addGlobal('languages', $this->project_model->getProjectLanguages());
+		$this->twig->addGlobal('selected_language', $language);
+		$this->twig->addGlobal('breadcrumbs', $this->breadcrumbs);
+		$this->twig->display('twigs/projects');
 	}
 	
 	public function detail( $project_id ) {
