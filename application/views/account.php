@@ -8,7 +8,7 @@
 				<li class="nav-item">
 					<a class="nav-link" id="password-tab" data-toggle="tab" href="#password" role="tab">Password</a>
 				</li>
-				<?php if( $this->ion_auth->is_admin() ) { ?>
+				<?php if( $this->ion_auth->is_admin() && isset( $permission_groups ) ) { ?>
 					<li class="nav-item">
 						<a class="nav-link" id="permissions-tab" data-toggle="tab" href="#permissions" role="tab">Permissions</a>
 					</li>
@@ -95,7 +95,7 @@
 								</div>
 							</form>
 						</div>
-						<?php if( $this->ion_auth->is_admin() ) { ?>
+						<?php if( $this->ion_auth->is_admin() && isset( $permission_groups ) ) { ?>
 							<div class="tab-pane fade" role="tabpanel" id="permissions">
 								<form action="/user/save_permissions" method="post" class="auto-submit">
 									<h6>Site Permissions</h6>
