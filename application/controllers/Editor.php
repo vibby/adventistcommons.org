@@ -248,29 +248,50 @@ class Editor extends CI_Controller {
 			->get()
 			->row_array();
 
-		$revisionToInsert = $recoveredRevision;
-		unset($revisionToInsert['id']);
-		unset($revisionToInsert['created_at']);
-		$this->db->insert( "product_content_revisions", $revisionToInsert );
-
-		$newRevision = $this->db->select( "product_content_revisions.*, product_content.section_id" )
+		$currentRevision = $this->db->select( "product_content_revisions.content" )
 			->from( "product_content_revisions" )
-			->join( "product_content", "product_content_revisions.content_id = product_content.id" )
-			->where( "product_content_revisions.id", $this->db->insert_id() )
+			->where( "product_content_revisions.content_id", $recoveredRevision['content_id'] )
+			->order_by("created_at", "DESC")
+			->limit(1)
 			->get()
 			->row_array();
 
+		$errorMessage = null;
+		if ($currentRevision["content"] === $recoveredRevision["content"]) {
+			$errorMessage = 'Cannot recover this version since content is same as current';
+		} else {
+			$revisionToInsert = $recoveredRevision;
+			unset($revisionToInsert['id']);
+			unset($revisionToInsert['created_at']);
+			$this->db->insert( "product_content_revisions", $revisionToInsert );
+		}
+
+		$revision = $this->product_model->getLastRevision($recoveredRevision['content_id']);
+
+		$message = $errorMessage ? $errorMessage : 'Translation successfully recovered';
 		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+			$count = $this->db->select( "count(product_content_revisions.id)" )
+				->from( "product_content_revisions" )
+				->where( "product_content_revisions.content_id", $recoveredRevision['content_id'] )
+				->get()
+				->row_array();
+
 			/* if it is an ajax call, json response */
 			$this->output->set_content_type("application/json");
-			$this->output->set_output( json_encode( [ "revision" => $newRevision ] ) );
+			$this->output->set_output( json_encode( [
+				"status" => $errorMessage ? 'error' : 'success',
+				"message" => $message,
+				"revision" => $revision,
+				"count" => $count[ "count(product_content_revisions.id)" ],
+
+			] ) );
 		} else {
 			/* otherwise, redirect */
 			redirect(
 				sprintf(
 					"/editor/%d/%d",
-					$newRevision["project_id"],
-					$newRevision["section_id"]
+					$revision["project_id"],
+					$revision["section_id"]
 				),
 				"refresh"
 			);

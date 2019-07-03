@@ -24,6 +24,7 @@
 									</div>
 								<?php } ?>
 								<div class="form-group">
+                                    <div class="js-message alert"></div>
 									<textarea class="form-control" <?php if( ! $can_commit || $p["total_approvals"] > 0 && ! $can_always_commit ){ echo "disabled"; } ?> rows="<?php echo $p["textarea_height"]; ?>"><?php echo $p["latest_revision"]; ?></textarea>
 								</div>
 								<nav class="clearfix">
@@ -45,16 +46,57 @@
 										
 									</div>
 									<div class="form-group float-right">
-										<button class="btn btn-outline-secondary btn-sm" data-toggle="collapse" data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"><?php echo $p["total_revisions"] == 1 ? "1 revision" : sprintf( "%s revisions", $p["total_revisions"] ); ?></button>
+										<button class="btn btn-outline-secondary btn-sm"
+                                                data-toggle="collapse"
+                                                data-target="#<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>"
+                                        >
+                                            <?php echo $p["total_revisions"] == 1
+                                                ? "1 revision"
+                                                : sprintf( "<span class=\"js-count\">%s</span> revisions", $p["total_revisions"] );
+                                            ?>
+                                        </button>
 										<?php if( $can_auto_translate ) { ?>
 											<button class="btn btn-sm btn-outline-primary auto-translate <?php echo strlen( $p["latest_revision"] ) == 0 ? "" : "hidden"; ?>">Auto Translate</button>
 										<?php } ?>
 									</div>
 								</nav>
 								<div id="<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>" class="collapse">
-									<div class="accordion" id="<?php echo sprintf( "p_%s_revisions_accordian", $p["id"] ); ?>">
+									<ul class="accordion js-revision-holder"
+                                        id="<?php echo sprintf( "p_%s_revisions_accordian", $p["id"] ); ?>"
+                                        data-prototype="<?php echo htmlentities('<li class="card mb-0">
+                                            <div class="card-header p-2 revision-header">
+                                                <img alt="Image" src="https://www.gravatar.com/avatar/%email%?s=60&d=mp" class="avatar mr-1" />
+                                                %first_name% %last_name%
+                                                <time class="text-small float-right" datetime="%created_at%">%created_at_formatted%</time>
+                                            </div>
+                                            <div class="revision-content collapse">
+                                                <div class="card-body text-small p-2">
+                                                    %diff%
+                                                    <br />
+                                                    <span class="badge badge-secondary js-if-recover-hide">
+                                                        Current revision
+                                                    </span>
+                                                    <form class="mt-2 auto-recover js-if-recover-show"
+                                                          action="/editor/recover/%id%"
+                                                          method="POST"
+                                                          style="display: none;"
+                                                    >
+                                                        <button class="btn btn-primary btn-sm confirm-dialog"
+                                                                role="button"
+                                                                type="submit"
+                                                                name="remove_levels"
+                                                                value="revert"
+                                                                data-confirm-message="Are you sure? A new version will be added to history."
+                                                        >
+                                                            Recover this revision
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            </li>') ?>"
+                                    >
 										<?php foreach( $p["revisions"] as $count => $revision ) { ?>
-											<div class="card mb-0">
+											<li class="card mb-0">
 												<div class="card-header p-2 revision-header">
 													<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $revision["email"] ) ) ) . "?s=60&d=mp"; ?>" class="avatar mr-1" />
 													<?php echo $revision["first_name"] . " " . $revision["last_name"]; ?>
@@ -65,28 +107,30 @@
 														<?php echo $revision["diff"]; ?>
                                                         <br />
 														<?php if ( $count == 0 ): ?>
-                                                            <span class="badge badge-secondary">Current revision</span>
-														<?php else: ?>
-                                                            <form class="mt-2"
-                                                                  action="/editor/recover/<?php echo $revision['id']; ?>"
-                                                                  method="POST"
-                                                            >
-                                                                <button class="btn btn-primary btn-sm confirm-dialog"
-                                                                        role="button"
-                                                                        type="submit"
-                                                                        name="remove_levels"
-                                                                        value="revert"
-                                                                        data-confirm-message="Are you sure? A new version will be added to history."
-                                                                >
-                                                                    Recover this revision
-                                                                </button>
-                                                            </form>
+                                                            <span class="badge badge-secondary js-if-recover-hide">
+                                                                Current revision
+                                                            </span>
 														<?php endif; ?>
+                                                        <form class="mt-2 auto-recover <?php if ( $count == 0 ): ?>js-if-recover-show<?php endif; ?>"
+                                                              action="/editor/recover/<?php echo $revision['id']; ?>"
+                                                              method="POST"
+                                                              <?php if ( $count == 0 ): ?>style="display: none;"<?php endif; ?>
+                                                        >
+                                                            <button class="btn btn-primary btn-sm confirm-dialog"
+                                                                    role="button"
+                                                                    type="submit"
+                                                                    name="remove_levels"
+                                                                    value="revert"
+                                                                    data-confirm-message="Are you sure? A new version will be added to history."
+                                                            >
+                                                                Recover this revision
+                                                            </button>
+                                                        </form>
 													</div>
 												</div>
-											</div>
+											</li>
 										<?php } ?>
-									</div>
+									</ul>
 								</div>
 								<div class="response"></div>
 							</div>

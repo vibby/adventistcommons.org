@@ -272,7 +272,7 @@ $( ".auto-translate" ).click( function(e) {
 			handleFormResponse( $parent.find( ".response" ), response.error );
 			return;
 		}
-		$btn.text( btn_text ).prop( "disabled", false );
+		$btn.text( btn_text ).prop( "disabled", CI_DB_mysqli_driverfalse );
 		if( response.translated_text.length > 0 ) {
 			$parent.find( "textarea" ).val( response.translated_text );
 			$parent.find( ".auto-translate" ).addClass( "hidden" );
@@ -288,4 +288,71 @@ $( ".editor-item textarea" ).on( "keyup input", function() {
 	$parent = $(this).parents( ".editor-item" );
 	var is_empty = $(this).val().length == 0;
 	$parent.find( ".auto-translate" ).toggleClass( "hidden", ! is_empty );
+});
+
+
+function autoRecover(formEl) {
+    let form = $(formEl);
+    let list = $(formEl).closest( ".js-revision-holder" );
+    let parent = $(formEl).closest( ".editor-item" );
+    let messageArea = $( ".js-message" );
+    switchAlert(messageArea, 'Loading …', 'info');
+
+    $.ajax({
+        type: form.attr( "method" ),
+        url: form.attr( "action" ),
+        data: form.serialize(),
+        success: function(response)
+        {
+            messageArea.html( response.message );
+            if (response.status === 'success') {
+            	switchAlert(messageArea, response.message, 'success');
+                parent.find( "textarea" ).val( response.revision.content );
+                list.find( ".js-if-recover-hide" ).hide();
+                list.find( ".js-if-recover-show" ).show();
+                newLi = fillTemplate(list.data( "prototype" ), response.revision);
+                newLi.find( ".auto-recover" ).on('submit', function (e) {
+                    e.preventDefault();
+                    autoRecover(this);
+                });
+                newLi.find( ".revision-header" ).click(function () {
+                    $(this).next().slideToggle();
+                });
+                list.prepend(newLi);
+                parent.find('.js-count').html(response.count);
+
+            } else {
+                switchAlert(messageArea, response.message, 'danger');
+            }
+        },
+        error: function() {
+            switchAlert(messageArea, 'A network error occurred.', 'danger');
+        }
+    });
+}
+
+function switchAlert(messageArea, message, status) {
+    messageArea.html(message);
+    messageArea.removeClass('alert-danger');
+    messageArea.removeClass('alert-info');
+    messageArea.removeClass('alert-success');
+    messageArea.addClass('alert-'+status);
+}
+
+function fillTemplate(template, vars) {
+    for (let propertyName in vars) {
+        if (vars.hasOwnProperty(propertyName)) {
+            template = template.replace(
+                "%" + propertyName + "%",
+                vars[propertyName]
+            );
+        }
+    }
+
+    return $(template);
+}
+
+$( ".auto-recover" ).submit( function(e) {
+    e.preventDefault();
+    autoRecover(this);
 });

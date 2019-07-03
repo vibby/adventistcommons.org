@@ -84,12 +84,11 @@ class Product_model extends CI_Model
 				->get()
 				->result_array();
 
-			foreach( $revisions as $key => $revision ) {
-				$date = new DateTime( $revision["created_at"] );
-				$revisions[$key]["created_at_formatted"] = $date->format( "Y-m-d H:i a" );
-				$revisions[$key]["created_at"] = $date->format( "c" );
-				$old_content = array_key_exists( $key+1, $revisions ) ? $revisions[$key+1]["content"] : "";
-				$revisions[$key]["diff"] = $this->_htmlDiff( $old_content, $revision["content"] );
+			foreach( $revisions as $key => &$revision ) {
+				$revision = $this->addDetailsToRevision(
+					$revision,
+					array_key_exists( $key+1, $revisions ) ? $revisions[$key+1] : null
+				);
 			}
 
 			$approvals = $this->db->select( "*" )
@@ -128,6 +127,33 @@ class Product_model extends CI_Model
 			$content["textarea_height"] = $str_length > 60 ? ( $str_length / 60 ) + 1 : 2;
 			return $content;
 		}, $content );
+	}
+
+	public function getLastRevision($contentId) {
+		$revision = $this->db->select( "product_content_revisions.*, users.first_name, users.last_name, users.email, product_content_revisions.id, product_content.section_id" )
+			->from( "product_content_revisions" )
+			->where( "content_id", $contentId )
+			->order_by( "created_at", "desc" )
+			->limit(2)
+			->join( "users", "product_content_revisions.user_id = users.id" )
+			->join( "product_content", "product_content_revisions.content_id = product_content.id" )
+			->get()
+			->result_array();
+
+		return $this->addDetailsToRevision(
+			$revision[0],
+			isset($revision[1]) ? $revision[1] : null
+		);
+	}
+
+	private function addDetailsToRevision(array $revision, array $previousRevision = null) {
+		$date = new DateTime( $revision["created_at"] );
+		$revision["created_at_formatted"] = $date->format( "Y-m-d H:i a" );
+		$revision["created_at"] = $date->format( "c" );
+		$old_content = $previousRevision ? $previousRevision["content"] : "";
+		$revision["diff"] = $this->_htmlDiff( $old_content, $revision["content"] );
+
+		return $revision;
 	}
 	
 	public function getSectionId( $content_id ) {
