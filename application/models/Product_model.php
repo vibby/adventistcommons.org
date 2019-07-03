@@ -75,7 +75,7 @@ class Product_model extends CI_Model
 			->result_array();
 		
 		return array_map( function( $content ) use( $project_id, $user_id ) {
-			$revisions = $this->db->select( "*" )
+			$revisions = $this->db->select( "*, product_content_revisions.id" )
 				->from( "product_content_revisions" )
 				->where( "content_id", $content["id"] )
 				->where( "project_id", $project_id )
@@ -83,7 +83,7 @@ class Product_model extends CI_Model
 				->join( "users", "product_content_revisions.user_id = users.id" )
 				->get()
 				->result_array();
-			
+
 			foreach( $revisions as $key => $revision ) {
 				$date = new DateTime( $revision["created_at"] );
 				$revisions[$key]["created_at_formatted"] = $date->format( "Y-m-d H:i a" );
@@ -91,7 +91,7 @@ class Product_model extends CI_Model
 				$old_content = array_key_exists( $key+1, $revisions ) ? $revisions[$key+1]["content"] : "";
 				$revisions[$key]["diff"] = $this->_htmlDiff( $old_content, $revision["content"] );
 			}
-			
+
 			$approvals = $this->db->select( "*" )
 				->from( "project_content_approval" )
 				->where( "content_id", $content["id"] )

@@ -240,25 +240,42 @@ class Editor extends CI_Controller {
 		$this->output->set_output( json_encode( [ "translated_text" => $result["text"] ] ) );
 	}
 
-	public function revert($revision_id) {
+	public function recover( $revision_id ) {
 
-        $revision = $this->db->select( 'product_content_revisions.*, product_content.section_id' )
-            ->from( "product_content_revisions" )
-            ->join( "product_content", "product_content_revisions.content_id = product_content.id" )
-            ->where( "product_content_revisions.id", $revision_id )
-            ->get()
-            ->row_array();
+		$recoveredRevision = $this->db->select( "product_content_revisions.*" )
+			->from( "product_content_revisions" )
+			->where( "product_content_revisions.id", $revision_id )
+			->get()
+			->row_array();
 
-        $section_id = $revision['section_id'];
+		$revisionToInsert = $recoveredRevision;
+		unset($revisionToInsert['id']);
+		unset($revisionToInsert['created_at']);
+		$this->db->insert( "product_content_revisions", $revisionToInsert );
 
-        unset($revision['id']);
-        unset($revision['created_at']);
-        unset($revision['section_id']);
+		$newRevision = $this->db->select( "product_content_revisions.*, product_content.section_id" )
+			->from( "product_content_revisions" )
+			->join( "product_content", "product_content_revisions.content_id = product_content.id" )
+			->where( "product_content_revisions.id", $this->db->insert_id() )
+			->get()
+			->row_array();
 
-        $this->db->insert( "product_content_revisions", $revision );
-
-        redirect( sprintf('/editor/%d/%d', $revision['project_id'], $section_id), "refresh" );
-    }
+		if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+			/* if it is an ajax call, json response */
+			$this->output->set_content_type("application/json");
+			$this->output->set_output( json_encode( [ "revision" => $newRevision ] ) );
+		} else {
+			/* otherwise, redirect */
+			redirect(
+				sprintf(
+					"/editor/%d/%d",
+					$newRevision["project_id"],
+					$newRevision["section_id"]
+				),
+				"refresh"
+			);
+		}
+	}
 	
 	private function _is_reviewer( $project_id ) {
 		return $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $project_id );

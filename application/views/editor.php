@@ -53,7 +53,7 @@
 								</nav>
 								<div id="<?php echo sprintf( "p_%s_revisions", $p["id"] ); ?>" class="collapse">
 									<div class="accordion" id="<?php echo sprintf( "p_%s_revisions_accordian", $p["id"] ); ?>">
-										<?php foreach( $p["revisions"] as $revision ) { ?>
+										<?php foreach( $p["revisions"] as $count => $revision ) { ?>
 											<div class="card mb-0">
 												<div class="card-header p-2 revision-header">
 													<img alt="Image" src="<?php echo "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $revision["email"] ) ) ) . "?s=60&d=mp"; ?>" class="avatar mr-1" />
@@ -63,17 +63,26 @@
 												<div class="revision-content collapse">
 													<div class="card-body text-small p-2">
 														<?php echo $revision["diff"]; ?>
-                                                    </div>
-                                                    <form class="card-body text-small p-2" action="/revert/<?php echo $revision['id']; ?>" method="POST">
-                                                        <button class='btn btn-primary btn-sm confirm-dialog'
-                                                                type="submit"
-                                                                name="remove_levels"
-                                                                value="revert"
-                                                                data-confirm-message="Are you sure? A new version will be added to history."
-                                                        >
-                                                            Revert to this version
-                                                        </button>
-                                                    </form>
+                                                        <br />
+														<?php if ( $count == 0 ): ?>
+                                                            <span class="badge badge-secondary">Current revision</span>
+														<?php else: ?>
+                                                            <form class="mt-2"
+                                                                  action="/editor/recover/<?php echo $revision['id']; ?>"
+                                                                  method="POST"
+                                                            >
+                                                                <button class="btn btn-primary btn-sm confirm-dialog"
+                                                                        role="button"
+                                                                        type="submit"
+                                                                        name="remove_levels"
+                                                                        value="revert"
+                                                                        data-confirm-message="Are you sure? A new version will be added to history."
+                                                                >
+                                                                    Recover this revision
+                                                                </button>
+                                                            </form>
+														<?php endif; ?>
+													</div>
 												</div>
 											</div>
 										<?php } ?>
