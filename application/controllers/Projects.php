@@ -24,19 +24,6 @@ class Projects extends CI_Controller {
 	
 	public function index( $project_id = null )
 	{
-		// Old Version
-		// $language_id = $_GET["language"] ?? null;
-		// $language = $this->project_model->getLanguageName( $language_id );
-		// $data = [
-		// 	"projects" => $this->project_model->getProjects( $language_id ),
-		// 	"languages" => $this->project_model->getProjectLanguages(),
-		// 	"selected_language" => $language,
-		// ];
-		// $this->template->set( "title", "Dashboard" );
-		// $this->breadcrumbs[] = [ "label" => "All"  ];
-		// $this->template->set( "breadcrumbs", $this->breadcrumbs );
-		// $this->template->load( "template", "projects", $data );
-		// new Version
 		$language_id = $_GET["language"] ?? null;
 		$projects =  $this->project_model->getProjects( $language_id );
 		foreach( $projects as $key => $project ){
@@ -47,31 +34,35 @@ class Projects extends CI_Controller {
 		$language = $this->project_model->getLanguageName( $language_id );
 		$ion_auth = $this->data['ion_auth'];
 		$this->breadcrumbs[] = [ "label" => "All"  ];
-		$this->twig->addGlobal('title', "Dashboard");
-		$this->twig->addGlobal('ion_auth', $ion_auth);
-		$this->twig->addGlobal('projects', $projects);
-		$this->twig->addGlobal('languages', $this->project_model->getProjectLanguages());
-		$this->twig->addGlobal('selected_language', $language);
-		$this->twig->addGlobal('breadcrumbs', $this->breadcrumbs);
-		$this->twig->display('twigs/projects');
+		$this->twig->addGlobal("title", "Dashboard");
+		$this->twig->addGlobal("ion_auth", $ion_auth);
+		$this->twig->addGlobal("projects", $projects);
+		$this->twig->addGlobal("languages", $this->project_model->getProjectLanguages());
+		$this->twig->addGlobal("selected_language", $language);
+		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
+		$this->twig->display("twigs/projects");
 	}
 	
 	public function detail( $project_id ) {
 		$this->load->model( "product_model" );
 		$project = $this->project_model->getProject( $project_id );
 		$product = $this->product_model->getProduct( $project["product_id"] );
+		$ion_auth = $this->data['ion_auth'];
+		$members = $this->project_model->getMembers( $project["id"] );
+		foreach($members as $key=>$member){
+			$members[$key]['md5email'] = md5( strtolower( trim( $member["email"] ) ) );
+		}
 		$title = "{$product['name']} ({$project['language_name']})";
-		$data = [
-			"project" => $project,
-			"product" => $product,
-			"members" => $this->project_model->getMembers( $project["id"] ),
-			"sections" => $this->project_model->getSections( $project["id"] ),
-			"can_manage_members" => $this->_can_manage_members( $project["id"] ),
-		];
-		$this->template->set( "title", $title );
+		$this->twig->addGlobal("title", $title);
+		$this->twig->addGlobal("ion_auth", $ion_auth);
+		$this->twig->addGlobal("project", $project);
+		$this->twig->addGlobal("product", $product);
+		$this->twig->addGlobal("members", $members);
+		$this->twig->addGlobal("sections", $this->project_model->getSections( $project["id"] ));
+		$this->twig->addGlobal("can_manage_members", $this->_can_manage_members( $project["id"] ));
 		$this->breadcrumbs[] = [ "label" => $title  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "project", $data );
+		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
+		$this->twig->display("twigs/project");
 	}
 	
 	public function get_languages() {
