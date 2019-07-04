@@ -21,10 +21,16 @@ class User extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( ["ion_auth", "form_validation" ] );
+		$this->load->library( ["ion_auth", "form_validation",'twig' ] );
 		$this->load->helper( [ "url", "language" ] );
 		$this->form_validation->set_error_delimiters( $this->config->item( "error_start_delimiter", "ion_auth" ), $this->config->item( "error_end_delimiter", "ion_auth" ) );
 		$this->lang->load( "auth" );
+		$ion_auth = $this->ion_auth->logged_in();
+		$this->twig->addGlobal("ion_auth", $ion_auth);
+		if($ion_auth){
+			$this->twig->addGlobal("ion_auth_image",  md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ));
+			$this->twig->addGlobal("ion_auth_is_admin",  $this->ion_auth->is_admin());
+		}
 	}
 	
 	public $breadcrumbs = [
@@ -44,10 +50,16 @@ class User extends CI_Controller
 		foreach( $this->data["users"] as $k => $user ) {
 			$this->data["users"][$k]->groups = $this->ion_auth->get_users_groups( $user->id )->result();
 		}
-		$this->template->set( "title", "Users" );
+		$users = $this->data['users'];
+		foreach($users as $key => $user ){
+			$users[$key] = (array) $users[$key];
+			$users[$key]['md5email'] = md5( strtolower( trim( $user->email ) ) );
+		}
+		$this->twig->addGlobal("users", $users);
+		$this->twig->addGlobal("title", "Users");
 		$this->breadcrumbs[] = [ "label" => "List" ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "auth/list", $this->data );
+		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
+		$this->twig->display("twigs/auth/list");
 	}
     
     public function edit( $user_id = null )
@@ -58,24 +70,22 @@ class User extends CI_Controller
         
 		$this->load->model( "project_model" );
 		
-        $data = [
-			"user" => $this->ion_auth->user( $user_id )->row(),
-			"permission_groups" => $this->ion_auth->groups()->result_array(),
-			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
-			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
-		];
-        
 		$this->breadcrumbs[] = [
             "label" => "Edit",
         ];
-        
         $this->breadcrumbs[] = [
-            "label" => $data["user"]->first_name . " " . $data["user"]->last_name,
+            "label" =>  $this->ion_auth->user( $user_id )->row()->first_name . " " . $this->ion_auth->user( $user_id )->row()->last_name,
         ];
-
-		$this->template->set( "title", "Edit User" );
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "account", $data );
+        $user = $this->ion_auth->user( $user_id )->row();
+        $user = (array) $user;
+        $user['md5email'] = md5( strtolower( trim( $user['email'] ) ) );
+		$this->twig->addGlobal("title", "Edit User" );
+		$this->twig->addGlobal("user", $user);
+		$this->twig->addGlobal("permission_groups", $this->ion_auth->groups()->result_array());
+		$this->twig->addGlobal("user_group_id", $this->ion_auth->get_users_groups( $user_id )->row()->id);
+		$this->twig->addGlobal("membership", $this->project_model->getMembershipByUserId( $user_id ));
+		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
+		$this->twig->display("twigs/account");
 	}
 	
 	public function search( $project_id, $query )
@@ -155,9 +165,8 @@ class User extends CI_Controller
 				'id' => 'password',
 				'type' => 'password',
 			];
-
-			$this->template->set( "title", "Login" );
-			$this->template->load( "utility_template", "auth/login", $this->data );
+			$this->twig->addGlobal("title", "Login");
+			$this->twig->display("twigs/auth/login",$this->data);
 		}
 	}
 
@@ -240,10 +249,10 @@ class User extends CI_Controller
 		$this->form_validation->set_rules( "identity", $this->lang->line( "forgot_password_validation_email_label" ), "required|valid_email" );
 
 		if( $this->form_validation->run() === false ) {
-			$this->data["type"] = $this->config->item( "identity", "ion_auth" );
-			$this->data["message"] = validation_errors();
-			$this->template->set( "title", "Forgot password" );
-			$this->template->load( "utility_template", "auth/forgot_password", $this->data );
+			$this->twig->addGlobal("title", "Forgot password");
+			$this->twig->addGlobal("type", $this->config->item( "identity", "ion_auth" ));
+			$this->twig->addGlobal("message", validation_errors());
+			$this->twig->display("twigs/auth/forgot_password",$this->data);
 		}
 		else
 		{
@@ -472,8 +481,8 @@ class User extends CI_Controller
 			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
 			$this->data["post"] = $this->input->post();
-			$this->template->set( "title", "Register" );
-			$this->template->load( "utility_template", "auth/register", $this->data );
+			$this->twig->addGlobal("title", "Register");
+			$this->twig->display("twigs/auth/register",$this->data);
 		}
 	}
 
@@ -494,16 +503,12 @@ class User extends CI_Controller
 		$languages = array_map( function( $language ) {
 			return $language["language_id"];
 		}, $languages );
-		
-		$data = [
-			"user" => $this->ion_auth->user()->row(),
-			"languages" => $languages,
-			"skills" => $this->skills,
-			"selected_skills" => unserialize( $this->ion_auth->user()->row()->skills ),
-		];
-		
-		$this->template->set( "title", "Almost done" );
-		$this->template->load( "utility_template", "auth/register_profile", $data );
+		$this->twig->addGlobal("user", $this->ion_auth->user()->row());
+		$this->twig->addGlobal("languages", $languages);
+		$this->twig->addGlobal("skills", $this->skills);
+		$this->twig->addGlobal("selected_skills", unserialize( $this->ion_auth->user()->row()->skills ));
+		$this->twig->addGlobal("title", "Almost done");
+		$this->twig->display("twigs/auth/register_profile");
 	}
 	
 	public function register_profile_save() {
@@ -555,9 +560,11 @@ class User extends CI_Controller
 				"label" => "Settings",
 			]
 		];
-		$this->template->set( "title", "Account Settings" );
-		$this->template->set( "breadcrumbs", $breadcrumbs );
-		$this->template->load( "template", "account", $data );
+		$this->twig->addGlobal("title", "Account Settings");
+		$this->twig->addGlobal("breadcrumbs", $breadcrumbs);
+		$this->twig->addGlobal("user", $this->ion_auth->user()->row());
+		$this->twig->addGlobal("permission_groups", $this->ion_auth->groups()->result_array());
+		$this->twig->display("twigs/account");
 	}
 	
 	public function save_account() {
