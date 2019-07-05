@@ -8,7 +8,7 @@
 class User extends CI_Controller
 {
 	public $data = [];
-	
+
 	public $skills = [
 		"Graphic design",
 		"Web development",
@@ -27,13 +27,11 @@ class User extends CI_Controller
 		$this->form_validation->set_error_delimiters( $this->config->item( "error_start_delimiter", "ion_auth" ), $this->config->item( "error_end_delimiter", "ion_auth" ) );
 		$this->lang->load( "auth" );
 		$user = $this->ion_auth->user()->row();
-		if( $user ) {
-			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
-			$user->is_admin = $this->ion_auth->is_admin();
+		if ( $user ) {
 			$this->twig->addGlobal( "user",  $user );
 		}
 	}
-	
+
 	public $breadcrumbs = [
 		[
 			"label" => "Users",
@@ -46,7 +44,7 @@ class User extends CI_Controller
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		
+
 		$this->data["users"] = $this->ion_auth->users()->result();
 		foreach( $this->data["users"] as $k => $user ) {
 			$this->data["users"][$k]->groups = $this->ion_auth->get_users_groups( $user->id )->result();
@@ -56,49 +54,49 @@ class User extends CI_Controller
 			$users[$key] = (array) $users[$key];
 			$users[$key]['md5email'] = md5( strtolower( trim( $user->email ) ) );
 		}
-		
+
 		$data = [
 			"users" => $users,
 		];
-		
+
 		$this->breadcrumbs[] = [ "label" => "List" ];
 		$this->twig->addGlobal( "title", "Users" );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
 		$this->twig->display( "twigs/auth/list", $data );
 	}
-    
+
     public function edit( $user_id = null )
 	{
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-        
+
 		$this->load->model( "project_model" );
-		
+
 		$user = $this->ion_auth->user( $user_id )->row();
-		
+
         $data = [
 			"edit_user" => $user,
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
 		];
-		
+
 		$data["edit_user"]->image = md5( strtolower( trim( $user->email ) ) );
-        
+
 		$this->breadcrumbs[] = [
             "label" => "Edit",
         ];
-        
+
         $this->breadcrumbs[] = [
             "label" => $data["edit_user"]->first_name . " " . $data["edit_user"]->last_name,
         ];
-		
+
 		$this->twig->addGlobal( "title", "Edit User" );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
 		$this->twig->display( "twigs/account", $data );
 	}
-	
+
 	public function search( $project_id, $query )
 	{
 		$this->load->model( "project_model" );
@@ -130,7 +128,7 @@ class User extends CI_Controller
 		{
 			redirect('/projects', 'refresh');
 		}
-		
+
 		$this->data['title'] = $this->lang->line('login_heading');
 
 		// validate form input
@@ -206,16 +204,16 @@ class User extends CI_Controller
 				$this->session->set_flashdata( "message", $this->ion_auth->errors() );
 				redirect( "/forgot_password", "refresh" );
 			}
-			
+
 			$data = $this->ion_auth->forgotten_password( $user->email );
-			
+
 			if( $data ) {
-				
+
 				$template_data = [
 					"user" => $user->first_name,
 					"link" => base_url() . "user/reset_password/" . $data["forgotten_password_code"],
 				];
-				
+
 				$this->twig->addGlobal( "heading", "Password reset instructions" );
 				$this->twig->addGlobal( "base_url", base_url() );
 				$content = $this->twig->render("twigs/email/forgot_password", $template_data );
@@ -225,7 +223,7 @@ class User extends CI_Controller
 				$this->email->message( $content );
 				$this->email->subject( "Password reset instructions" );
 				$this->email->send();
-								
+
 				$this->session->set_flashdata( "message", $this->ion_auth->messages() );
 				redirect( "/login", "refresh" );
 			} else {
@@ -240,7 +238,7 @@ class User extends CI_Controller
 		if( ! $code ) {
 			show_404();
 		}
-		
+
 		$user = $this->ion_auth->forgotten_password_check( $code );
 
 		if( $user ) {
@@ -386,7 +384,7 @@ class User extends CI_Controller
 			$email = strtolower($this->input->post('email'));
 			$identity = ($identity_column === 'email') ? $email : $this->input->post('identity');
 			$password = $this->input->post('password');
-			
+
 			$additional_data = [
 				'first_name' => $this->input->post('first_name'),
 				'last_name' => $this->input->post('last_name'),
@@ -416,40 +414,26 @@ class User extends CI_Controller
 		if( ! $this->ion_auth->logged_in() ) {
 			show_404();
 		}
-		
-		$user_id = $this->ion_auth->user()->row()->id;
-		
-		$languages = $this->db->select( "*" )
-			->from( "user_languages" )
-			->where( "user_id", $user_id )
-			->get()
-			->result_array();
-		
-		$languages = array_map( function( $language ) {
-			return $language["language_id"];
-		}, $languages );
-		
-		$userSkills = unserialize( $this->ion_auth->user()->row()->skills );
-		
+
 		$data = [
 			"edit_user" => $this->ion_auth->user()->row(),
 			"languages" => $languages,
 			"skills" => array_merge($this->skills, $userSkills),
 			"selected_skills" => $userSkills,
 		];
-		
+
 		$this->twig->addGlobal( "title", "Almost done" );
 		$this->twig->display( "twigs/auth/register_profile", $data );
 	}
-	
+
 	public function register_profile_save() {
 		$this->output->set_content_type( "application/json" );
-		
+
 		$this->form_validation->set_rules( "mother_language_id", "Mother language", "required" );
-		
+
 		if( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
-		} else {	
+		} else {
 			$post_data = $this->input->post();
 			$user_id = $this->ion_auth->user()->row()->id;
 			$data = [
@@ -461,10 +445,10 @@ class User extends CI_Controller
 			];
 			$this->db->where( "id", $user_id );
 			$this->db->update( "users", $data );
-			
+
 			$this->db->where( "user_id", $user_id )
 				->delete( "user_languages" );
-			
+
 			foreach( $post_data["languages"] as $language ) {
 				$data = [
 					"user_id" => $user_id,
@@ -472,20 +456,17 @@ class User extends CI_Controller
 				];
 				$this->db->insert( "user_languages", $data );
 			}
-			
+
 			$this->output->set_output( json_encode( [ "redirect" => "/projects" ] ) );
 		}
 	}
-	
+
 	public function account()
 	{
 		$data = [
-			"edit_user" => $this->ion_auth->user()->row(),
-			"permission_groups" => $this->ion_auth->groups()->result_array(),
+			"skills" => $this->skills,
 		];
-		
-		$data["edit_user"]->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
-		
+
 		$breadcrumbs = [
 			[
 				"label" => "Account",
@@ -499,17 +480,17 @@ class User extends CI_Controller
 		$this->twig->addGlobal( "breadcrumbs", $breadcrumbs );
 		$this->twig->display( "twigs/account", $data );
 	}
-	
+
 	public function save_account() {
 		$this->output->set_content_type( "application/json" );
-		
+
 		$this->form_validation->set_rules( "email", "Email", "required|valid_email" );
 		$this->form_validation->set_rules( "first_name", "First name", "required" );
 		$this->form_validation->set_rules( "last_name", "Last name", "required" );
-		
+
 		if( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
-		} else {	
+		} else {
 			$data = $this->input->post();
             $user_id = $this->ion_auth->is_admin() ? $data["id"] : $this->ion_auth->user()->row()->id;
             $data["username"] = $data["email"];
@@ -518,10 +499,10 @@ class User extends CI_Controller
 			$this->output->set_output( json_encode( [ "success" => "Account info updated" ] ) );
 		}
 	}
-	
+
 	public function save_password() {
 		$this->output->set_content_type( "application/json" );
-		
+
 		if( ! $this->ion_auth->is_admin() ) {
 			$this->form_validation->set_rules( "current_password", "Current password", "required" );
 		}
@@ -538,7 +519,7 @@ class User extends CI_Controller
             } else {
                 $change = $this->ion_auth->change_password( $user->email, $this->input->post( "current_password" ), $this->input->post( "new_password" ) );
             }
-            
+
 			if( ! $change ) {
 				$this->output->set_output( json_encode( [ "error" => $this->ion_auth->errors() ] ) );
 			} else {
@@ -546,22 +527,22 @@ class User extends CI_Controller
 			}
 		}
 	}
-	
+
 	public function save_permissions() {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		
+
 		$this->output->set_content_type( "application/json" );
-		
+
 		$this->form_validation->set_rules( "group_id", "Permission level", "required" );
 		$this->form_validation->set_rules( "user_id", "User ID", "required" );
-		
+
 		if( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
-		} else {	
+		} else {
 			$data = $this->input->post();
-			
+
 			$this->db->where( "user_id", $data["user_id"] )
 				->delete( "users_groups" );
 
