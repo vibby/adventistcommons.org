@@ -15,6 +15,7 @@ class User extends CI_Controller
 		"Software development",
 		"Writing/editing",
 		"Video editing",
+        "Illustration (digital art)"
 	];
 
 	public function __construct()
