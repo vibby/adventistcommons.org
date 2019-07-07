@@ -247,6 +247,42 @@ class Editor extends CI_Controller {
 		$this->output->set_output( json_encode( [ "translated_text" => $result["text"] ] ) );
 	}
 	
+	public function restore( $revision_id ) {
+		$this->output->set_content_type("application/json");
+		$recovered_revision = $this->db->select( "*" )
+			->from( "product_content_revisions" )
+			->where( "id", $revision_id )
+			->get()
+			->row_array();
+		
+		$current_revision = $this->db->select( "content" )
+			->from( "product_content_revisions" )
+			->where( "content_id", $recovered_revision['content_id'] )
+			->where( "project_id", $recovered_revision['project_id'] )
+			->order_by( "created_at", "DESC" )
+			->limit(1)
+			->get()
+			->row_array();
+		
+		$error_message = null;
+		
+		if( $current_revision["content"] === $recovered_revision["content"] ) {
+			$error_message = 'Cannot recover this version since content is same as current';
+			$this->output->set_output( json_encode( [ "error" => "Cannot recover this version since content is same as current" ] ) );
+			return false;
+		} else {
+			$data = [
+				"content_id" => $recovered_revision["content_id"],
+				"project_id" => $recovered_revision["project_id"],
+				"content" => $recovered_revision["content"],
+				"user_id" => $this->ion_auth->user()->row()->id,
+			];
+			$this->db->insert( "product_content_revisions", $data );
+		}
+		
+		$this->output->set_output( json_encode( [ "redirect" => "/editor/" . $recovered_revision["project_id"] . "/" . $this->product_model->getSectionId( $recovered_revision["content_id"] ) . "#p" . $recovered_revision["content_id"] ] ) );
+	}
+	
 	private function _is_reviewer( $project_id ) {
 		return $this->project_model->isReviewer( $this->ion_auth->user()->row()->id, $project_id );
 	}
