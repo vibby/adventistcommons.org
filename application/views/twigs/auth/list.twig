@@ -1,6 +1,5 @@
-{% extends 'twigs/template.twig' %}
+{% extends "twigs/template.twig" %}
 
-{% block title %}Adventist Commons | {{title}} {% endblock %}
 {% block content %}
 	<div class="container">
 		<div class="row justify-content-center">
@@ -21,17 +20,17 @@
 							</tr>
 							{% for user in users  %}
 								<tr>
-									<td><img alt="Image" width="40" src="https://www.gravatar.com/avatar/{{user.md5email}}?s=80&d=mp" class="avatar" /></td>
-									<td>{{user.first_name}}</td>
-									<td>{{user.last_name}}</td>
-									<td>{{user.email}}</td>
+									<td><img alt="Image" width="40" src="https://www.gravatar.com/avatar/{{ user.md5email }}?s=80&d=mp" class="avatar" /></td>
+									<td>{{ user.first_name }}</td>
+									<td>{{ user.last_name }}</td>
+									<td>{{ user.email }}</td>
 									<td>
 										{% for group in user.groups %}
 											{{group.description}}
 										{% endfor %}
 									</td>
 									<td>
-										<a href="/user/edit/{{user.id}}" class="btn btn-sm btn-outline-secondary">Edit</a>
+										<a href="/user/edit/{{ user.id }}" class="btn btn-sm btn-outline-secondary">Edit</a>
 									</td>
 								</tr>
 							{% endfor %}

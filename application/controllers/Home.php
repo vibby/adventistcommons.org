@@ -14,40 +14,33 @@ class Home extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( "ion_auth" );
-		$this->load->library('twig');
+		$this->load->library( [ "ion_auth", "twig" ] );
 		$this->load->model( "product_model" );
-		$this->data = array(
-            'ion_auth' =>  $this->ion_auth->logged_in(),
-        );
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
+		}
 	}
 	
 	public function index()
 	{
-		$this->twig->addGlobal("title", "Certified Adventist Resources, Culturally Relevant");
-		$this->twig->addGlobal("is_home", true);
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$ion_auth = $this->data["ion_auth"];
-		$this->twig->addGlobal("ion_auth", $ion_auth);
-		if($ion_auth){
-			$this->twig->addGlobal("ion_auth_image",  md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ));
-			$this->twig->addGlobal("ion_auth_is_admin",  $this->ion_auth->is_admin());
-		}
-		$this->twig->display("twigs/home");
+		$this->twig->addGlobal( "title", "Certified Adventist Resources, Culturally Relevant" );
+		$this->twig->addGlobal( "is_home", true );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/home" );
 	}
 	
 	public function feedback()
 	{
 		$this->breadcrumbs[] = [ "label" => "Feedback" ];
-		$this->twig->addGlobal("title", "Feedback");
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$ion_auth = $this->data["ion_auth"];
-		if( $ion_auth ){
-			$this->twig->addGlobal("ion_auth_row", $this->ion_auth->user()->row());
-		}
-		$this->twig->addGlobal("ion_auth", $ion_auth);
-		$this->twig->addGlobal("http_referer", $_SERVER["HTTP_REFERER"]);
-		$this->twig->display("twigs/feedback");
+		$this->twig->addGlobal( "title", "Feedback" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$data = [
+			"http_referer" => $_SERVER["HTTP_REFERER"],
+		];
+		$this->twig->display( "twigs/feedback", $data );
 	}
 	
 	public function send_feedback()

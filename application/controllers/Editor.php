@@ -8,17 +8,18 @@ class Editor extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation","twig" ] );
+		$this->load->library( [ "ion_auth", "form_validation", "twig" ] );
 		$this->load->helper( [ "url" ] );
 		$this->load->model( "product_model" );
 		$this->load->model( "project_model" );
-		$ion_auth = $this->ion_auth->logged_in();
-		$this->twig->addGlobal("ion_auth", $ion_auth);
-		if($ion_auth){
-			$this->twig->addGlobal("ion_auth_image",  md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ));
-			$this->twig->addGlobal("ion_auth_is_admin",  $this->ion_auth->is_admin());
-		}else{
+		if( ! $this->ion_auth->logged_in() ){
 			redirect( "/login", "refresh" );
+		}
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
 		}
 	}
 	
@@ -41,27 +42,24 @@ class Editor extends CI_Controller {
 			show_404();
 		}
 		
-		$content = $this->product_model->getSectionContent( $project_id, $section_id, $this->ion_auth->user()->row()->id );
-		foreach( $content as $key => $p){
-			foreach($p['revisions'] as $key1 => $revision){
-				$content[$key]['revisions'][$key1]['md5email'] = md5( strtolower( trim( $revision["email"] ) ) );
-			}
-		}
-		$this->twig->addGlobal("content",  $content);
-		$this->twig->addGlobal("project",   $project);
-		$this->twig->addGlobal("product",   $product);
-		$this->twig->addGlobal("section",   $section);
-		$this->twig->addGlobal("can_commit",  $this->_can_commit( $project_id ));
-		$this->twig->addGlobal("can_always_commit",  $this->_can_always_commit( $project_id ));
-		$this->twig->addGlobal("can_review",  $this->_can_review( $project_id ));
-		$this->twig->addGlobal("can_auto_translate",  $this->_can_auto_translate( $project ));
-		$this->twig->addGlobal("is_reviewer",  $this->_is_reviewer( $project_id ));
-		$this->twig->addGlobal("num_required_approvals",  $this->num_required_approvals);
-		$this->twig->addGlobal("title",  "Dashboard");
+		$data = [
+			"content" => $this->product_model->getSectionContent( $project_id, $section_id, $this->ion_auth->user()->row()->id ),
+			"project" => $project,
+			"product" => $product,
+			"section" => $section,
+			"can_commit" => $this->_can_commit( $project_id ),
+			"can_always_commit" => $this->_can_always_commit( $project_id ),
+			"can_review" => $this->_can_review( $project_id ),
+			"can_auto_translate" => $this->_can_auto_translate( $project ),
+			"is_reviewer" => $this->_is_reviewer( $project_id ),
+			"num_required_approvals" => $this->num_required_approvals,
+		];
 		$this->breadcrumbs[] = [ "label" => $product["name"] . " (" . $project["language_name"] . ")", "url" => "/projects/" . $project["id"]  ];
 		$this->breadcrumbs[] = [ "label" => $section["name"] ];
-		$this->twig->addGlobal("breadcrumbs",  $this->breadcrumbs);
-		$this->twig->display("twigs/editor");
+		
+		$this->twig->addGlobal( "title", "Editor" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/editor", $data );
 	}
 	
 	public function commit() {

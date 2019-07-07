@@ -1,6 +1,5 @@
-{% extends 'twigs/template.twig' %}
+{% extends "twigs/template.twig" %}
 
-{% block title %}Adventist Commons | {{title}} {% endblock %}
 {% block content %}
 	<div class="container">
 		<div class="row justify-content-center">
@@ -12,13 +11,13 @@
 			</div>
 			<div class="col-lg-6">
 				<form action="/home/send_feedback" method="post" class="text-left auto-submit">
-					<input type="hidden" name="user_id" value="{{ (ion_auth) ? ion_auth_row.id : '' }}">
-					<input type="hidden" name="referer" value="{{http_referer}}">
+					<input type="hidden" name="user_id" value="{{ user.id }}">
+					<input type="hidden" name="referer" value="{{ http_referer }}">
 					<div class="form-group">
-						<input class="form-control" type="text" placeholder="Name" name="name" value="{{ (ion_auth) ? ion_auth_row.first_name  ~ " " ~ ion_auth_row.last_name  : '' }}">
+						<input class="form-control" type="text" placeholder="Name" name="name" value="{{ user.first_name  ~ " " ~ user.last_name }}">
 					</div>
 					<div class="form-group">
-						<input class="form-control" type="email" placeholder="Email" name="email" value="{{ (ion_auth) ? ion_auth_row.email : '' }}">
+						<input class="form-control" type="email" placeholder="Email" name="email" value="{{ user.email }}">
 					</div>
 					<div class="form-group">
 						<textarea class="form-control" type="text" placeholder="Message" rows="8" name="message"></textarea>

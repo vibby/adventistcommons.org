@@ -7,12 +7,15 @@ class Projects extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation",'twig' ] );
+		$this->load->library( [ "ion_auth", "form_validation", "twig" ] );
 		$this->load->helper( [ "url" ] );
 		$this->load->model( "project_model" );
-		$this->data = array(
-            'ion_auth' =>  $this->ion_auth->logged_in(),
-        );
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
+		}
 	}
 	
 	public $breadcrumbs = [
@@ -25,44 +28,41 @@ class Projects extends CI_Controller {
 	public function index( $project_id = null )
 	{
 		$language_id = $_GET["language"] ?? null;
-		$projects =  $this->project_model->getProjects( $language_id );
-		foreach( $projects as $key => $project ){
-			foreach($project['members'] as $key1=>$member){
-				$projects[$key]['members'][$key1]['md5email'] = md5( strtolower( trim( $member["email"] ) ) );
-			}
-		}
 		$language = $this->project_model->getLanguageName( $language_id );
-		$ion_auth = $this->data['ion_auth'];
+		$data = [
+			"projects" => $this->project_model->getProjects( $language_id ),
+			"languages" => $this->project_model->getProjectLanguages(),
+			"selected_language" => $language,
+		];
+		
 		$this->breadcrumbs[] = [ "label" => "All"  ];
-		$this->twig->addGlobal("title", "Dashboard");
-		$this->twig->addGlobal("ion_auth", $ion_auth);
-		$this->twig->addGlobal("projects", $projects);
-		$this->twig->addGlobal("languages", $this->project_model->getProjectLanguages());
-		$this->twig->addGlobal("selected_language", $language);
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/projects");
+		
+		$this->twig->addGlobal( "title", "Dashboard" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/projects", $data );
 	}
 	
 	public function detail( $project_id ) {
 		$this->load->model( "product_model" );
 		$project = $this->project_model->getProject( $project_id );
 		$product = $this->product_model->getProduct( $project["product_id"] );
-		$ion_auth = $this->data['ion_auth'];
-		$members = $this->project_model->getMembers( $project["id"] );
-		foreach($members as $key=>$member){
-			$members[$key]['md5email'] = md5( strtolower( trim( $member["email"] ) ) );
-		}
 		$title = "{$product['name']} ({$project['language_name']})";
-		$this->twig->addGlobal("title", $title);
-		$this->twig->addGlobal("ion_auth", $ion_auth);
-		$this->twig->addGlobal("project", $project);
-		$this->twig->addGlobal("product", $product);
-		$this->twig->addGlobal("members", $members);
-		$this->twig->addGlobal("sections", $this->project_model->getSections( $project["id"] ));
-		$this->twig->addGlobal("can_manage_members", $this->_can_manage_members( $project["id"] ));
-		$this->breadcrumbs[] = [ "label" => $title  ];
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/project");
+		
+		$members = array_map( function( $member ) {
+			$member["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ) ) ) . "?s=72&d=mp";
+			return $member;
+		}, $this->project_model->getMembers( $project["id"] ) );
+		
+		$data = [
+			"project" => $project,
+			"product" => $product,
+			"members" => $members,
+			"sections" => $this->project_model->getSections( $project["id"] ),
+			"can_manage_members" => $this->_can_manage_members( $project["id"] ),
+		];
+		$this->twig->addGlobal( "title", $title );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/project", $data );
 	}
 	
 	public function get_languages() {
@@ -142,8 +142,9 @@ class Projects extends CI_Controller {
 			"type" => $data["type"],
 		];
 		
-		$this->template->set( "heading", "You've been added to a new project!" );
-		$content = $this->template->load( "email/template", "email/added_contributor", $template_data, true );
+		$this->twig->addGlobal( "heading", "You've been added to a new project!" );
+		$this->twig->addGlobal( "base_url", base_url() );
+		$content = $this->twig->render("twigs/email/added_contributor", $template_data );
 		$this->email->from( "info@adventistcommons.org", "Adventist Commons" );
 		$this->email->to( $user->email );
 		$this->email->message( $content );

@@ -1,13 +1,12 @@
-{% extends 'twigs/template.twig' %}
+{% extends "twigs/template.twig" %}
 
-{% block title %}Adventist Commons | {{title}} {% endblock %}
 {% block content %}
 	<div class="container">
 		<div class="row justify-content-center">
 			<div class="col-xl-10 col-lg-11">
 				<div class="page-header d-flex justify-content-between align-items-center">
 					<h1>Products</h1>
-					{% if(ion_auth_is_admin) %}
+					{% if user.is_admin %}
 						<button class="btn btn-primary d-flex" data-toggle="modal" data-target="#add-product-form">Add Product</button>
 					{% endif %}
 				</div>
@@ -19,20 +18,20 @@
 								<div class="card card-project">
 									<div class="row no-gutters">
 										<div class="col" style="flex: 0 0 120px">
-											<img src="/uploads/{{product.cover_image}}" height="180" class="rounded-left">
+											<img src="/uploads/{{ product.cover_image }}" height="180" class="rounded-left">
 										</div>
 										<div class="col">
 											<div class="card-body">
 												<div class="card-title">
-													<a href="/products/{{product.id}}">
-														<h5 data-filter-by="text">{{product.name}}</h5>
+													<a href="/products/{{ product.id }}">
+														<h5 data-filter-by="text">{{ product.name }}</h5>
 													</a>
 												</div>
 												<div class="card-meta d-flex justify-content-between">
 													<div class="">
-														<span class="text-small">Author: {{product.author}}</span><br>
-														<span class="text-small">Pages: {{product.page_count}} </span><br>
-														<span class="text-small">Languages:  {{product.languages}} </span><br>
+														<span class="text-small">Author: {{ product.author }}</span><br>
+														<span class="text-small">Pages: {{ product.page_count }} </span><br>
+														<span class="text-small">Languages:  {{ product.languages }} </span><br>
 													</div>
 												</div>
 											</div>
@@ -46,7 +45,7 @@
 			</div>
 		</div>
 	</div>
-	{% if(ion_auth_is_admin) %}
+	{% if user.is_admin %}
 		<form class="modal fade auto-submit" action="/products/save" id="add-product-form" tabindex="-1" role="dialog" enctype="multipart/form-data">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
@@ -91,7 +90,7 @@
 									<label class="col-3">Audience</label>
 									<select class="form-control col" name="audience">
 										{% for item in audience_options  %}
-											<option>{{item}}</option>
+											<option>{{ item }}</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -104,7 +103,7 @@
 									<select class="series-select col" name="series_id" data-placeholder="Search for a series...">
 										<option value="">None</option>
 										{% for item in series  %}
-											<option value="{{item.id}}">{{item.name}}</option>
+											<option value="{{ item.id }}">{{item.name}}</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -114,8 +113,8 @@
 									{% for type in product_types  %}
 										<div class="col">
 											<div class="custom-control custom-radio">
-												<input type="radio" id="type-{{type}}" name="type" class="custom-control-input" value="{{type}}">
-												<label class="custom-control-label" for="type-{{type}}">{{type|capitalize}}</label>
+												<input type="radio" id="type-{{ type }}" name="type" class="custom-control-input" value="{{ type }}">
+												<label class="custom-control-label" for="type-{{ type }}">{{ type|capitalize }}</label>
 											</div>
 										</div>
 									{% endfor %}
@@ -191,7 +190,7 @@
 									<label class="col-3">Binding</label>
 									<select class="form-control col" name="binding">
 										{% for item in product_binding  %}
-											<option >{{item}}</option>
+											<option >{{ item }}</option>
 										{% endfor %}
 									</select>
 								</div>

@@ -7,15 +7,14 @@ class Products extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(["ion_auth", "form_validation", "upload" ]);
-		$this->load->library('twig');
-		$this->load->helper(["url"]);
+		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
+		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
-		$ion_auth = $this->ion_auth->logged_in();
-		$this->twig->addGlobal("ion_auth", $ion_auth);
-		if($ion_auth){
-			$this->twig->addGlobal("ion_auth_image",  md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) ));
-			$this->twig->addGlobal("ion_auth_is_admin",  $this->ion_auth->is_admin());
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
 		}
 	}
 	
@@ -53,15 +52,17 @@ class Products extends CI_Controller {
 	
 	public function index( $product_id = null )
 	{
-		$this->twig->addGlobal("products", $this->product_model->getProducts());
-		$this->twig->addGlobal("audience_options", $this->audience);
-		$this->twig->addGlobal("product_types", $this->product_types);
-		$this->twig->addGlobal("product_binding", $this->product_binding);
-		$this->twig->addGlobal("series", $this->product_model->getSeriesItems());
-		$this->twig->addGlobal("title", "Products");
+		$data = [
+			"products" => $this->product_model->getProducts(),
+			"audience_options" => $this->audience,
+			"product_types" => $this->product_types,
+			"product_binding" => $this->product_binding,
+			"series" => $this->product_model->getSeriesItems(),
+		];
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/products");
+		$this->twig->addGlobal( "title", "Products" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/products", $data );
 	}
 	
 	public function detail( $product_id ) {
@@ -81,13 +82,15 @@ class Products extends CI_Controller {
 				$languages[$project["language_id"]]["project"] = $project;
 			}
 		}
-		$this->twig->addGlobal("product", $product);
-		$this->twig->addGlobal("languages", $languages);
-		$this->twig->addGlobal("file_types", $this->product_model->file_types);
-		$this->twig->addGlobal("title", $product["name"]);
+		$data = [
+			"product" => $product,
+			"languages" => $languages,
+			"file_types" => $this->product_model->file_types,
+		];
 		$this->breadcrumbs[] = [ "label" => $product["name"]  ];
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/product");
+		$this->twig->addGlobal( "title", $product["name"] );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/product", $data );
 	}
 	
 	public function edit( $product_id ) {
@@ -97,12 +100,14 @@ class Products extends CI_Controller {
 		
 		$product = $this->product_model->getProduct( $product_id );
 		if( ! $product ) show_404();
-		$this->twig->addGlobal("product", $product);
-		$this->twig->addGlobal("audience_options", $this->audience);
-		$this->twig->addGlobal("product_types", $this->product_types);
-		$this->twig->addGlobal("product_binding", $this->product_binding);
-		$this->twig->addGlobal("series", $this->product_model->getSeriesItems());
-		$this->twig->addGlobal("title", "Edit Product");
+		
+		$data = [
+			"product" => $product,
+			"audience_options" => $this->audience,
+			"product_types" => $this->product_types,
+			"product_binding" => $this->product_binding,
+			"series" => $this->product_model->getSeriesItems(),
+		];
 		$this->breadcrumbs[] = [
 			"label" => $product["name"],
 			"url" => "/products/" . $product["id"],
@@ -110,8 +115,9 @@ class Products extends CI_Controller {
 		$this->breadcrumbs[] = [
 			"label" => "Edit",
 		];
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/edit_product");
+		$this->twig->addGlobal( "title", "Edit Product" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/edit_product", $data );
 	}
 	
 	public function save() {
