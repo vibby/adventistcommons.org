@@ -73,16 +73,12 @@ class User extends CI_Controller
 
 		$this->load->model( "project_model" );
 
-		$user = $this->ion_auth->user( $user_id )->row();
-
         $data = [
-			"edit_user" => $user,
+			"edit_user" => $this->ion_auth->user( $user_id )->row(),
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
 		];
-
-		$data["edit_user"]->image = md5( strtolower( trim( $user->email ) ) );
 
 		$this->breadcrumbs[] = [
             "label" => "Edit",
@@ -416,10 +412,9 @@ class User extends CI_Controller
 		}
 
 		$data = [
-			"edit_user" => $this->ion_auth->user()->row(),
+			"edit_user" => $this->user,
 			"languages" => $languages,
-			"skills" => array_merge($this->skills, $userSkills),
-			"selected_skills" => $userSkills,
+			"skills" => array_merge($this->skills, $user->skills),
 		];
 
 		$this->twig->addGlobal( "title", "Almost done" );
@@ -465,8 +460,8 @@ class User extends CI_Controller
 	{
 		$data = [
 			"skills" => $this->skills,
+			"edit_user" => $this->user,
 		];
-
 		$breadcrumbs = [
 			[
 				"label" => "Account",
@@ -492,10 +487,8 @@ class User extends CI_Controller
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
 		} else {
 			$data = $this->input->post();
-            $user_id = $this->ion_auth->is_admin() ? $data["id"] : $this->ion_auth->user()->row()->id;
-            $data["username"] = $data["email"];
-			$this->db->where( "id", $user_id );
-			$this->db->update( "users", $data );
+			$user_id = $this->ion_auth->is_admin() ? $data["id"] : $this->ion_auth->user()->row()->id;
+			$this->ion_auth->updateUser($user_id, $data);
 			$this->output->set_output( json_encode( [ "success" => "Account info updated" ] ) );
 		}
 	}
