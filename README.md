@@ -100,7 +100,19 @@ Graphic Designers:
 
 Adventistcommons is developed by developers all around the world. Here are technical stuff about how to participate, if you will.
 
-### Development Setup Guide
+### Docker Development Setup Guide (experimental)
+
+You can use the docker setup :
+- Install docker and docker-compose
+- Clone the repository to the public directory of your localhost environment
+- Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
+- Point your terminal project root and launch project with ``sudo docker-compose up``
+- In your browser, go to localhost:8080 (adminer), and connect with parameters Mysql / ac-db / root / somePassword
+- Create database ``adventistcommons``
+- run migration with command ```docker-compose exec ac-php-fpm vendor/bin/phinx migrate```
+- In your browser, go to localhost:8096 (the application) and create your account
+
+### Manual Development Setup Guide
 
 Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with webserver (Apache, Nginx …), PHP and MySQL installed. Instructions are for Windows, Mac OS and Linux.
 
