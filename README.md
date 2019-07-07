@@ -77,8 +77,7 @@ Ready to get started? Here&#39;s how you can help:
 Developers:
 
 - The translation platform being developed is built on the Codeigniter 3 PHP framework and Bootstrap 4. Though Codeigniter may not be the most advanced framework out there, it allows us to get a minimum viable product out the door sooner due to its simplicity. We're still in the early stages of development and in the process of determining the best way to implement the various features we need. 
-- If you're familiar with PHP development, feel free to check out our current [Github issues](https://github.com/AdventistCommons/adventistcommons.org/issues). 
-- View our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see what we're up to. You can join the Trello board [here](https://trello.com/invite/b/cCdSmpc0/4527547fa5dedeee84a0ccae33d08865/adventist-commons-development).
+- If you're familiar with PHP development, feel free to check out our [Trello board](https://trello.com/b/cCdSmpc0/adventist-commons-development) to see what we're up to and see how you can contribute. You can join the Trello board [here](https://trello.com/invite/b/cCdSmpc0/4527547fa5dedeee84a0ccae33d08865/adventist-commons-development).
 - Communicate and collaborate through our [Slack workspace](https://join.slack.com/t/adventistcommons/shared_invite/enQtNjYzNjAxNTUwMzA1LTEzOTRlMzZkY2ZjYTlmZTRlYThmNzZhMjMxNmQ1NWE5MWNmZDEwYjE3YTA1YWVkMTFmYmQ5YzE5NjIwMGM0MjM) where development ideas and issues can be discussed. 
 - Learn how to contribute through Github with [Github's Guide to Open Source](https://opensource.guide/how-to-contribute).
 
@@ -103,9 +102,10 @@ Follow the steps below to setup AdventistCommons on your local development envir
 
 - Clone the repository to the public directory of your localhost environment
 - I recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository. If you are using the default "localhost" server address, update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) to `http://localhost`.
-- Point your terminal client to the application/ directory, and run `php composer.phar update`
+- Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
 - Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) in your favorite MySQL client.
 - Update [these lines](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/database.php#L78-L81) with your database credentials.
+- Update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) with the alias you used to access the Adventist Commons install (eg. "localhost" or "adventistcommons.local").
 - Let us know if you have any issues with these steps.
 
 ## License
