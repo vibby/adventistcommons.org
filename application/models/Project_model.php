@@ -32,12 +32,16 @@ class Project_model extends CI_Model
 			$project["completed_strings"] = $completed_strings[$project["id"]] ?? 0;
 			$project["percent_complete"] = round( $project["total_strings"] > 0 ? $project["completed_strings"] / $project["total_strings"] * 100 : 0, 0 );
 			$project["status"] = $this->status[$project["status"]];
-			$project["members"] = $this->db->select( "*" )
+			$members = $this->db->select( "*" )
 				->from( "project_members" )
 				->where( "project_id", $project["id"] )
 				->join( "users", "project_members.user_id = users.id" )
 				->get()
 				->result_array();
+			$project["members"] = array_map( function( $member ) {
+				$member["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ) ) ) . "?s=72&d=mp";
+				return $member;
+			}, $members );
 			return $project;
 		}, $projects );
 	}

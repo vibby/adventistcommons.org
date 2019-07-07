@@ -7,9 +7,15 @@ class Products extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library(["ion_auth", "form_validation", "upload" ]);
-		$this->load->helper(["url"]);
+		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
+		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
+		}
 	}
 	
 	public $audience = [
@@ -53,10 +59,10 @@ class Products extends CI_Controller {
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
 		];
-		$this->template->set( "title", "Products" );
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "products", $data );
+		$this->twig->addGlobal( "title", "Products" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/products", $data );
 	}
 	
 	public function detail( $product_id ) {
@@ -81,10 +87,10 @@ class Products extends CI_Controller {
 			"languages" => $languages,
 			"file_types" => $this->product_model->file_types,
 		];
-		$this->template->set( "title", $product["name"] );
 		$this->breadcrumbs[] = [ "label" => $product["name"]  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "product", $data );
+		$this->twig->addGlobal( "title", $product["name"] );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/product", $data );
 	}
 	
 	public function edit( $product_id ) {
@@ -102,7 +108,6 @@ class Products extends CI_Controller {
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
 		];
-		$this->template->set( "title", "Edit Product" );
 		$this->breadcrumbs[] = [
 			"label" => $product["name"],
 			"url" => "/products/" . $product["id"],
@@ -110,8 +115,9 @@ class Products extends CI_Controller {
 		$this->breadcrumbs[] = [
 			"label" => "Edit",
 		];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "edit_product", $data );
+		$this->twig->addGlobal( "title", "Edit Product" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/edit_product", $data );
 	}
 	
 	public function save() {

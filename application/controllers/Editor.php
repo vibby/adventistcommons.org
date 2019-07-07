@@ -8,13 +8,18 @@ class Editor extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation" ] );
+		$this->load->library( [ "ion_auth", "form_validation", "twig" ] );
 		$this->load->helper( [ "url" ] );
 		$this->load->model( "product_model" );
 		$this->load->model( "project_model" );
-		
-		if ( ! $this->ion_auth->logged_in() ) {
+		if( ! $this->ion_auth->logged_in() ){
 			redirect( "/login", "refresh" );
+		}
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
 		}
 	}
 	
@@ -49,11 +54,12 @@ class Editor extends CI_Controller {
 			"is_reviewer" => $this->_is_reviewer( $project_id ),
 			"num_required_approvals" => $this->num_required_approvals,
 		];
-		$this->template->set( "title", "Dashboard" );
 		$this->breadcrumbs[] = [ "label" => $product["name"] . " (" . $project["language_name"] . ")", "url" => "/projects/" . $project["id"]  ];
 		$this->breadcrumbs[] = [ "label" => $section["name"] ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "editor", $data );
+		
+		$this->twig->addGlobal( "title", "Editor" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/editor", $data );
 	}
 	
 	public function commit() {
