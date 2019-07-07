@@ -1,3 +1,5 @@
 .DS_Store
 /application/vendor
 .idea
+/cache
+google_translate_authentication.json
