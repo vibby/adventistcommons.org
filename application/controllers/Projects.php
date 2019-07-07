@@ -7,9 +7,15 @@ class Projects extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation" ] );
+		$this->load->library( [ "ion_auth", "form_validation", "twig" ] );
 		$this->load->helper( [ "url" ] );
 		$this->load->model( "project_model" );
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
+		}
 	}
 	
 	public $breadcrumbs = [
@@ -29,10 +35,11 @@ class Projects extends CI_Controller {
 			"selected_language" => $language,
 		];
 		
-		$this->template->set( "title", "Dashboard" );
 		$this->breadcrumbs[] = [ "label" => "All"  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "projects", $data );
+		
+		$this->twig->addGlobal( "title", "Dashboard" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/projects", $data );
 	}
 	
 	public function detail( $project_id ) {
@@ -40,17 +47,22 @@ class Projects extends CI_Controller {
 		$project = $this->project_model->getProject( $project_id );
 		$product = $this->product_model->getProduct( $project["product_id"] );
 		$title = "{$product['name']} ({$project['language_name']})";
+		
+		$members = array_map( function( $member ) {
+			$member["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ) ) ) . "?s=72&d=mp";
+			return $member;
+		}, $this->project_model->getMembers( $project["id"] ) );
+		
 		$data = [
 			"project" => $project,
 			"product" => $product,
-			"members" => $this->project_model->getMembers( $project["id"] ),
+			"members" => $members,
 			"sections" => $this->project_model->getSections( $project["id"] ),
 			"can_manage_members" => $this->_can_manage_members( $project["id"] ),
 		];
-		$this->template->set( "title", $title );
-		$this->breadcrumbs[] = [ "label" => $title  ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->load( "template", "project", $data );
+		$this->twig->addGlobal( "title", $title );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/project", $data );
 	}
 	
 	public function get_languages() {
@@ -130,8 +142,9 @@ class Projects extends CI_Controller {
 			"type" => $data["type"],
 		];
 		
-		$this->template->set( "heading", "You've been added to a new project!" );
-		$content = $this->template->load( "email/template", "email/added_contributor", $template_data, true );
+		$this->twig->addGlobal( "heading", "You've been added to a new project!" );
+		$this->twig->addGlobal( "base_url", base_url() );
+		$content = $this->twig->render("twigs/email/added_contributor", $template_data );
 		$this->email->from( "info@adventistcommons.org", "Adventist Commons" );
 		$this->email->to( $user->email );
 		$this->email->message( $content );

@@ -14,23 +14,33 @@ class Home extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( "ion_auth" );
+		$this->load->library( [ "ion_auth", "twig" ] );
 		$this->load->model( "product_model" );
+		$user = $this->ion_auth->user()->row();
+		if( $user ) {
+			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+			$user->is_admin = $this->ion_auth->is_admin();
+			$this->twig->addGlobal( "user",  $user );
+		}
 	}
 	
 	public function index()
 	{
-		$this->template->set( "title", "Certified Adventist Resources, Culturally Relevant" );
-		$this->template->set( "is_home", true );
-		$this->template->load( "template", "home" );
+		$this->twig->addGlobal( "title", "Certified Adventist Resources, Culturally Relevant" );
+		$this->twig->addGlobal( "is_home", true );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/home" );
 	}
 	
 	public function feedback()
 	{
 		$this->breadcrumbs[] = [ "label" => "Feedback" ];
-		$this->template->set( "breadcrumbs", $this->breadcrumbs );
-		$this->template->set( "title", "Feedback" );
-		$this->template->load( "template", "feedback" );
+		$this->twig->addGlobal( "title", "Feedback" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$data = [
+			"http_referer" => $_SERVER["HTTP_REFERER"],
+		];
+		$this->twig->display( "twigs/feedback", $data );
 	}
 	
 	public function send_feedback()

@@ -1,4 +1,5 @@
 .DS_Store
 /application/vendor
 .idea
-composer.phar
+/application/cache
+google_translate_authentication.json
