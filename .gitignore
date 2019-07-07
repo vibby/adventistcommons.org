@@ -2,3 +2,8 @@
 /application/vendor
 .idea
 composer.phar
+/uploads
+/application/config/config.php
+/application/config/database.php
+/application/google_translate_authentication.json
+/application/cache
