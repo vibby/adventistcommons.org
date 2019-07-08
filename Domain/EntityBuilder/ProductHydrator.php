@@ -15,9 +15,9 @@ class ProductHydrator extends Hydrator
 		$this->productAttachmentHydrator = $productAttachmentHydrator;
 	}
 
-	public function hydrate($productData, $foreignData)
+	public function hydrate($productData)
 	{
-		if ($existing = $this->getCache($productData['product_id'])) {
+		if ($existing = $this->getCache($productData['id'])) {
 			return $existing;
 		}
 
@@ -26,26 +26,19 @@ class ProductHydrator extends Hydrator
 			$productData
 		);
 
-		$productAttachmentsIds = [];
-		foreach ($foreignData as $row) {
-			if (isset($row['product_attachments_id'])
-				&& !in_array($row['product_attachments_id'], $productAttachmentsIds)
-			) {
-				$productAttachmentsIds[] = $row['product_attachments_id'];
-				$product->addProductAttachment($this->productAttachmentHydrator->hydrateFromProduct($row, $product));
+		if (isset($productData['product_attachment'])) {
+			foreach ($productData['product_attachment'] as $productAttachmentData) {
+				$product->addProductAttachment($this->productAttachmentHydrator->hydrateFromProduct($productAttachmentData, $product));
 			}
 		}
 
-		$projectIds = [];
-		foreach ($foreignData as $row) {
-			if (isset($row['projects_id'])
-				&& !in_array($row['projects_id'], $projectIds)
-			) {
-				$projectIds[] = $row['projects_id'];
-				$product->addProject($this->projectHydrator->hydrateFromProduct($row, $product));
+		if (isset($productData['project'])) {
+			foreach ($productData['project'] as $projectData) {
+				$product->addProject($this->projectHydrator->hydrateFromProduct($projectData, $product));
 			}
 		}
-		$this->setCache($productData['product_id'], $product);
+
+		$this->setCache($productData['id'], $product);
 
 		return $product;
 	}

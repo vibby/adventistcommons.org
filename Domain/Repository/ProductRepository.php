@@ -22,12 +22,11 @@ class ProductRepository
 
 	public function findWithAttachmentsAndProjects($id)
 	{
-		$data = $this->productFinder->getProductWithAttachmentsAndProjects($id);
+		$data = $this->productFinder->getProductStructureWithAttachmentsAndProjects($id);
 		if (!$data) {
 			return null;
 		}
-
-		$product = $this->productHydrator->hydrate($data[0], $data);
+		$product = $this->productHydrator->hydrate(reset($data['product']));
 
 		return $product;
 	}

@@ -46,6 +46,13 @@ class Product
 		return $this->id;
 	}
 
+	public function setId(int $id): self
+	{
+		$this->id = $id;
+
+		return $this;
+	}
+
 	public function setProductId(int $id): self
 	{
 		$this->id = $id;
@@ -289,8 +296,45 @@ class Product
 		$this->productAttachments[] = $productAttachment;
 	}
 
+	public function getProductAttachments(): array
+	{
+		return $this->productAttachments;
+	}
+
 	public function addProject(Project $project)
 	{
 		$this->projects[] = $project;
+	}
+
+	public function getProjects(): array
+	{
+		return $this->projects;
+	}
+
+	public function getLanguagesRelations()
+	{
+		$relations = [];
+		foreach ($this->getProductAttachments() as $productAttachment) {
+			if ($language = $productAttachment->getLanguage()) {
+				if (!isset($relations[$language->getCode()])) {
+					$relations[$language->getCode()] = [
+						'language' => $language,
+						'productAttachments' => [$productAttachment],
+					];
+				} else {
+					$relations[$language->getCode()]['productAttachments'][] = $productAttachment;
+				}
+			}
+		}
+		foreach ($this->getProjects() as $project) {
+			if (($language = $project->getLanguage()) && !isset($relations[$language->getCode()])) {
+				$relations[$language->getCode()] = [
+					'language' => $language,
+					'project' => $project,
+				];
+			}
+		}
+
+		return $relations;
 	}
 }

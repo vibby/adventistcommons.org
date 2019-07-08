@@ -8,7 +8,7 @@ class LanguageHydrator extends Hydrator
 {
 	public function hydrate($data): Language
 	{
-		if ($existing = $this->getCache($data['language_id'])) {
+		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
 		}
 
@@ -16,7 +16,7 @@ class LanguageHydrator extends Hydrator
 			new Language($data['name'], $data['code']),
 			$data
 		);
-		$this->setCache($data['language_id'], $language);
+		$this->setCache($data['id'], $language);
 
 		return $language;
 	}

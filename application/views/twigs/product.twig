@@ -48,30 +48,31 @@
 					<div class="content-list-body">
 						<div class="card-list">
 							<div class="card-list-body">
-								{% for language in languages  %}
+								{% for relation in product.languagesRelations %}
 									<div class="card card-task">
-										{% if language.project is defined %}
+										{% if relation.project %}
 											<div class="progress">
-												<div class="progress-bar bg-danger" role="progressbar" style="width: {{ language.project.percent_complete }} %"></div>
+												<div class="progress-bar bg-danger" role="progressbar" style="width: {{ relations.project.percent_complete }} %"></div>
 											</div>
 										{% endif %}
-											
 										<div class="card-body">
 											<div class="card-title">
-												<h6 data-filter-by="text">{{ language.language_name }}</h6>
-												<div class="d-flex align-items-center">
-													<span>{{ language.project.status ? language.project.status : "" }}</span>
-												</div>
+												<h6 data-filter-by="text">{{ relation.language.name }}</h6>
+                                                {% if relation.project %}
+													<div class="d-flex align-items-center">
+														<span>{{ relation.project.status ? relation.project.status : "" }}</span>
+													</div>
+                                                {% endif %}
 											</div>
 											<div class="card-meta">
-												{% if language.attachments is defined %}
+												{% if relation.productAttachments %}
 													{% if user %}
 														<div class="dropdown">
 															<button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">
 																Download
 															</button>
 															<div class="dropdown-menu">
-																{% for attachment in language.attachments  %}
+																{% for attachment in relation.productAttachments  %}
 																	<a class="dropdown-item" href="/uploads/{{ attachment.file }}">{{ attachment.file_type }}</a>
 																{% endfor %}
 															</div>
@@ -80,15 +81,14 @@
 														<a href="/login" class="text-secondary">Login to download</a>
 													{% endif %}
 												{% else %}
-													<a href="/projects/{{ language.project.id }}" class="btn btn-secondary">Start Translating</a>
+													<a href="/projects/{{ relation.project.id }}" class="btn btn-secondary">Start Translating</a>
 												{% endif %}
 											</div>
 										</div>
 									</div>
-								{% endfor %}
-								{% if languages|length < 1 %}
+								{% else %}
 									<p>This product is not yet available in any languages.</p>
-								{% endif %}
+								{% endfor %}
 							</div>
 						</div>
 					</div>
