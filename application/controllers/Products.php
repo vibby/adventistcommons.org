@@ -7,7 +7,7 @@ class Products extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
+		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig", "Container" ] );
 		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
 		$user = $this->ion_auth->user()->row();
@@ -66,29 +66,16 @@ class Products extends CI_Controller {
 	}
 	
 	public function detail( $product_id ) {
-		$this->load->model( "project_model" );
-		$product = $this->product_model->getProduct( $product_id );
+		/** @var \AdventistCommons\Domain\Repository\ProductRepository $productRepo */
+		$productRepo = $this->container->get(\AdventistCommons\Domain\Repository\ProductRepository::class);
+		$product = $productRepo->findWithAttachmentsAndProjects($product_id);
 		if( ! $product ) show_404();
-		$attachments = $this->product_model->getAttachments( $product_id );
-		$languages = [];
-		foreach( $attachments as $attachment ) {
-			$languages[$attachment["language_id"]]["language_name"] = $attachment["name"];
-			$languages[$attachment["language_id"]]["attachments"][] = $attachment;
-		}
-		$projects = $this->project_model->getProjectsByProductId( $product_id );
-		foreach( $projects as $project ) {
-			if( ! array_key_exists( $project["language_id"], $languages ) ) {
-				$languages[$project["language_id"]]["language_name"] = $project["language_name"];
-				$languages[$project["language_id"]]["project"] = $project;
-			}
-		}
 		$data = [
 			"product" => $product,
-			"languages" => $languages,
-			"file_types" => $this->product_model->file_types,
+			"file_types" => \AdventistCommons\Domain\Entity\ProductAttachment::FILE_TYPES,
 		];
-		$this->breadcrumbs[] = [ "label" => $product["name"]  ];
-		$this->twig->addGlobal( "title", $product["name"] );
+		$this->breadcrumbs[] = [ "label" => $product->getName() ];
+		$this->twig->addGlobal( "title", $product->getName() );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
 		$this->twig->display( "twigs/product", $data );
 	}
