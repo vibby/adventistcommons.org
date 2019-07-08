@@ -1,6 +1,11 @@
 {
     "require": {
         "google/cloud-translate": "^1.2",
-        "kenjis/codeigniter-ss-twig": "^0.4.0",
+        "kenjis/codeigniter-ss-twig": "^0.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdventistCommons\\Domain\\":"../Domain"
+        }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Product_model extends CI_Model
+class Product_model extends CI_Model  implements \AdventistCommons\Domain\Repository\ProductFinderInterface
 {
 	
 	function __construct()
@@ -195,5 +195,18 @@ class Product_model extends CI_Model
 			else $ret .= $k . ' ';
 		}
 		return $ret;
+	}
+
+	public function getProductWithAttachmentsAndProjects($product_id): array
+	{
+		$query = $this->db->select( "*, products.id as product_id, product_attachments.id as product_attachments_id, projects.id as projects_id, languages.id as language_id" )
+			->from( "products" )
+			->join( "product_attachments", "products.id = product_attachments.product_id" )
+			->join( "projects", "products.id = projects.product_id" )
+			->join( "languages", "projects.language_id = languages.id" )
+			->where( "products.id", $product_id )
+			->get();
+
+		return $query->result_array();
 	}
 }
