@@ -14,6 +14,8 @@ class Language
 	private $name;
 	private $code;
 	private $googleCode;
+	private $productAttachment;
+	private $project;
 
 	public function __construct(string $name, string $code)
 	{
@@ -46,5 +48,29 @@ class Language
 	public function getGoogleCode(): string
 	{
 		return $this->googleCode;
+	}
+
+	public function setProductAttachment(ProductAttachment $productAttachment): self
+	{
+		$this->productAttachment = $productAttachment;
+
+		return $this;
+	}
+
+	public function getProductAttachment(): ?ProductAttachment
+	{
+		return $this->productAttachment;
+	}
+
+	public function setProject(Project $project): self
+	{
+		$this->project = $project;
+
+		return $this;
+	}
+
+	public function getProject(): ?Project
+	{
+		return $this->project;
 	}
 }

@@ -69,6 +69,7 @@ class Products extends CI_Controller {
 		/** @var \AdventistCommons\Domain\Repository\ProductRepository $productRepo */
 		$productRepo = $this->container->get(\AdventistCommons\Domain\Repository\ProductRepository::class);
 		$product = $productRepo->findWithAttachmentsAndProjects($product_id);
+
 		if( ! $product ) show_404();
 		$data = [
 			"product" => $product,

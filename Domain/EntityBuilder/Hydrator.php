@@ -22,6 +22,8 @@ abstract class Hydrator
 		foreach ($data as $key => $value) {
 			$method = 'set'.self::propertyNameToCamel($key);
 			if (method_exists($object, $method)) {
+
+
 				$object->$method($value);
 			}
 		}

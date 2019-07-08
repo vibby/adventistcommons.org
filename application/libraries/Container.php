@@ -4,77 +4,96 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Container
 {
-	/** @var ContainerHolder */
-	private $containerHolder;
+	private $container;
+	private $containerClosures;
+	private $closed = false;
 
-	public function __construct()
+	public function init()
 	{
 		$CI =& get_instance();
 		$CI->load->model('ion_auth_model');
 		$CI->load->model('product_model');
-		$models = [
+		$CIclasses = [
 			Product_model::class  => $CI->product_model,
 			Ion_auth_model::class => $CI->ion_auth_model,
 		];
 
-		$CI->load->library('ContainerHolder');
-		$containerHolder = $CI->containerholder;
-
-		foreach ($models as $class => $model) {
-			$containerHolder->set(
-				$class,
-				function() use ($model) {
-					return $model;
-				}
-			);
+		foreach ($CIclasses as $className => $object) {
+			$this->set($className, $object);
 		}
 
-		$containerHolder->set(
+		$container = $this;
+		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class,
-			function () use ($containerHolder) {
+			function () use ($container) {
 				return new \AdventistCommons\Domain\EntityBuilder\LanguageHydrator();
 			}
 		);
-		$containerHolder->set(
+		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\ProjectHydrator::class,
-			function () use ($containerHolder) {
+			function () use ($container) {
 				return new \AdventistCommons\Domain\EntityBuilder\ProjectHydrator(
-					$containerHolder->get(\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class)
+					$this->get(\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class)
 				);
 			}
 		);
-		$containerHolder->set(
+		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator::class,
-			function () use ($containerHolder) {
-				return new \AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator();
+			function () use ($container) {
+				return new \AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator(
+					$this->get(\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class)
+				);
 			}
 		);
-		$containerHolder->set(
+		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class,
-			function () use ($containerHolder) {
+			function () use ($container) {
 				return new \AdventistCommons\Domain\EntityBuilder\ProductHydrator(
-					$containerHolder->get(\AdventistCommons\Domain\EntityBuilder\ProjectHydrator::class),
-					$containerHolder->get(\AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator::class)
+					$this->get(\AdventistCommons\Domain\EntityBuilder\ProjectHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator::class)
 				);
 			}
 		);
-		$containerHolder->set(
+		$this->set(
 			\AdventistCommons\Domain\Repository\ProductRepository::class,
-			function () use ($containerHolder) {
+			function () use ($container) {
 				return new \AdventistCommons\Domain\Repository\ProductRepository(
-					$containerHolder->get(Product_model::class),
-					$containerHolder->get(\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class)
+					$this->get(Product_model::class),
+					$this->get(\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class)
 				);
 			}
 		);
 
-		$containerHolder->close();
+		$this->closed = true;
+	}
 
-		$this->containerHolder = $containerHolder;
+	private function set( $name, $service ): void
+	{
+		if ($this->closed) {
+			throw new \Exception('Cannot add services to container once it is closed');
+		}
+
+		if ($service instanceof Closure) {
+			$this->containerClosures[$name] = $service;
+		} elseif (is_object($service)) {
+			$this->container[$name] = $service;
+		}
 	}
 
 	public function get( $name )
 	{
-		return $this->containerHolder->get($name);
+		if (!$this->closed) {
+			$this->init();
+		}
+
+		if (!isset($this->container[$name])) {
+			if (!isset($this->containerClosures[$name])) {
+				throw new \Exception(sprintf('Service does not exists : %s', $name));
+			}
+
+			$this->container[$name] = $this->containerClosures[$name]();
+		}
+
+		return $this->container[$name];
 	}
 }

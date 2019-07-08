@@ -7,7 +7,6 @@ use AdventistCommons\Domain\Entity\Project;
 
 class ProjectHydrator extends Hydrator
 {
-	private $projets = [];
 	private $languageHydrator;
 
 	public function __construct(LanguageHydrator $languageHydrator)
@@ -17,21 +16,22 @@ class ProjectHydrator extends Hydrator
 
 	public function hydrateFromProduct($data, Product $product): Project
 	{
-		if ($existing = $this->getCache($data['projects_id'])) {
+		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
 		}
 
-		if (isset($this->projets[$data['id']])) {
-			return $this->projets[$data['id']];
+		if (isset($data['language'])) {
+			$language = $this->languageHydrator->hydrate(reset($data['language']));
+			unset($data['language']);
 		}
-
-		$language = $this->languageHydrator->hydrate($data);
-
 		$project = Hydrator::hydrateProperties(
 			new Project($product, $language, $data['status']),
 			$data
 		);
-		$this->setCache($data['projects_id'], $project);
+		$project->setLanguage($language);
+		$project->setProduct($product);
+
+		$this->setCache($data['id'], $project);
 
 		return $project;
 	}

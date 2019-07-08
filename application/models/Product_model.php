@@ -207,16 +207,173 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 		return $ret;
 	}
 
-	public function getProductWithAttachmentsAndProjects($product_id): array
+	/**
+	 * @inheritdoc
+	 */
+	public function getProductStructureWithAttachmentsAndProjects(int $product_id): array
 	{
-		$query = $this->db->select( "*, products.id as product_id, product_attachments.id as product_attachments_id, projects.id as projects_id, languages.id as language_id" )
-			->from( "products" )
-			->join( "product_attachments", "products.id = product_attachments.product_id" )
-			->join( "projects", "products.id = projects.product_id" )
-			->join( "languages", "projects.language_id = languages.id" )
-			->where( "products.id", $product_id )
+		$query = $this->db->select(
+				$this->buildStructureSelect('products', 'product', 'product1').",".
+				$this->buildStructureSelect('product_attachments', 'product_attachment','product_attachment1', 'product1').",".
+				$this->buildStructureSelect('languages', 'language', 'l1', 'product_attachment1').",".
+				$this->buildStructureSelect('projects', 'project', 'project1', 'product1').",".
+				$this->buildStructureSelect('languages', 'language', 'l2', 'project1').","
+			)
+			->from( "products as product1" )
+			->join( "product_attachments as product_attachment1", "product1.id = product_attachment1.product_id" )
+			->join( "languages as l1", "product_attachment1.language_id = l1.id" )
+			->join( "projects as project1", "product1.id = project1.product_id" )
+			->join( "languages as l2", "project1.language_id = l2.id" )
+			->where( "product1.id", $product_id )
 			->get();
 
-		return $query->result_array();
+		return self::structureQueryResults($query->result_array());
+	}
+
+	/**
+	 * Build the SQL select statement in order to build structure of it
+	 *
+	 * @param string $tableName
+	 * @param string $structureType
+	 * @param string|null $alias
+	 * @param string|null $parentAlias
+	 * @return string
+	 */
+	private function buildStructureSelect(string $tableName, string $structureType, string $alias = null, string $parentAlias = null): string
+	{
+		$alias = $alias ?? $tableName;
+		return sprintf(
+				'
+				\'%1$s\' as %2$s___type_name,
+				\'%3$s\' as %2$s___parent_alias,',
+				$structureType,
+				$alias,
+				$parentAlias
+			).$this->buildSelectForTable($tableName, $alias);
+	}
+
+	/**
+	 * Build the SQL select statement to identify all fields, even if they have same name in different tables
+	 *
+	 * @param string $table
+	 * @param string|null $alias
+	 * @return string
+	 */
+	private function buildSelectForTable(string $tableName, string $alias = null): string
+	{
+		$alias = $alias ?? $tableName;
+		$columns = $this->db->query("SHOW COLUMNS FROM $tableName")->result_array();
+
+		$field_names = array();
+		foreach ($columns as $column) {
+			$field_names[] = $column["Field"];
+		}
+		$prefixed = array();
+		foreach ($field_names as $field_name) {
+			$prefixed[] = "`{$alias}`.`{$field_name}` AS `{$alias}__{$field_name}`";
+		}
+
+		return implode(", ", $prefixed);
+	}
+
+	/**
+	 * ===================================================
+	 * Turns SQL structure array results like this :
+	 * ===================================================
+	 * array(4) {
+	 *	[0]=> array(47) {
+	 *		["product1___type_name"] => string(7) "product"
+	 *		["product1___parent_alias"] => string(0) ""
+	 *		["product1__id"] => string(1) "2"
+	 *		["product1__name"] => string(4) "test"
+	 *      …
+	 *		["product_attachment1___type_name"]=> string(18) "product_attachment"
+	 *		["product_attachment1___parent_alias"] => string(8) "product1"
+	 *		["product_attachment1__id"] => string(1) "3"
+	 *		["product_attachment1__language_id"] => string(2) "41"
+	 * 		…
+	 * 		["language1___type_name"] => string(8) "language"
+	 * 		["language1___parent_alias"] => string(19) "product_attachment1"
+	 * 		["language1__id"] => string(2) "41"
+	 * 		["language1__name"] => string(7) "English"
+	 * 		…
+	 * [1]=> array(47) {
+	 *		["product1___type_name"] => string(7) "product"
+	 *		["product1___parent_alias"] => string(0) ""
+	 *		["product1__id"] => string(1) "2"
+	 *		["product1__name"] => string(4) "test"
+	 *      …
+	 *
+	 * ===================================================
+	 * Into Structural data like that :
+	 * ===================================================
+	 * array(1) {
+	 * 	['product]=> &array(1) {
+	 *	 	[2]=> &array(27) {
+	 * 			["id"] => string(1) "2"
+	 * 			["name"] => string(4) "test"
+	 *	 		…
+	 * 			["product_attachment"] => &array(2) {
+	 * 				[3] => &array(10) {
+	 * 					["id"]=> string(1) "3"
+ 	 *					["product_id"]=> string(1) "2"
+	 *	 				["language_id"]=> string(2) "48"
+	 *		 			["status"]=> string(1) "0"
+	 * 					["_children_types"]=> array(1) {
+	 *						[0]=> string(8) "language"
+	 * 					}
+	 *		 			["language"]=> &array(1) {
+	 * 						[41]=>&array(8) {*
+	 * 							["id"]=> string(1) "41"
+	 * 							…
+	 *
+	 * @param array $results
+	 * @return array
+	 */
+	private static function structureQueryResults(array $results): array
+	{
+		// step 1 : flat data and enrich with data about parents
+		$flat = [];
+		foreach ($results as $row) {
+			foreach ($row as $key => $value) {
+				list($alias, $property) = explode('__', $key);
+				$id = $row[sprintf('%s__id', $alias)];
+				$flatKey = $alias.'_'.$id;
+				if (!isset($flat[$flatKey])) {
+					$parentAlias = $row[sprintf('%s___parent_alias', $alias)];
+					$flat[$flatKey]['_parent_id'] = $parentAlias ? $row[sprintf('%s__id', $parentAlias)] : null;
+					$flat[$flatKey]['_alias'] = $alias;
+				}
+				$flat[$flatKey][$property] = $value;
+			}
+		}
+
+		// step 2 : build the structure
+		return self::nestStructure($flat);
+	}
+
+	private static function nestStructure(array $flat, array $parent = [])
+	{
+		$children = array_filter(
+			$flat,
+			function ($row) use ($parent) {
+				return $parent
+					? $row['_parent_alias'] == $parent['_alias'] && $row['_parent_id'] == $parent['id']
+					: !$row['_parent_alias']
+					;
+			}
+		);
+
+		foreach ($children as $child) {
+			$child = self::nestStructure($flat, $child);
+			$typeName = $child['_type_name'];
+			unset($child['_type_name']);
+			unset($child['_alias']);
+			unset($child['_parent_alias']);
+			unset($child['_parent_id']);
+			$parent[$typeName][$child['id']] = $child;
+		}
+
+		return $parent;
 	}
 }

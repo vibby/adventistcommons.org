@@ -10,5 +10,10 @@ namespace AdventistCommons\Domain\Repository;
  */
 interface ProductFinderInterface
 {
-	public function getProductWithAttachmentsAndProjects($product_id): array;
+	/**
+	 * Get structure data about the Product, including attachments, projects, and languages of each
+	 * @param int $product_id
+	 * @return array
+	 */
+	public function getProductStructureWithAttachmentsAndProjects(int $product_id): array;
 }
