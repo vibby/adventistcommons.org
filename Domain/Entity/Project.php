@@ -46,7 +46,7 @@ class Project
 		return $this;
 	}
 
-	public function getLanguage(): Language
+	public function getLanguage(): ?Language
 	{
 		return $this->language;
 	}

@@ -280,55 +280,110 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 	 * ===================================================
 	 * Turns SQL structure array results like this :
 	 * ===================================================
-	 * array(4) {
-	 *	[0]=> array(47) {
-	 *		["product1___type_name"] => string(7) "product"
-	 *		["product1___parent_alias"] => string(0) ""
-	 *		["product1__id"] => string(1) "2"
-	 *		["product1__name"] => string(4) "test"
-	 *      …
-	 *		["product_attachment1___type_name"]=> string(18) "product_attachment"
-	 *		["product_attachment1___parent_alias"] => string(8) "product1"
-	 *		["product_attachment1__id"] => string(1) "3"
-	 *		["product_attachment1__language_id"] => string(2) "41"
-	 * 		…
-	 * 		["language1___type_name"] => string(8) "language"
-	 * 		["language1___parent_alias"] => string(19) "product_attachment1"
-	 * 		["language1__id"] => string(2) "41"
-	 * 		["language1__name"] => string(7) "English"
-	 * 		…
-	 * [1]=> array(47) {
-	 *		["product1___type_name"] => string(7) "product"
-	 *		["product1___parent_alias"] => string(0) ""
-	 *		["product1__id"] => string(1) "2"
-	 *		["product1__name"] => string(4) "test"
-	 *      …
+		$input = [
+			0 => [
+				"product1___type_name" => "product",
+				"product1___parent_alias" => "",
+				"product1__id" => "2",
+				"product1__name" => "test",
+				"project1___type_name" => "project",
+				"project1___parent_alias" => "product1",
+				"project1__id" => "3",
+				"project1__name" => "project1",
+				"language1___type_name" => "language",
+				"language1___parent_alias" =>  "project1",
+				"language1__id" => "41",
+				"language1__name" => "English",
+			],
+			1 => [
+				"product1___type_name" => "product",
+				"product1___parent_alias" => "",
+				"product1__id" => "2",
+				"product1__name" => "test",
+				"project1___type_name" => "project",
+				"project1___parent_alias" => "product1",
+				"project1__id" => "3",
+				"project1__name" => "project1",
+				"language1___type_name" => "language",
+				"language1___parent_alias" =>  "project1",
+				"language1__id" => "40",
+				"language1__name" => "French",
+			],
+			2 => [
+				"product1___type_name" => "product",
+				"product1___parent_alias" => "",
+				"product1__id" => "2",
+				"product1__name" => "test",
+				"project1___type_name" => "project",
+				"project1___parent_alias" => "product1",
+				"project1__id" => "5",
+				"project1__name" => "project2",
+				"language1___type_name" => "language",
+				"language1___parent_alias" =>  "project1",
+				"language1__id" => "39",
+				"language1__name" => "German",
+			],
+			3 => [
+				"product1___type_name" => "product",
+				"product1___parent_alias" => "",
+				"product1__id" => "2",
+				"product1__name" => "test",
+				"project1___type_name" => "project",
+				"project1___parent_alias" => "product1",
+				"project1__id" => "5",
+				"project1__name" => "project2",
+				"language1___type_name" => "language",
+				"language1___parent_alias" =>  "project1",
+				"language1__id" => "40",
+				"language1__name" => "French",
+			],
+		];
 	 *
 	 * ===================================================
 	 * Into Structural data like that :
 	 * ===================================================
-	 * array(1) {
-	 * 	['product]=> &array(1) {
-	 *	 	[2]=> &array(27) {
-	 * 			["id"] => string(1) "2"
-	 * 			["name"] => string(4) "test"
-	 *	 		…
-	 * 			["product_attachment"] => &array(2) {
-	 * 				[3] => &array(10) {
-	 * 					["id"]=> string(1) "3"
- 	 *					["product_id"]=> string(1) "2"
-	 *	 				["language_id"]=> string(2) "48"
-	 *		 			["status"]=> string(1) "0"
-	 * 					["_children_types"]=> array(1) {
-	 *						[0]=> string(8) "language"
-	 * 					}
-	 *		 			["language"]=> &array(1) {
-	 * 						[41]=>&array(8) {*
-	 * 							["id"]=> string(1) "41"
-	 * 							…
-	 *
+		$output = [
+			"product" => [
+				2 => [
+					"id" => "2",
+					"name" => "test",
+					"project" => [
+						3 => [
+							"id"=> "3",
+							"name" => "project1",
+							"language"=> [
+								41 => [
+									"id"=> "41",
+									"name" => "English",
+								],
+								40 => [
+									"id"=> "40",
+									"name" => "French",
+								],
+							],
+						],
+						5 => [
+							"id"=> "5",
+							"name" => "project2",
+							"language"=> [
+								39 => [
+									"id"=> "39",
+									"name" => "German",
+								],
+								40 => [
+									"id"=> "40",
+									"name" => "French",
+								],
+							],
+						],
+					],
+				],
+			],
+		];
 	 * @param array $results
 	 * @return array
+	 *
+	 * @TODO : create unit test based on example above
 	 */
 	private static function structureQueryResults(array $results): array
 	{

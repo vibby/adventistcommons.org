@@ -5,7 +5,12 @@
     },
     "autoload": {
         "psr-4": {
-            "AdventistCommons\\Domain\\":"../Domain"
+            "AdventistCommons\\Domain\\":"../Domain",
+            "": "models"
         }
+    },
+    "require-dev": {
+        "phpspec/phpspec": "^5.1",
+        "symfony/var-dumper": "^4.3"
     }
 }

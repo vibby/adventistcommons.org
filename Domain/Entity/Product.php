@@ -32,7 +32,7 @@ class Product
 	private $finishing;
 	private $publisherWebsite;
 	private $series;
-	private $productAttachments;
+	private $productAttachments = [];
 	private $projects;
 
 	public function __construct(string $name)
@@ -127,10 +127,10 @@ class Product
 
 	public function setType(string $type): self
 	{
-		if (!in_array($type, self::TYPES)) {
-			throw new \LogicException(sprintf('Type of project cannot be %s', $type));
-		}
 		$this->type = $type;
+		if (!in_array($type, self::TYPES)) {
+			throw new ValidationException(sprintf('Type of project cannot be %s', $type));
+		}
 
 		return $this;
 	}
@@ -284,7 +284,7 @@ class Product
 		return $this->series;
 	}
 
-	public function setSerie(Series $series): self
+	public function setSeries(Series $series): self
 	{
 		$this->series = $series;
 
