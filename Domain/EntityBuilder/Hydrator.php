@@ -2,6 +2,8 @@
 
 namespace AdventistCommons\Domain\EntityBuilder;
 
+use AdventistCommons\Domain\Entity\ValidationException;
+
 abstract class Hydrator
 {
 	private $cache;
@@ -22,9 +24,11 @@ abstract class Hydrator
 		foreach ($data as $key => $value) {
 			$method = 'set'.self::propertyNameToCamel($key);
 			if (method_exists($object, $method)) {
-
-
-				$object->$method($value);
+				try {
+					$object->$method($value);
+				} catch (ValidationException $e) {
+					// silent error to force incoming data from database, even if unvalid
+				}
 			}
 		}
 
@@ -35,6 +39,4 @@ abstract class Hydrator
 	{
 		return str_replace(' ', '', ucwords(str_replace('_', ' ', $propertyName)));
 	}
-
-
 }
