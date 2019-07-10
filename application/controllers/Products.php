@@ -257,7 +257,7 @@ class Products extends CI_Controller {
 		$this->upload->initialize( $config );
 
 		if ( ! $this->upload->do_upload( "cover_image" ) ) {
-                       $this->imageUploadError = 'Cannot write uploaded cover image file';
+			$this->imageUploadError = 'Cannot write uploaded cover image file';
 			return false;
 		}
 		$image = $this->upload->data();

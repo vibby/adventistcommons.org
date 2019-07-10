@@ -1,29 +1,31 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Product_model extends CI_Model  implements \AdventistCommons\Domain\Repository\ProductFinderInterface
+class Product_model extends CI_Model
+	implements \AdventistCommons\Domain\Repository\ProductFinderInterface,
+	\AdventistCommons\Domain\Repository\SeriesFinderInterface
 {
-	
+
 	function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
 	}
-	
+
 	public $file_types = [
 		"pdf_printing" => "PDF (Production)",
 		"pdf_personal" => "PDF (Personal)",
 		"indd" => "InDesign",
-		
+
 	];
-	
+
 	public function getProducts()
 	{
 		$products = $this->db->select( "*" )
 			->from( "products" )
 			->get()
 			->result_array();
-		
+
 		return array_map( function( $product ) {
 			$product["languages"] = $this->db->select( "DISTINCT( language_id )" )
 			->from( "product_attachments" )
@@ -34,7 +36,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			return $product;
 		}, $products );
 	}
-	
+
 	public function getProduct( $product_id ) {
 		$productArray = $this->db->select( "*" )
 			->from( "products" )
@@ -52,7 +54,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			
 		return $productArray;
 	}
-	
+
 	public function getAttachments( $product_id ) {
 		$attachments = $this->db->select( "*" )
 			->from( "product_attachments" )
@@ -60,13 +62,13 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			->join( "languages", "product_attachments.language_id = languages.id" )
 			->get()
 			->result_array();
-		
+
 		return array_map( function( $attachment ) {
 			$attachment["file_type"] = $this->file_types[$attachment["file_type"]];
 			return $attachment;
 		}, $attachments );
 	}
-	
+
 	public function getSection( $section_id ) {
 		return $this->db->select( "*" )
 			->from( "product_sections" )
@@ -74,7 +76,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			->get()
 			->row_array();
 	}
-	
+
 	public function getSectionContent( $project_id, $section_id, $user_id = null ) {
 		$content = $this->db->select( "*, product_content.id as id" )
 			->from( "product_content" )
@@ -83,7 +85,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			->join( "project_content_status", "project_content_status.content_id = product_content.id AND project_content_status.project_id = " . $project_id, "left" )
 			->get()
 			->result_array();
-		
+
 		return array_map( function( $content ) use( $project_id, $user_id ) {
 			$revisions = $this->db->select( "*, product_content_revisions.id" )
 				->from( "product_content_revisions" )
@@ -93,7 +95,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 				->join( "users", "product_content_revisions.user_id = users.id" )
 				->get()
 				->result_array();
-			
+
 			foreach( $revisions as $key => $revision ) {
 				$date = new DateTime( $revision["created_at"] );
 				$revisions[$key]["created_at_formatted"] = $date->format( "Y-m-d H:i a" );
@@ -101,7 +103,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 				$old_content = array_key_exists( $key+1, $revisions ) ? $revisions[$key+1]["content"] : "";
 				$revisions[$key]["diff"] = $this->_htmlDiff( $old_content, $revision["content"] );
 			}
-			
+
 			$approvals = $this->db->select( "*" )
 				->from( "project_content_approval" )
 				->where( "content_id", $content["id"] )
@@ -109,19 +111,19 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 				->join( "users", "project_content_approval.approved_by = users.id" )
 				->get()
 				->result_array();
-			
+
 			$content["revisions"] = $revisions;
 			$content["total_revisions"] = count( $content["revisions"] );
 			$content["latest_revision"] = $content["revisions"][0]["content"] ?? "";
 			$content["approvals"] = $approvals;
 			$content["total_approvals"] = count( $approvals );
-			
+
 			if( $user_id ) {
 				$has_approved = $this->_user_has_approved_content( $content["id"], $project_id, $user_id );
 			}
-			
+
 			$content["user_has_approved"] = $has_approved;
-			
+
 			$errors = $this->db->select( "*" )
 				->from( "product_content_log" )
 				->where( "content_id", $content["id"] )
@@ -130,16 +132,16 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 				->where( "is_resolved", false )
 				->order_by( "created_at", "desc" )
 				->get()
-				->result_array();	
-			
+				->result_array();
+
 			$content["errors"] = $errors;
-			
+
 			$str_length = strlen( $content["content"] );
 			$content["textarea_height"] = $str_length > 60 ? ( $str_length / 60 ) + 1 : 2;
 			return $content;
 		}, $content );
 	}
-	
+
 	public function getSectionId( $content_id ) {
 		$section = $this->db->select( "section_id" )
 			->from( "product_content" )
@@ -148,7 +150,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			->row_array();
 		return $section["section_id"];
 	}
-	
+
 	public function getContentLog( $id ) {
 		return $this->db->select( "*" )
 			->from( "product_content_log" )
@@ -156,14 +158,14 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			->get()
 			->row_array();
 	}
-	
+
 	public function getSeriesItems() {
 		return $this->db->select( "*" )
 			->from( "series" )
 			->get()
 			->result_array();
 	}
-	
+
 	private function _user_has_approved_content( $content_id, $project_id, $user_id ) {
 		return $this->db->select( "*" )
 			->from( "project_content_approval" )
@@ -172,7 +174,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			->where( "approved_by", $user_id )
 			->count_all_results() >= 1;
 	}
-	
+
 	//https://github.com/paulgb/simplediff
 	private function _diff($old, $new){
 		$matrix = array();
@@ -187,7 +189,7 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 					$omax = $oindex + 1 - $maxlen;
 					$nmax = $nindex + 1 - $maxlen;
 				}
-			}   
+			}
 		}
 		if($maxlen == 0) return array(array('d'=>$old, 'i'=>$new));
 		return array_merge(
@@ -220,10 +222,10 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 				$this->buildStructureSelect('languages', 'language', 'l2', 'project1').","
 			)
 			->from( "products as product1" )
-			->join( "product_attachments as product_attachment1", "product1.id = product_attachment1.product_id" )
-			->join( "languages as l1", "product_attachment1.language_id = l1.id" )
-			->join( "projects as project1", "product1.id = project1.product_id" )
-			->join( "languages as l2", "project1.language_id = l2.id" )
+			->join( "product_attachments as product_attachment1", "product1.id = product_attachment1.product_id", "LEFT" )
+			->join( "languages as l1", "product_attachment1.language_id = l1.id", "LEFT" )
+			->join( "projects as project1", "product1.id = project1.product_id", "LEFT" )
+			->join( "languages as l2", "project1.language_id = l2.id", "LEFT" )
 			->where( "product1.id", $product_id )
 			->get();
 
@@ -419,16 +421,56 @@ class Product_model extends CI_Model  implements \AdventistCommons\Domain\Reposi
 			}
 		);
 
+		$ids = [];
 		foreach ($children as $child) {
-			$child = self::nestStructure($flat, $child);
-			$typeName = $child['_type_name'];
-			unset($child['_type_name']);
-			unset($child['_alias']);
-			unset($child['_parent_alias']);
-			unset($child['_parent_id']);
-			$parent[$typeName][$child['id']] = $child;
+			if ($child['id']) {
+				$child = self::nestStructure($flat, $child);
+				$typeName = $child['_type_name'];
+				unset($child['_type_name']);
+				unset($child['_alias']);
+				unset($child['_parent_alias']);
+				unset($child['_parent_id']);
+				if (!isset($ids[$typeName]) || !in_array($child['id'], $ids[$typeName])) {
+					$parent[$typeName][] = $child;
+					$ids[$typeName][] = $child['id'];
+				}
+			}
 		}
 
 		return $parent;
+	}
+
+	public function getProductStructure(int $product_id): array
+	{
+		$query = $this->db->select(
+			$this->buildStructureSelect('products', 'product', 'product1').","
+		)
+			->from( "products as product1" )
+			->where( "product1.id", $product_id )
+			->get();
+
+		return self::structureQueryResults($query->result_array());
+	}
+
+	public function getProductStructureAll(): array
+	{
+		$query = $this->db->select(
+			$this->buildStructureSelect('products', 'product', 'product1').","
+		)
+			->from( "products as product1" )
+			->get();
+
+		return self::structureQueryResults($query->result_array());
+	}
+
+	public function getSeriesStructureAll(): array
+	{
+		$query = $this->db->select(
+			$this->buildStructureSelect('series', 'series', 'series1')
+		)
+			->from( "series as series1" )
+			->get();
+
+		return self::structureQueryResults($query->result_array());
 	}
 }
