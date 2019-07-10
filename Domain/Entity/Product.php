@@ -11,6 +11,8 @@ namespace AdventistCommons\Domain\Entity;
 class Product
 {
 	const TYPES = ['book','booklet','magabook','tract'];
+	const AUDIENCES = ['Christian','Muslim','Buddhist','Hindu','Sikh','Animist','Secular'];
+	const BINDINGS = ['Hardcover','Perfect Bound','Spiral Bound','Saddle Stitch','Folded'];
 
 	private $id;
 	private $name;
@@ -33,7 +35,7 @@ class Product
 	private $publisherWebsite;
 	private $series;
 	private $productAttachments = [];
-	private $projects;
+	private $projects = [];
 
 	public function __construct(string $name)
 	{
@@ -155,6 +157,9 @@ class Product
 	public function setAudience(string $audience): self
 	{
 		$this->audience = $audience;
+		if (!in_array($audience, self::AUDIENCES)) {
+			throw new ValidationException(sprintf('Audience cannot be %s', $audience));
+		}
 
 		return $this;
 	}
@@ -251,6 +256,9 @@ class Product
 	public function setBinding(string $binding): self
 	{
 		$this->binding = $binding;
+		if (!in_array($binding, self::BINDINGS)) {
+			throw new ValidationException(sprintf('Binding cannot be %s', $binding));
+		}
 
 		return $this;
 	}
@@ -296,7 +304,7 @@ class Product
 		$this->productAttachments[] = $productAttachment;
 	}
 
-	public function getProductAttachments(): array
+	public function getProductAttachments(): ?array
 	{
 		return $this->productAttachments;
 	}
@@ -306,12 +314,12 @@ class Product
 		$this->projects[] = $project;
 	}
 
-	public function getProjects(): array
+	public function getProjects(): ?array
 	{
 		return $this->projects;
 	}
 
-	public function getLanguagesRelations()
+	public function getLanguagesRelations(): array
 	{
 		$relations = [];
 		foreach ($this->getProductAttachments() as $productAttachment) {

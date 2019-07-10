@@ -18,15 +18,27 @@ class Container
 			Ion_auth_model::class => $CI->ion_auth_model,
 		];
 
+		/****************************
+		 * CODE IGNITER MODELS
+		 ****************************/
 		foreach ($CIclasses as $className => $object) {
 			$this->set($className, $object);
 		}
 
 		$container = $this;
+		/****************************
+		 * HYDRATORS
+		 ****************************/
 		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class,
 			function () use ($container) {
 				return new \AdventistCommons\Domain\EntityBuilder\LanguageHydrator();
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\EntityBuilder\SeriesHydrator::class,
+			function () use ($container) {
+				return new \AdventistCommons\Domain\EntityBuilder\SeriesHydrator();
 			}
 		);
 		$this->set(
@@ -54,12 +66,24 @@ class Container
 				);
 			}
 		);
+		/****************************
+		 * REPOSITORIES
+		 ****************************/
 		$this->set(
 			\AdventistCommons\Domain\Repository\ProductRepository::class,
 			function () use ($container) {
 				return new \AdventistCommons\Domain\Repository\ProductRepository(
 					$this->get(Product_model::class),
 					$this->get(\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Repository\SeriesRepository::class,
+			function () use ($container) {
+				return new \AdventistCommons\Domain\Repository\SeriesRepository(
+					$this->get(Product_model::class),
+					$this->get(\AdventistCommons\Domain\EntityBuilder\SeriesHydrator::class)
 				);
 			}
 		);
