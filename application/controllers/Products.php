@@ -114,19 +114,21 @@ class Products extends CI_Controller {
 		}
 		
 		$this->output->set_content_type("application/json");
-		
-		$this->form_validation->set_rules( "name", "Title", "required" );
-		$this->form_validation->set_rules( "page_count", "Page count", "required|numeric" );
-		$this->form_validation->set_rules( "type", "Product type", "required" );
-		
-		if( $this->form_validation->run() === false ) {
-			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+
+		/** @var \AdventistCommons\Domain\Repository\ProductRepository */
+		$productBuilder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\ProductBuilder::class);
+		try {
+			$product = $productBuilder->buildOrUpdateFromArray($this->input->post());
+		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
+			foreach ($e->getErrors() as $validationError) {
+				$errorMessages[] = sprintf('<p>%s</p>', $validationError->getMessage());
+			}			
+			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
 			return false;
 		}
-		$data = $this->input->post();
-		
-		$is_new = ! array_key_exists( "id", $data );
-		
+
+		$is_new = !$product->isStored();
+
 		if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
 			$cover_image = $this->_uploadCoverImage();
 			if( ! $cover_image ) {
@@ -153,12 +155,11 @@ class Products extends CI_Controller {
 			$data["series_id"] = $this->db->insert_id();
 		}
 		
-		$data['audience'] = serialize($data['audience'] ?? []);
 		if( $is_new ) {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
 			
-			if( isset($xliff_file) ) {
+			if( $xliff_file ) {
 				$this->_parseXliff( $xliff_file["file_name"], $id );
 			}
 			

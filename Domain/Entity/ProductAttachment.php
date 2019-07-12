@@ -82,9 +82,6 @@ class ProductAttachment
 	public function setFileType(string $fileType): self
 	{
 		$this->fileType = $fileType;
-		if (!in_array($fileType, array_keys(self::FILE_TYPES))) {
-			throw new ValidationException(sprintf('File type of attachment cannot be %s', $fileType));
-		}
 
 		return $this;
 	}

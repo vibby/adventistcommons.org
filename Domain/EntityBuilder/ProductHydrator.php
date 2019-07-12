@@ -17,7 +17,7 @@ class ProductHydrator extends Hydrator
 
 	public function hydrate($productData)
 	{
-		if ($existing = $this->getCache($productData['id'])) {
+		if (isset($productData['id']) && $existing = $this->getCache($productData['id'])) {
 			return $existing;
 		}
 
@@ -37,8 +37,10 @@ class ProductHydrator extends Hydrator
 				$product->addProject($this->projectHydrator->hydrateFromProduct($projectData, $product));
 			}
 		}
-
-		$this->setCache($productData['id'], $product);
+		
+		if (isset($productData['id'])) {
+			$this->setCache($productData['id'], $product);
+		}
 
 		return $product;
 	}

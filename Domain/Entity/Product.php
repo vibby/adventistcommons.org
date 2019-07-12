@@ -42,6 +42,11 @@ class Product
 		$this->name = $name;
 		$this->setType('book');
 	}
+	
+	public function isStored(): bool
+	{
+		return (bool) $this->id;
+	}
 
 	public function getId(): string
 	{
@@ -130,9 +135,6 @@ class Product
 	public function setType(string $type): self
 	{
 		$this->type = $type;
-		if (!in_array($type, self::TYPES)) {
-			throw new ValidationException(sprintf('Type of project cannot be %s', $type));
-		}
 
 		return $this;
 	}
@@ -157,9 +159,6 @@ class Product
 	public function setAudience(string $audience): self
 	{
 		$this->audience = $audience;
-		if (!in_array($audience, self::AUDIENCES)) {
-			throw new ValidationException(sprintf('Audience cannot be %s', $audience));
-		}
 
 		return $this;
 	}
@@ -256,9 +255,6 @@ class Product
 	public function setBinding(string $binding): self
 	{
 		$this->binding = $binding;
-		if (!in_array($binding, self::BINDINGS)) {
-			throw new ValidationException(sprintf('Binding cannot be %s', $binding));
-		}
 
 		return $this;
 	}
