@@ -25,25 +25,24 @@ class Container
 			$this->set($className, $object);
 		}
 
-		$container = $this;
 		/****************************
 		 * HYDRATORS
 		 ****************************/
 		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\EntityBuilder\LanguageHydrator();
 			}
 		);
 		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\SeriesHydrator::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\EntityBuilder\SeriesHydrator();
 			}
 		);
 		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\ProjectHydrator::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\EntityBuilder\ProjectHydrator(
 					$this->get(\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class)
 				);
@@ -51,7 +50,7 @@ class Container
 		);
 		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator(
 					$this->get(\AdventistCommons\Domain\EntityBuilder\LanguageHydrator::class)
 				);
@@ -59,7 +58,7 @@ class Container
 		);
 		$this->set(
 			\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\EntityBuilder\ProductHydrator(
 					$this->get(\AdventistCommons\Domain\EntityBuilder\ProjectHydrator::class),
 					$this->get(\AdventistCommons\Domain\EntityBuilder\ProductAttachmentHydrator::class)
@@ -71,7 +70,7 @@ class Container
 		 ****************************/
 		$this->set(
 			\AdventistCommons\Domain\Repository\ProductRepository::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\Repository\ProductRepository(
 					$this->get(Product_model::class),
 					$this->get(\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class)
@@ -80,13 +79,27 @@ class Container
 		);
 		$this->set(
 			\AdventistCommons\Domain\Repository\SeriesRepository::class,
-			function () use ($container) {
+			function () {
 				return new \AdventistCommons\Domain\Repository\SeriesRepository(
 					$this->get(Product_model::class),
 					$this->get(\AdventistCommons\Domain\EntityBuilder\SeriesHydrator::class)
 				);
 			}
 		);
+		
+		/****************************
+		 * Builders
+		 ****************************/
+		$this->set(
+			\AdventistCommons\Domain\EntityBuilder\ProductBuilder::class,
+			function () {
+				return new \AdventistCommons\Domain\EntityBuilder\ProductBuilder(
+					$this->get(\AdventistCommons\Domain\EntityBuilder\ProductHydrator::class),
+					$this->get(\AdventistCommons\Domain\Repository\ProductRepository::class)
+				);
+			}
+		);
+		
 
 		$this->closed = true;
 	}
