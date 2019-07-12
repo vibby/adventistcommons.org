@@ -143,12 +143,13 @@ class Products extends CI_Controller {
 		if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
 			$cover_image = $this->_uploadCoverImage();
 			if( ! $cover_image ) {
-				$this->output->set_output( json_encode( [ "error" => "Error uploading cover image" ] ) );
+				$this->output->set_output( json_encode( [ "error" => $this->imageUploadError ?? "Error uploading cover image" ] ) );
 				return false;
 			}
 			$data["cover_image"] = $cover_image["file_name"];
 		}
 		
+		$xliff_file = null;
 		if( $is_new && $_FILES["xliff_file"]["name"] ) {
 			$xliff_file = $this->_uploadXliff();
 			if( ! $xliff_file ) {
@@ -268,6 +269,7 @@ class Products extends CI_Controller {
 		$this->upload->initialize( $config );
 
 		if ( ! $this->upload->do_upload( "cover_image" ) ) {
+                       $this->imageUploadError = 'Cannot write uploaded cover image file';
 			return false;
 		}
 		$image = $this->upload->data();
@@ -285,10 +287,11 @@ class Products extends CI_Controller {
 
 		$this->load->library( "image_lib", $config_manip );
 		if( ! $this->image_lib->resize() ) {
+			$this->imageUploadError = 'Cannot resize uploaded cover image file. May image library GD2 is missing';
 			return false;
 		}
-
 		$this->image_lib->clear();
+
 		return $this->upload->data();
 	}
 	
