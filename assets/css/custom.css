@@ -68,10 +68,13 @@ a {
 	font-size: 75%;
 }
 
+/*************************************************
+/*  Styling content pages (agreements)
+/*************************************************
 
 /* hide original list counter */
 ol.content-list ol>li {display:block;} 
-ol.content-list h2 {display:inline-block;} 
+ol.content-list h2 {display:inline;} 
 /* OR */
 ol.content-list {list-style:none;}  
 
@@ -81,6 +84,9 @@ ol.content-list > li:before {content:counters(item, ".") ". "; font-weight:bold;
 
 ol.content-list h3 {display:inline; font-size: 1em;} 
 
+dl.inline {
+	margin-left: 1em;	
+}
 dl.inline dd {
   display: inline;
   margin: 0;
@@ -92,4 +98,10 @@ dl.inline dd:after{
 dl.inline dt{
   display: inline-block;
   font-weight: bold;
+}
+dl.inline dt:before{
+  content: "• ";
+}
+.list-letter {
+	list-style: lower-alpha;
 }
