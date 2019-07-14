@@ -67,3 +67,29 @@ a {
 	padding: 0.10rem 0.5rem !important;
 	font-size: 75%;
 }
+
+
+/* hide original list counter */
+ol.content-list ol>li {display:block;} 
+ol.content-list h2 {display:inline-block;} 
+/* OR */
+ol.content-list {list-style:none;}  
+
+ol.content-list > li:first-child {counter-reset: item;} /* reset counter */
+ol.content-list > li {counter-increment: item; margin-top: 1em} /* increment counter */
+ol.content-list > li:before {content:counters(item, ".") ". "; font-weight:bold;} /* print counter */
+
+ol.content-list h3 {display:inline; font-size: 1em;} 
+
+dl.inline dd {
+  display: inline;
+  margin: 0;
+}
+dl.inline dd:after{
+  display: block;
+  content: '';
+}
+dl.inline dt{
+  display: inline-block;
+  font-weight: bold;
+}
