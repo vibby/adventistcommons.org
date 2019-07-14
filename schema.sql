@@ -264,7 +264,7 @@ CREATE TABLE `products` (
   `page_count` int(4) DEFAULT NULL,
   `type` enum('book','booklet','magabook','tract') DEFAULT 'book',
   `xliff_file` varchar(255) DEFAULT NULL,
-  `audience` varchar(32) DEFAULT NULL,
+  `audience` varchar(255) DEFAULT NULL,
   `publisher` varchar(255) DEFAULT NULL,
   `format_open` varchar(32) DEFAULT NULL,
   `format_closed` varchar(32) DEFAULT NULL,

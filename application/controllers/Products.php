@@ -128,7 +128,6 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 		
 		$this->form_validation->set_rules( "name", "Title", "required" );
-		$this->form_validation->set_rules( "audience", "Audience", "required" );
 		$this->form_validation->set_rules( "page_count", "Page count", "required|numeric" );
 		$this->form_validation->set_rules( "type", "Product type", "required" );
 		
@@ -137,6 +136,7 @@ class Products extends CI_Controller {
 			return false;
 		}
 		$data = $this->input->post();
+		$data['audience'] = $data['audience'] ? array_values($data['audience']) : [];
 		
 		$is_new = ! array_key_exists( "id", $data );
 		
@@ -176,6 +176,7 @@ class Products extends CI_Controller {
 			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
 		} else {
 			$this->db->where( "id", $data["id"] );
+			$data['audience'] = serialize($data['audience']);
 			$this->db->update( "products", $data );
 			if( $_FILES["cover_image"]["name"] ) {
 				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );

@@ -127,7 +127,7 @@
 					{% if product.audience %}
 						<dl class="row">
 							<dt class="col-sm-4">Audience</dt>
-							<dd class="col-sm-8">{{ product.audience|capitalize }}</dd>
+							<dd class="col-sm-8">{% for audience in product.audience %}{{ audience|capitalize }}<br />{% endfor %}</dd>
 						</dl>
 					{% endif %}
 					{% if product.format_open %}

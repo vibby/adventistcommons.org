@@ -54,19 +54,7 @@
 									<div class="form-group row">
 										<label class="col-3">Description</label>
 										<textarea class="form-control col" rows="3" name="description">{{ product.description }}</textarea>
-									</div>
-									<div class="form-group row align-items-center">
-										<label class="col-3">Audience</label>
-										<select class="form-control col" name="audience">
-											{% for item in audience_options  %}
-												{% if product.autience == item %}
-													<option selected>{{ item }}</option>
-												{% else %}
-													<option>{{ item }}</option>
-												{% endif %}
-											{% endfor %}
-										</select>
-									</div>
+									</div>									
 									<div class="form-group row align-items-center">
 										<label class="col-3">Page count</label>
 										<input class="form-control col" type="number" name="page_count" value="{{ product.page_count }}" />
@@ -79,6 +67,18 @@
 												<option value="{{ item.id }}" {{ product.series_id == item.id ? "selected" : "" }}>{{ item.name }}</option>
 											{% endfor %}
 										</select>
+									</div>
+									<hr>
+									<h6>Product audience</h6>
+									<div class="row">
+										{% for audience in audience_options  %}
+											<div class="col">
+												<div class="custom-control custom-checkbox">
+													<input type="checkbox" id="audience-{{ audience }}" name="audience[{{ audience }}]" class="custom-control-input" value="{{ audience }}" {{ ( audience in product.audience ) ? "checked" : "" }} />
+													<label class="custom-control-label" for="audience-{{ audience}} ">{{ audience|capitalize }}</label>
+												</div>
+											</div>
+										{% endfor %}
 									</div>
 									<hr>
 									<h6>Product type</h6>
