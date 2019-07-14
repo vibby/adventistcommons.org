@@ -29,7 +29,7 @@ class ProductStorer
 			}		
 		}
 		
-		$id = $this->productPutter->putProduct($productData);
+		$id = $this->productPutter->putProductAndGetId($productData);
 		$product->setId($id);
 		
 		return $product;

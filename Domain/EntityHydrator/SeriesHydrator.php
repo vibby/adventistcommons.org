@@ -1,20 +1,20 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Entity\Series;
 
 class SeriesHydrator extends Hydrator
 {
-	public function hydrate($data): Series
+	public function hydrate(array $data, Series $series = null): Series
 	{
 		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
 		}
 
 		$series = Hydrator::hydrateProperties(
-			new Series($data['name']),
+			$series ?? new Series(),
 			$data
 		);
 

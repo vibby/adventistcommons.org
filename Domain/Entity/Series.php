@@ -10,25 +10,7 @@ namespace AdventistCommons\Domain\Entity;
  */
 class Series
 {
-	private $id;
 	private $name;
-
-	public function __construct(string $name)
-	{
-		$this->name = $name;
-	}
-
-	public function getId(): string
-	{
-		return $this->id;
-	}
-
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
 
 	public function getName(): string
 	{

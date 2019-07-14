@@ -1,11 +1,10 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Repository\ProductRepository;
 use AdventistCommons\Domain\Validation\ProductValidator;
-use AdventistCommons\Domain\EntityHydrator\ProductHydrator;
 
 class ProductBuilder
 {

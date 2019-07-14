@@ -8,13 +8,12 @@ namespace AdventistCommons\Domain\Entity;
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
-class Product
+class Product extends Entity
 {
 	const TYPES = ['book','booklet','magabook','tract'];
 	const AUDIENCES = ['Christian','Muslim','Buddhist','Hindu','Sikh','Animist','Secular'];
 	const BINDINGS = ['Hardcover','Perfect Bound','Spiral Bound','Saddle Stitch','Folded'];
 
-	private $id;
 	private $name;
 	private $description;
 	private $coverImage;
@@ -37,36 +36,11 @@ class Product
 	private $productAttachments = [];
 	private $projects = [];
 
-	public function __construct(string $name)
+	public function __construct()
 	{
-		$this->name = $name;
 		$this->setType('book');
 	}
 	
-	public function isStored(): bool
-	{
-		return (bool) $this->id;
-	}
-
-	public function getId(): ?string
-	{
-		return $this->id;
-	}
-
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
-
-	public function setProductId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
-
 	public function getName(): string
 	{
 		return $this->name;

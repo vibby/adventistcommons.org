@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\ValidationException;
 use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
@@ -19,7 +19,7 @@ abstract class Hydrator
 		$this->cache[$key] = $object;
 	}
 
-	static public function hydrateProperties($object, $data)
+	static public function hydrateProperties($object, array $data)
 	{
 		$data = array_filter($data);
 		foreach ($data as $key => $value) {

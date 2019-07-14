@@ -10,29 +10,9 @@ namespace AdventistCommons\Domain\Entity;
  */
 class Project
 {
-	private $id;
 	private $product;
 	private $language;
 	private $status;
-
-	public function __construct(Product $product, Language $language, string $status)
-	{
-		$this->product = $product;
-		$this->language = $language;
-		$this->status = $status;
-	}
-
-	public function getId(): string
-	{
-		return $this->id;
-	}
-
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
 
 	public function getProduct(): Product
 	{

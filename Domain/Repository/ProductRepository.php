@@ -1,7 +1,8 @@
 <?php
 
 namespace AdventistCommons\Domain\Repository;
-use AdventistCommons\Domain\EntityBuilder\ProductHydrator;
+
+use AdventistCommons\Domain\EntityHydrator\ProductHydrator;
 
 /**
  * Class ProductRepository

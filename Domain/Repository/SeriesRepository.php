@@ -1,7 +1,8 @@
 <?php
 
 namespace AdventistCommons\Domain\Repository;
-use AdventistCommons\Domain\EntityBuilder\SeriesHydrator;
+
+use AdventistCommons\Domain\EntityHydrator\SeriesHydrator;
 
 /**
  * Class SeriesRepository

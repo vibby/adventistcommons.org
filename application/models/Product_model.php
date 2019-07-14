@@ -481,7 +481,7 @@ class Product_model extends CI_Model
 		return self::structureQueryResults($query->result_array());
 	}
 	
-	public function putProduct(array $productData): int
+	public function putProductAndGetId(array $productData): int
 	{
 		$allowed  = $this->getColumns("products");
 		$productData = array_filter(
@@ -495,6 +495,7 @@ class Product_model extends CI_Model
 		if( isset($productData["id"]) && $productData["id"] ) {
 			$this->db->where( "id", $productData["id"] );
 			$this->db->update( "products", $productData );
+			$id = $productData["id"];
 		} else {
 		    $this->db->set($productData);
 			$this->db->insert( "products", $productData );

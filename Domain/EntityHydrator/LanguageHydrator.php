@@ -1,19 +1,19 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\Language;
 
 class LanguageHydrator extends Hydrator
 {
-	public function hydrate($data): Language
+	public function hydrate(array $data, Language $language): Language
 	{
 		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
 		}
 
 		$language = Hydrator::hydrateProperties(
-			new Language($data['name'], $data['code']),
+			$language ?? new Language(),
 			$data
 		);
 		$this->setCache($data['id'], $language);

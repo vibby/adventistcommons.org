@@ -8,7 +8,7 @@ namespace AdventistCommons\Domain\Entity;
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
-class ProductAttachment
+class ProductAttachment extends Entity
 {
 	const FILE_TYPES = [
 		"pdf_printing" => "PDF (Production)",
@@ -16,27 +16,10 @@ class ProductAttachment
 		"indd" => "InDesign",
 	];
 
-	private $id;
 	private $language;
 	private $product;
 	private $file;
 	private $fileType;
-
-	public function __construct()
-	{
-	}
-
-	public function getId(): string
-	{
-		return $this->id;
-	}
-
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
 
 	public function getLanguage(): ?Language
 	{

@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\Product;
 
@@ -15,14 +15,14 @@ class ProductHydrator extends Hydrator
 		$this->productAttachmentHydrator = $productAttachmentHydrator;
 	}
 
-	public function hydrate($productData)
+	public function hydrate(array $productData, Product $product = null, $useCache = true)
 	{
-		if (isset($productData['id']) && $existing = $this->getCache($productData['id'])) {
+		if ($useCache && isset($productData['id']) && $existing = $this->getCache($productData['id'])) {
 			return $existing;
 		}
 
 		$product = Hydrator::hydrateProperties(
-			new Product($productData['name']),
+			$product ?? new Product(),
 			$productData
 		);
 

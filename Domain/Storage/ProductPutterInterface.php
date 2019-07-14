@@ -4,5 +4,5 @@ namespace AdventistCommons\Domain\Storage;
 
 interface ProductPutterInterface
 {
-	public function putProduct(array $productData): int;
+	public function putProductAndGetId(array $productData): int;
 }

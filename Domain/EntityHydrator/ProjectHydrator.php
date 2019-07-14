@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Entity\Project;
@@ -14,7 +14,7 @@ class ProjectHydrator extends Hydrator
 		$this->languageHydrator = $languageHydrator;
 	}
 
-	public function hydrateFromProduct($data, Product $product): Project
+	public function hydrateFromProduct(array $data, Product $product, Project $project = null): Project
 	{
 		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
@@ -25,7 +25,7 @@ class ProjectHydrator extends Hydrator
 			unset($data['language']);
 		}
 		$project = Hydrator::hydrateProperties(
-			new Project($product, $language, $data['status']),
+			$project ?? new Project(),
 			$data
 		);
 		$project->setLanguage($language);

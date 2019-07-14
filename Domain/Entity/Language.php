@@ -8,32 +8,13 @@ namespace AdventistCommons\Domain\Entity;
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
-class Language
+class Language extends Entity
 {
-	private $id;
 	private $name;
 	private $code;
 	private $googleCode;
 	private $productAttachment;
 	private $project;
-
-	public function __construct(string $name, string $code)
-	{
-		$this->name = $name;
-		$this->code = $code;
-	}
-
-	public function getId(): string
-	{
-		return $this->id;
-	}
-
-	public function setId(int $id): self
-	{
-		$this->id = $id;
-
-		return $this;
-	}
 
 	public function getName(): string
 	{
