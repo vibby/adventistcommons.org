@@ -3,7 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Product_model extends CI_Model
 	implements \AdventistCommons\Domain\Repository\ProductFinderInterface,
-	\AdventistCommons\Domain\Repository\SeriesFinderInterface
+	\AdventistCommons\Domain\Repository\SeriesFinderInterface,
+	\AdventistCommons\Domain\Storage\ProductPutterInterface	
 {
 
 	function __construct()
@@ -261,21 +262,27 @@ class Product_model extends CI_Model
 	 * @param string|null $alias
 	 * @return string
 	 */
-	private function buildSelectForTable(string $tableName, string $alias = null): string
+	private function buildSelectForTable(string $table_name, string $alias = null): string
 	{
-		$alias = $alias ?? $tableName;
-		$columns = $this->db->query("SHOW COLUMNS FROM $tableName")->result_array();
+		$alias = $alias ?? $table_name;
+		$field_names = $this->getColumns($table_name);
 
-		$field_names = array();
-		foreach ($columns as $column) {
-			$field_names[] = $column["Field"];
-		}
 		$prefixed = array();
 		foreach ($field_names as $field_name) {
 			$prefixed[] = "`{$alias}`.`{$field_name}` AS `{$alias}__{$field_name}`";
 		}
 
 		return implode(", ", $prefixed);
+	}
+	
+	private function getColumns($tableName)
+	{		
+		$field_names = [];
+		foreach ($this->db->query("SHOW COLUMNS FROM $tableName")->result_array() as $column) {
+			$field_names[] = $column["Field"];
+		}
+		
+		return $field_names;
 	}
 
 	/**
@@ -472,5 +479,28 @@ class Product_model extends CI_Model
 			->get();
 
 		return self::structureQueryResults($query->result_array());
+	}
+	
+	public function putProduct(array $productData): int
+	{
+		$allowed  = $this->getColumns("products");
+		$productData = array_filter(
+		    $productData,
+		    function ($key) use ($allowed) {
+		        return in_array($key, $allowed);
+		    },
+		    ARRAY_FILTER_USE_KEY
+		);
+
+		if( isset($productData["id"]) && $productData["id"] ) {
+			$this->db->where( "id", $productData["id"] );
+			$this->db->update( "products", $productData );
+		} else {
+		    $this->db->set($productData);
+			$this->db->insert( "products", $productData );
+			$id = $this->db->insert_id();
+		}
+		
+		return $id;
 	}
 }

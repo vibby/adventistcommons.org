@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce5d8c3b32bb0e53bc4ea1c271631213",
+    "content-hash": "e39db64ed24dfd1d29d504becfd79e38",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -439,6 +439,58 @@
                 "twig"
             ],
             "time": "2019-03-22T12:54:36+00:00"
+        },
+        {
+            "name": "kolyunya/string-processor",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kolyunya/string-processor.git",
+                "reference": "8e010f74f74a98eac5fb23e68404942cfdab8375"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kolyunya/string-processor/zipball/8e010f74f74a98eac5fb23e68404942cfdab8375",
+                "reference": "8e010f74f74a98eac5fb23e68404942cfdab8375",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3 <8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8 <6.0",
+                "squizlabs/php_codesniffer": ">=2.8 <3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kolyunya\\StringProcessor\\": "sources",
+                    "Kolyunya\\StringProcessor\\Tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GNU GPL v3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Kolyunya",
+                    "email": "oleynikovny@mail.ru",
+                    "homepage": "http://github.com/Kolyunya"
+                }
+            ],
+            "description": "PHP string processing library.",
+            "homepage": "https://github.com/Kolyunya/string-processor",
+            "keywords": [
+                "camel-case",
+                "kebab-case",
+                "snake-case",
+                "string",
+                "string-manipulation",
+                "string-parsing",
+                "string-processing"
+            ],
+            "time": "2017-04-20T13:22:15+00:00"
         },
         {
             "name": "monolog/monolog",

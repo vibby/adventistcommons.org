@@ -100,6 +100,17 @@ class Container
 			}
 		);
 		
+		/****************************
+		 * Storage
+		 ****************************/
+		$this->set(
+			\AdventistCommons\Domain\Storage\ProductStorer::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\ProductStorer(
+					$this->get(Product_model::class)
+				);
+			}
+		);
 
 		$this->closed = true;
 	}

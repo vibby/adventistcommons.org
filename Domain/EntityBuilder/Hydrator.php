@@ -3,6 +3,7 @@
 namespace AdventistCommons\Domain\EntityBuilder;
 
 use AdventistCommons\Domain\Entity\ValidationException;
+use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
 
 abstract class Hydrator
 {
@@ -22,21 +23,12 @@ abstract class Hydrator
 	{
 		$data = array_filter($data);
 		foreach ($data as $key => $value) {
-			$method = 'set'.self::propertyNameToCamel($key);
+			$method = 'set'.CamelCaseFormatter::run($key);
 			if (method_exists($object, $method)) {
-				try {
-					$object->$method($value);
-				} catch (ValidationException $e) {
-					// silent error to force incoming data from database, even if unvalid
-				}
+				$object->$method($value);
 			}
 		}
 
 		return $object;
-	}
-
-	static function propertyNameToCamel($propertyName)
-	{
-		return str_replace(' ', '', ucwords(str_replace('_', ' ', $propertyName)));
 	}
 }

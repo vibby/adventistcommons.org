@@ -126,53 +126,62 @@ class Products extends CI_Controller {
 			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
 			return false;
 		}
-
+		/** @var \AdventistCommons\Domain\Repository\ProductStorer */
+		$productStorer = $this->container->get(\AdventistCommons\Domain\Storage\ProductStorer::class);
 		$is_new = !$product->isStored();
-
-		if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
-			$cover_image = $this->_uploadCoverImage();
-			if( ! $cover_image ) {
-				$this->output->set_output( json_encode( [ "error" => $this->imageUploadError ?? "Error uploading cover image" ] ) );
-				return false;
-			}
-			$data["cover_image"] = $cover_image["file_name"];
-		}
+		$product = $productStorer->store($product);
 		
-		$xliff_file = null;
-		if( $is_new && $_FILES["xliff_file"]["name"] ) {
-			$xliff_file = $this->_uploadXliff();
-			if( ! $xliff_file ) {
-				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
-				return false;
-			}
-			$data["xliff_file"] = $xliff_file["file_name"];
-		}
-		
-		if( $data["series_id"] == "" ) {
-			$data["series_id"] = null;
-		} elseif( ! is_numeric( $data["series_id"] ) ) {
-			$this->db->insert( "series", [ "name" => $data["series_id"] ] );
-			$data["series_id"] = $this->db->insert_id();
-		}
-		
-		if( $is_new ) {
-			$this->db->insert( "products", $data );
-			$id = $this->db->insert_id();
-			
-			if( $xliff_file ) {
-				$this->_parseXliff( $xliff_file["file_name"], $id );
-			}
-			
-			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+		if ($is_new) {
+			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/%d", $product->getId() ) ] ) );			
+		} elseif( $_FILES["cover_image"]["name"] ) {
+			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/edit/%d", $product->getId() ) ] ) );
 		} else {
-			$this->db->where( "id", $data["id"] );
-			$this->db->update( "products", $data );
-			if( $_FILES["cover_image"]["name"] ) {
-				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
-			} else {
-				$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
-			}
+			$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 		}
+
+		// if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
+		// 	$cover_image = $this->_uploadCoverImage();
+		// 	if( ! $cover_image ) {
+		// 		$this->output->set_output( json_encode( [ "error" => "Error uploading cover image" ] ) );
+		// 		return false;
+		// 	}
+		// 	$data["cover_image"] = $cover_image["file_name"];
+		// }
+
+		// if( $is_new && $_FILES["xliff_file"]["name"] ) {
+		// 	$xliff_file = $this->_uploadXliff();
+		// 	if( ! $xliff_file ) {
+		// 		$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
+		// 		return false;
+		// 	}
+		// 	$data["xliff_file"] = $xliff_file["file_name"];
+		// }
+
+		// if( $data["series_id"] == "" ) {
+		// 	$data["series_id"] = null;
+		// } elseif( ! is_numeric( $data["series_id"] ) ) {
+		// 	$this->db->insert( "series", [ "name" => $data["series_id"] ] );
+		// 	$data["series_id"] = $this->db->insert_id();
+		// }
+
+		// if( $is_new ) {
+		// 	$this->db->insert( "products", $data );
+		// 	$id = $this->db->insert_id();
+
+		// 	if( $xliff_file ) {
+		// 		$this->_parseXliff( $xliff_file["file_name"], $id );
+		// 	}
+
+		// 	$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+		// } else {
+		// 	$this->db->where( "id", $data["id"] );
+		// 	$this->db->update( "products", $data );
+		// 	if( $_FILES["cover_image"]["name"] ) {
+		// 		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
+		// 	} else {
+		// 		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
+		// 	}
+		// }
 	}
 	
 	public function save_xliff() {
