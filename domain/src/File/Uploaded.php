@@ -42,15 +42,4 @@ class Uploaded extends File
 				throw new \Exception('Unexpected error code from uploaded file');
 		}
 	}
-	
-	public function makeDefinitive(string $uploadsDirectory, $definitiveFileName = null)
-	{
-		$definitiveFileName =
-			$definitiveFileName ??
-			sprintf('%s.%s', uniqid(rand(), true), $this->getExtension());
-		$definitivePath = $uploadsDirectory.'/'.$definitiveFileName;
-		copy($this->path, $definitivePath);
-		
-		return new File($definitiveFileName);
-	}
 }

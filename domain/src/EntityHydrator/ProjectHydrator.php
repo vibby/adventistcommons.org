@@ -14,7 +14,7 @@ class ProjectHydrator extends Hydrator
 		$this->languageHydrator = $languageHydrator;
 	}
 
-	public function hydrateFromProduct(array $data, Product $product, Project $project = null): Project
+	public function hydrateFromProduct(array $data, Product $product): Project
 	{
 		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
@@ -25,7 +25,7 @@ class ProjectHydrator extends Hydrator
 			unset($data['language']);
 		}
 		$project = Hydrator::hydrateProperties(
-			$project ?? new Project(),
+			new Project(),
 			$data
 		);
 		$project->setLanguage($language);

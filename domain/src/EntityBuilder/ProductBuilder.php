@@ -25,10 +25,10 @@ class ProductBuilder
 		if (isset($productData['id']) && $productData['id']) {
 			$product = $this->ProductRepository->find($productData['id']);
 		}
-        foreach ($filesData as $key => $fileData) {
-            $productData[$key] = UploadedBuilder::build($fileData);
-        }
-        $product = $this->productHydrator->hydrate($productData, $product, false);
+		foreach ($filesData as $key => $fileData) {
+			$productData[$key] = UploadedBuilder::build($fileData);
+		}
+		$product = $this->productHydrator->hydrate($productData, $product, false);
 		ProductValidator::validate($product);
 
 		return $product;

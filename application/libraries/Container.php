@@ -11,6 +11,10 @@ class Container
 	public function init()
 	{
 		$CI =& get_instance();
+
+		/****************************
+		 * CODE IGNITER MODELS
+		 ****************************/
 		$CI->load->model('ion_auth_model');
 		$CI->load->model('product_model');
 		$CIclasses = [
@@ -18,12 +22,21 @@ class Container
 			Ion_auth_model::class => $CI->ion_auth_model,
 		];
 
-		/****************************
-		 * CODE IGNITER MODELS
-		 ****************************/
 		foreach ($CIclasses as $className => $object) {
 			$this->set($className, $object);
 		}
+		
+		/****************************
+		 * BASE SERVICES
+		 ****************************/
+		$this->set(
+			\AdventistCommons\Domain\File\FileSystem::class,
+			function () {
+				return new \AdventistCommons\Domain\File\FileSystem(
+					realpath(__DIR__.'/../../uploads')
+				);
+			}
+		);
 
 		/****************************
 		 * HYDRATORS
@@ -107,7 +120,7 @@ class Container
 			\AdventistCommons\Domain\Storage\FileStorer::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\FileStorer(
-					realpath(__DIR__.'/../../uploads')
+					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);

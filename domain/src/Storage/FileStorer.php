@@ -5,14 +5,15 @@ namespace AdventistCommons\Domain\Storage;
 use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\File\Uploaded;
 use Gregwar\Image\Image;
+use AdventistCommons\Domain\File\FileSystem;
 
 class FileStorer
 {
-	protected $basePath;
+	protected $fileSystem;
 	
-	public function __construct($basePath)
+	public function __construct(FileSystem $fileSystem)
 	{
-		$this->basePath = $basePath;
+		$this->fileSystem = $fileSystem;
 	}
 	
 	public function storeFiles($entity, array $properties)
@@ -24,7 +25,7 @@ class FileStorer
 			
 			if ($file instanceof Uploaded) {
 				$setMethodName = sprintf('set%s', ucfirst($propertyName));
-				$entity->$setMethodName($file->makeDefinitive($this->basePath));
+				$entity->$setMethodName($this->fileSystem->makeDefinitive($file));
 			}
 		}
 		
@@ -39,11 +40,12 @@ class FileStorer
 			$file = $entity->$getMethodName();
 			
 			if ($file instanceof Uploaded) {
-//				Image::open($file->getPath())
-//					->zoomCrop(768, 768, 0, 0)
-//					->save($file->getPath());
+				Image::open($file->getPath())
+					->useFallback(false)
+					->zoomCrop(768, 768, 0, 0)
+					->save($file->getPath());
 				$setMethodName = sprintf('set%s', ucfirst($propertyName));
-				$entity->$setMethodName($file->makeDefinitive($this->basePath));
+				$entity->$setMethodName($this->fileSystem->makeDefinitive($file));
 			}
 		}
 		
