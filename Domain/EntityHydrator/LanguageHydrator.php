@@ -6,7 +6,7 @@ use AdventistCommons\Domain\Entity\Language;
 
 class LanguageHydrator extends Hydrator
 {
-	public function hydrate(array $data, Language $language): Language
+	public function hydrate(array $data): Language
 	{
 		if ($existing = $this->getCache($data['id'])) {
 			return $existing;

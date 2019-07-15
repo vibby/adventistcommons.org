@@ -19,7 +19,7 @@ class ProductAttachmentHydrator extends Hydrator
 		if ($existing = $this->getCache($data['id'])) {
 			return $existing;
 		}
-
+		
 		if (isset($data['language'])) {
 			$language = $this->languageHydrator->hydrate(reset($data['language']));
 			unset($data['language']);

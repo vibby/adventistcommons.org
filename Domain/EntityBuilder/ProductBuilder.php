@@ -3,6 +3,7 @@
 namespace AdventistCommons\Domain\EntityBuilder;
 
 use AdventistCommons\Domain\Entity\Product;
+use AdventistCommons\Domain\File\UploadedBuilder;
 use AdventistCommons\Domain\Repository\ProductRepository;
 use AdventistCommons\Domain\Validation\ProductValidator;
 use AdventistCommons\Domain\EntityHydrator\ProductHydrator;
@@ -18,13 +19,16 @@ class ProductBuilder
 		$this->ProductRepository = $ProductRepository;
 	}
 
-	public function buildOrUpdateFromArray(array $productData): Product
+	public function buildOrUpdateFromArray(array $productData, array $filesData = []): Product
 	{
 		$product = null;
 		if (isset($productData['id']) && $productData['id']) {
 			$product = $this->ProductRepository->find($productData['id']);
 		}
-		$product = $this->productHydrator->hydrate($productData, $product, false);
+        foreach ($filesData as $key => $fileData) {
+            $productData[$key] = UploadedBuilder::build($fileData);
+        }
+        $product = $this->productHydrator->hydrate($productData, $product, false);
 		ProductValidator::validate($product);
 
 		return $product;

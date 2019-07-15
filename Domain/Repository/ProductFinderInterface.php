@@ -24,10 +24,10 @@ interface ProductFinderInterface
 	 */
 	public function getProductStructure(int $product_id): array;
 
-    /**
-     * Get structure data about all Products
-     * @param int $product_id
-     * @return array
-     */
-    public function getProductStructureAll(): array;
+	/**
+	 * Get structure data about all Products
+	 * @param int $product_id
+	 * @return array
+	 */
+	public function getProductStructureAll(): array;
 }

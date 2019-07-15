@@ -104,10 +104,19 @@ class Container
 		 * Storage
 		 ****************************/
 		$this->set(
+			\AdventistCommons\Domain\Storage\FileStorer::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\FileStorer(
+					realpath(__DIR__.'/../../uploads')
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\Storage\ProductStorer::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\ProductStorer(
-					$this->get(Product_model::class)
+					$this->get(Product_model::class),
+					$this->get(\AdventistCommons\Domain\Storage\FileStorer::class)
 				);
 			}
 		);

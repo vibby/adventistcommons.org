@@ -9,29 +9,21 @@ use Kolyunya\StringProcessor\Format\SnakeCaseFormatter;
 class ProductStorer
 {
 	private $productPutter;
-	
-	public function __construct(ProductPutterInterface $productPutter) 
+
+	public function __construct(ProductPutterInterface $productPutter, FileStorer $fileStorer)
 	{
-		$this->productPutter = $productPutter;		
+		$this->productPutter = $productPutter;
+		$this->fileStorer = $fileStorer;
 	}
-	
+
 	final public function store(Product $product): Product
 	{
-		$productData = [];
-		$productReflection = new \ReflectionClass(Product::class);
-		foreach ($productReflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) {
-			$methodName = $reflectionMethod->name; 
-			if (substr($methodName, 0, 3) === 'get') {
-				$propertyName = substr($methodName, 3);
-				$propertyName = SnakeCaseFormatter::run($propertyName);
-				$value = $product->$methodName();
-				$productData[$propertyName] = is_array($value) ? serialize($value) : $value;
-			}		
-		}
-		
+		$product = $this->fileStorer->storeFiles($product, ['CoverImage']);
+		$productData = Formater::formatToArray($product);
+
 		$id = $this->productPutter->putProductAndGetId($productData);
 		$product->setId($id);
-		
+
 		return $product;
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace AdventistCommons\Domain\Entity;
+use AdventistCommons\Domain\File\File;
 
 /**
  * Class Product
@@ -65,12 +66,12 @@ class Product extends Entity
 		return $this;
 	}
 
-	public function getCoverImage(): ?string
+	public function getCoverImage(): ?File
 	{
 		return $this->coverImage;
 	}
 
-	public function setCoverImage(string $coverImage): self
+	public function setCoverImage(?File $coverImage): self
 	{
 		$this->coverImage = $coverImage;
 
@@ -113,12 +114,12 @@ class Product extends Entity
 		return $this;
 	}
 
-	public function getXliffFile(): ?string
+	public function getXliffFile(): ?File
 	{
 		return $this->xliffFile;
 	}
 
-	public function setXliffFile(string $xliffFile): self
+	public function setXliffFile(File $xliffFile): self
 	{
 		$this->xliffFile = $xliffFile;
 

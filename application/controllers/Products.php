@@ -115,18 +115,19 @@ class Products extends CI_Controller {
 		
 		$this->output->set_content_type("application/json");
 
-		/** @var \AdventistCommons\Domain\Repository\ProductRepository */
+		/** @var \AdventistCommons\Domain\EntityBuilder\ProductBuilder $productBuilder */
 		$productBuilder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\ProductBuilder::class);
 		try {
-			$product = $productBuilder->buildOrUpdateFromArray($this->input->post());
+			$product = $productBuilder->buildOrUpdateFromArray($this->input->post(), $_FILES);
 		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
+			/** @var \AdventistCommons\Domain\Validation\Violation\ViolationError $validationError */
 			foreach ($e->getErrors() as $validationError) {
 				$errorMessages[] = sprintf('<p>%s</p>', $validationError->getMessage());
 			}			
 			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
 			return false;
 		}
-		/** @var \AdventistCommons\Domain\Repository\ProductStorer */
+		/** @var \AdventistCommons\Domain\Storage\ProductStorer $productStorer */
 		$productStorer = $this->container->get(\AdventistCommons\Domain\Storage\ProductStorer::class);
 		$is_new = !$product->isStored();
 		$product = $productStorer->store($product);

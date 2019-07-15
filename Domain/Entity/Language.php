@@ -16,21 +16,42 @@ class Language extends Entity
 	private $productAttachment;
 	private $project;
 
-	public function getName(): string
+	public function getName(): ?string
 	{
 		return $this->name;
 	}
-
-	public function getCode(): string
+	
+	public function setName($name): self
+	{
+		$this->name = $name;
+		
+		return $this;
+	}
+	
+	public function getCode(): ?string
 	{
 		return $this->code;
 	}
-
-	public function getGoogleCode(): string
+	
+	public function setCode($code): self
+	{
+		$this->code = $code;
+		
+		return $this;
+	}
+	
+	public function getGoogleCode(): ?string
 	{
 		return $this->googleCode;
 	}
-
+	
+	public function setGoogleCode($googleCode): self
+	{
+		$this->googleCode = $googleCode;
+		
+		return $this;
+	}
+	
 	public function setProductAttachment(ProductAttachment $productAttachment): self
 	{
 		$this->productAttachment = $productAttachment;

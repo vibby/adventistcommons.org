@@ -3,6 +3,7 @@
 namespace AdventistCommons\Domain\Validation;
 
 use AdventistCommons\Domain\Entity\Product;
+use AdventistCommons\Domain\File\Uploaded;
 use AdventistCommons\Domain\Validation\Violation\ViolationException;
 use AdventistCommons\Domain\Validation\Validator;
 
@@ -16,7 +17,12 @@ class ProductValidator
 		$errors[] = Validator\InListValidator::validate('Binding', $product->getBinding(), Product::BINDINGS);
 		$errors[] = Validator\InListValidator::validate('Type', $product->getType(), Product::TYPES);
 		$errors[] = Validator\InListValidator::validate('Audience', $product->getAudience(), Product::AUDIENCES);
-		
+		$coverImage = $product->getCoverImage();
+		if ($coverImage instanceof Uploaded) {
+			$errors[] = Validator\UploadedFileValidator::validate('Cover image', $product->getCoverImage());
+		}
+        $errors[] = Validator\FileImageValidator::validate('Cover image', $product->getCoverImage());
+
 		$errors = array_filter($errors);
 		if ($errors) {
 			throw new ViolationException($errors);
