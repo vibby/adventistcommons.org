@@ -1,0 +1,37 @@
+{
+    "name": "kolyunya/string-processor",
+    "description": "PHP string processing library.",
+    "license": "GNU GPL v3.0",
+    "type": "library",
+    "keywords": [
+        "camel-case",
+        "kebab-case",
+        "snake-case",
+        "string",
+        "string-manipulation",
+        "string-processing",
+        "string-parsing"
+    ],
+    "homepage": "https://github.com/Kolyunya/string-processor",
+    "authors": [
+        {
+            "name": "Kolyunya",
+            "email": "oleynikovny@mail.ru",
+            "homepage": "http://github.com/Kolyunya"
+        }
+    ],
+    "minimal-stability": "stable",
+    "require": {
+        "php": ">=5.3 <8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": ">=4.8 <6.0",
+        "squizlabs/php_codesniffer": ">=2.8 <3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Kolyunya\\StringProcessor\\": "sources",
+            "Kolyunya\\StringProcessor\\Tests\\": "tests"
+        }
+    }
+}

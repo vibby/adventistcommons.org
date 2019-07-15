@@ -2,16 +2,15 @@
     "require": {
         "google/cloud-translate": "^1.2",
         "kenjis/codeigniter-ss-twig": "^0.4.0",
-        "kolyunya/string-processor": "^1.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "AdventistCommons\\Domain\\":"../Domain",
-            "": "models"
-        }
+        "adventistcommons/domain": "*@dev"
     },
     "require-dev": {
-        "phpspec/phpspec": "^5.1",
         "symfony/var-dumper": "^4.3"
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../domain"
+        }
+    ]
 }

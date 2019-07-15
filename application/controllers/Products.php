@@ -140,15 +140,6 @@ class Products extends CI_Controller {
 			$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 		}
 
-		// if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
-		// 	$cover_image = $this->_uploadCoverImage();
-		// 	if( ! $cover_image ) {
-		// 		$this->output->set_output( json_encode( [ "error" => "Error uploading cover image" ] ) );
-		// 		return false;
-		// 	}
-		// 	$data["cover_image"] = $cover_image["file_name"];
-		// }
-
 		// if( $is_new && $_FILES["xliff_file"]["name"] ) {
 		// 	$xliff_file = $this->_uploadXliff();
 		// 	if( ! $xliff_file ) {
