@@ -40,10 +40,10 @@ class FileStorer
 			$file = $entity->$getMethodName();
 			
 			if ($file instanceof Uploaded) {
-				Image::open($file->getPath())
+				Image::open($file->getAbsolutePath())
 					->useFallback(false)
 					->zoomCrop(768, 768, 0, 0)
-					->save($file->getPath());
+					->save($file->getAbsolutePath());
 				$setMethodName = sprintf('set%s', ucfirst($propertyName));
 				$entity->$setMethodName($this->fileSystem->makeDefinitive($file));
 			}

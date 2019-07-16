@@ -70,11 +70,29 @@ class Container
 			}
 		);
 		$this->set(
+			\AdventistCommons\Domain\EntityHydrator\ProductFileHydrator::class,
+			function () {
+				return new \AdventistCommons\Domain\EntityHydrator\ProductFileHydrator(
+					realpath(__DIR__.'/../../uploads'),
+					realpath(__DIR__.'/../../uploads')
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\EntityHydrator\ProductForeignHydrator::class,
+			function () {
+				return new \AdventistCommons\Domain\EntityHydrator\ProductForeignHydrator(
+					$this->get(\AdventistCommons\Domain\EntityHydrator\ProjectHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductAttachmentHydrator::class)
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\EntityHydrator\ProductHydrator::class,
 			function () {
 				return new \AdventistCommons\Domain\EntityHydrator\ProductHydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProjectHydrator::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductAttachmentHydrator::class)
+					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductFileHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductForeignHydrator::class)
 				);
 			}
 		);

@@ -23,10 +23,7 @@ class UploadedCollection implements \ArrayAccess, \Iterator
 		if (!$uploaded instanceof Uploaded) {
 			throw new \LogicException('Uploaded files list can only accept uploaded files.');
 		}
-		$this->files[] = [
-			'key'   => $offset,
-			'value' => $uploaded,
-		];
+		$this->files[$offset] = $uploaded;
 	}
 	
 	public function offsetUnset($offset) {

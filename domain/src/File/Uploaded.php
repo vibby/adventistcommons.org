@@ -9,14 +9,15 @@ class Uploaded extends File
 
 	public function __construct($path, $mimeType, $size, $name, $errorCode)
 	{
-		parent::__construct($path);
+		parent::__construct('', $path);
 		$this->mimeType = $mimeType;
 		$this->size = $size;
 
 		$this->originalName = $name;
 		$this->statusCode = $errorCode;
 		
-		$this->extension = File::ExtractExtension($name);
+		$parts = pathinfo($name);		
+		$this->extension = $parts['extension'];
 	}
 
 	public function getErrorMessage()

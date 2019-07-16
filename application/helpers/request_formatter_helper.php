@@ -5,9 +5,9 @@ if ( ! function_exists('build_uploaded_files_from_request'))
 	function build_uploaded_files_from_request(array $files): \AdventistCommons\Domain\File\UploadedCollection
 	{
 		$collection = new \AdventistCommons\Domain\File\UploadedCollection;
-		foreach ($files as $fileInfo) {
+		foreach ($files as $name => $fileInfo) {
 			if ($file = \AdventistCommons\Domain\File\UploadedBuilder::build($fileInfo)) {
-				$collection[] = $file;
+				$collection[$name] = $file;
 			}
 		}
 		

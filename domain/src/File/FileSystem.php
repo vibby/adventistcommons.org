@@ -16,14 +16,13 @@ class FileSystem
 		return copy($source, $destination);
 	}
 		
-	public function makeDefinitive(Uploaded $uploaded, $definitiveFileName = null)
+	public function makeUploadedDefinitive(Uploaded $uploaded, $definitiveFileName = null)
 	{
 		$definitiveFileName =
 			$definitiveFileName ??
 			sprintf('%s.%s', uniqid(rand(), true), $uploaded->getExtension());
-		$definitivePath = $this->uploadsDirectory.'/'.$definitiveFileName;
-		$this->copy($uploaded->path, $definitivePath);
+		$this->copy($uploaded->getAbsolutePath(), $this->uploadsDirectory.'/'.$definitiveFileName);
 		
-		return new File($definitiveFileName);
+		return new File($this->uploadsDirectory, $definitiveFileName);
 	}
 }

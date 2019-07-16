@@ -19,8 +19,8 @@
 				{% if product.author %}
 					<span class="text-small pr-2"><strong>Author</strong>: {{ product.author }}</span>
 				{% endif %}
-				{% if product.page_count %}
-					<span class="text-small pr-2"><strong>Pages</strong>: {{ product.page_count }}</span>
+				{% if product.pageCount %}
+					<span class="text-small pr-2"><strong>Pages</strong>: {{ product.pageCount }}</span>
 				{% endif %}
 			</div>
 			<hr>
@@ -118,10 +118,10 @@
 							</dd>
 						</dl>
 					{% endif %}
-					{% if product.page_count %}
+					{% if product.pageCount %}
 						<dl class="row">
 							<dt class="col-sm-4">Page count</dt>
-							<dd class="col-sm-8">{{ product.page_count|capitalize }}</dd>
+							<dd class="col-sm-8">{{ product.pageCount|capitalize }}</dd>
 						</dl>
 					{% endif %}
 					{% if product.audience %}

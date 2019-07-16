@@ -15,20 +15,28 @@ class File
 	protected $mimeType;
 	protected $size;
 	protected $extension;
+	private $info;
 	
-	public function __construct($path)
+	public function __construct($base, $path)
 	{
 		$this->path = $path;
+		$this->base = $base;
+		$this->info = new \SplFileInfo($this->getAbsolutePath());
+	}
+	
+	public function getInfo()
+	{
+		return $this->info;
 	}
 	
 	public function getMimeType()
 	{
-		return $this->mimeType;
+		return $this->mimeType ?? mime_content_type($this->getAbsolutePath());
 	}
 	
 	public function getExtension()
 	{
-		return $this->extension ?? self::extractExtension($this->path);
+		return $this->extension ?? $this->info->getExtension();
 	}
 	
 	public function __toString()
@@ -41,15 +49,13 @@ class File
 		return $this->path;
 	}
 
-	public function isInGroup($groupName)
+	public function getAbsolutePath()
 	{
-		return in_array($this->mimeType, self::MIME_TYPES_BY_GROUP[$groupName]);
+		return $this->base.DIRECTORY_SEPARATOR.$this->path;
 	}
 
-	public static function extractExtension($path)
+	public function isInGroup($groupName)
 	{
-		$parts = pathinfo($path);
-		
-		return $parts['extension'];
+		return in_array($this->getMimeType(), self::MIME_TYPES_BY_GROUP[$groupName]);
 	}
 }

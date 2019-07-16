@@ -59,7 +59,7 @@ class Product extends Entity
 		return $this->description;
 	}
 
-	public function setDescription(string $description): self
+	public function setDescription(?string $description): self
 	{
 		$this->description = $description;
 
@@ -83,7 +83,7 @@ class Product extends Entity
 		return $this->author;
 	}
 
-	public function setAuthor(string $author): self
+	public function setAuthor(?string $author): self
 	{
 		$this->author = $author;
 
@@ -95,7 +95,7 @@ class Product extends Entity
 		return $this->pageCount;
 	}
 
-	public function setPageCount(string $pageCount): self
+	public function setPageCount(?string $pageCount): self
 	{
 		$this->pageCount = (int) $pageCount;
 
@@ -107,7 +107,7 @@ class Product extends Entity
 		return $this->type;
 	}
 
-	public function setType(string $type): self
+	public function setType(?string $type): self
 	{
 		$this->type = $type;
 
@@ -131,7 +131,7 @@ class Product extends Entity
 		return $this->audience;
 	}
 
-	public function setAudience(string $audience): self
+	public function setAudience(?string $audience): self
 	{
 		$this->audience = $audience;
 
@@ -143,7 +143,7 @@ class Product extends Entity
 		return $this->publisher;
 	}
 
-	public function setPublisher(string $publisher): self
+	public function setPublisher(?string $publisher): self
 	{
 		$this->publisher = $publisher;
 
@@ -155,7 +155,7 @@ class Product extends Entity
 		return $this->formatOpen;
 	}
 
-	public function setFormatOpen(string $formatOpen): self
+	public function setFormatOpen(?string $formatOpen): self
 	{
 		$this->formatOpen = $formatOpen;
 
@@ -167,7 +167,7 @@ class Product extends Entity
 		return $this->formatClosed;
 	}
 
-	public function setFormatClosed(string $formatClosed): self
+	public function setFormatClosed(?string $formatClosed): self
 	{
 		$this->formatClosed = $formatClosed;
 
@@ -179,7 +179,7 @@ class Product extends Entity
 		return $this->coverColors;
 	}
 
-	public function setCoverColors(string $coverColors): self
+	public function setCoverColors(?string $coverColors): self
 	{
 		$this->coverColors = $coverColors;
 
@@ -191,7 +191,7 @@ class Product extends Entity
 		return $this->coverPaper;
 	}
 
-	public function setCoverPaper(string $coverPaper): self
+	public function setCoverPaper(?string $coverPaper): self
 	{
 		$this->coverPaper = $coverPaper;
 
@@ -203,7 +203,7 @@ class Product extends Entity
 		return $this->interiorColors;
 	}
 
-	public function setInteriorColors(string $interiorColors): self
+	public function setInteriorColors(?string $interiorColors): self
 	{
 		$this->interiorColors = $interiorColors;
 
@@ -215,7 +215,7 @@ class Product extends Entity
 		return $this->interiorPaper;
 	}
 
-	public function setInteriorPaper(string $interiorPaper): self
+	public function setInteriorPaper(?string $interiorPaper): self
 	{
 		$this->interiorPaper = $interiorPaper;
 
@@ -227,7 +227,7 @@ class Product extends Entity
 		return $this->binding;
 	}
 
-	public function setBinding(string $binding): self
+	public function setBinding(?string $binding): self
 	{
 		$this->binding = $binding;
 
@@ -239,7 +239,7 @@ class Product extends Entity
 		return $this->finishing;
 	}
 
-	public function setFinishing(string $finishing): self
+	public function setFinishing(?string $finishing): self
 	{
 		$this->finishing = $finishing;
 
@@ -251,7 +251,7 @@ class Product extends Entity
 		return $this->publisherWebsite;
 	}
 
-	public function setPublisherWebsite(string $publisherWebsite): self
+	public function setPublisherWebsite(?string $publisherWebsite): self
 	{
 		$this->publisherWebsite = $publisherWebsite;
 
