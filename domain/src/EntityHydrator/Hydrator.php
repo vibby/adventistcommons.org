@@ -19,9 +19,8 @@ abstract class Hydrator
 		$this->cache[$key] = $object;
 	}
 
-	static public function hydrateProperties($object, array $data)
+	static public function hydrateProperties($object, Iterable $data)
 	{
-		$data = array_filter($data);
 		foreach ($data as $key => $value) {
 			$method = 'set'.CamelCaseFormatter::run($key);
 			if (method_exists($object, $method)) {

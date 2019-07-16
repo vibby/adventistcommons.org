@@ -166,4 +166,9 @@ class Container
 
 		return $this->container[$name];
 	}
+	
+	public function has( $name )
+	{
+		return (isset($this->containerClosures[ $name ]) || isset($this->container[ $name ]));
+	}
 }

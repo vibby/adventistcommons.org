@@ -95,9 +95,9 @@ class Product extends Entity
 		return $this->pageCount;
 	}
 
-	public function setPageCount(int $pageCount): self
+	public function setPageCount(string $pageCount): self
 	{
-		$this->pageCount = $pageCount;
+		$this->pageCount = (int) $pageCount;
 
 		return $this;
 	}
@@ -119,7 +119,7 @@ class Product extends Entity
 		return $this->xliffFile;
 	}
 
-	public function setXliffFile(File $xliffFile): self
+	public function setXliffFile(?File $xliffFile): self
 	{
 		$this->xliffFile = $xliffFile;
 
