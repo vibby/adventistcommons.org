@@ -289,3 +289,7 @@ $( ".editor-item textarea" ).on( "keyup input", function() {
 	var is_empty = $(this).val().length == 0;
 	$parent.find( ".auto-translate" ).toggleClass( "hidden", ! is_empty );
 });
+
+$( ".skills-select" ).selectize( {
+    "create": true,
+});
