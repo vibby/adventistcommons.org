@@ -19,8 +19,10 @@ class ProductStorer
 	final public function store(Product $product): Product
 	{
 		$product = $this->fileStorer->storeImages($product, ['CoverImage']);
+		// @TODO : treate XLIFF file to add associated stuff
 		$product = $this->fileStorer->storeFiles($product, ['XliffFile']);
 		$productData = Formater::formatToArray($product);
+		// @TODO : store created series as well
 
 		$id = $this->productPutter->putProductAndGetId($productData);
 		$product->setId($id);

@@ -29,23 +29,8 @@ class Hydrator
 	
 	public function hydrate($object, array $entityData, UploadedCollection $uploadedCollection = null, $useCache = true, $path = [])
 	{
-		if (is_object($object)) {
-			$entity = $object;
-			$className = get_class($object);
-		} else {
-			if (!class_exists($object)) {
-				throw new \Exception(sprintf(
-					'Parameter one of hydratator must be the object to hydrat or the class name. %s given',
-					$object
-				));
-			}
-			$className = $object;
-			try {
-				$entity = new $className;
-			} catch (\Exception $e) {
-				throw new \Exception('Entity must have and constructor without parameter');
-			}
-		}
+		$entity = self::getEntity($object);
+		$className = get_class($entity);
 		$metaData = $this->metadataManager->getForClass($className);
 		
 		if ($useCache && isset($entityData['id']) && $this->entityCache->has($className, $entityData['id'])) {
@@ -54,7 +39,7 @@ class Hydrator
 		
 		$entityData = $this->fileHydrator->buildFiles($entityData, $metaData);
 		$entityData = $this->foreignHydrator->buildForeign($entityData, $metaData, $this);
-		
+				
 		$entity = self::hydrateProperties($entity, $entityData, $metaData);
 		if ($uploadedCollection) {
 			$entity = self::hydrateProperties($entity, $uploadedCollection, $metaData);
@@ -67,7 +52,28 @@ class Hydrator
 		return $entity;
 	}
 	
-	static public function hydrateProperties(Entity $entity, Iterable $data, EntityMetadata $metadata)
+	private static function getEntity($object): Entity
+	{
+		if ($object instanceof Entity) {
+			$entity = $object;
+		} elseif (is_string($object) && is_subclass_of($object, Entity::class)) {
+			$className = $object;
+			try {
+				$entity = new $className();
+			} catch (\Exception $e) {
+				throw new \Exception(sprintf('Entity %s must have a constructor without parameter', $className));
+			}
+		} else {
+			throw new \Exception(sprintf(
+				'Do not know what to hydrate. You must provide the object or its class name. %s given',
+				$object
+			));
+		}
+	
+		return $entity;
+	}
+	
+	private static function hydrateProperties(Entity $entity, Iterable $data, EntityMetadata $metadata)
 	{
 		foreach ($data as $key => $value) {
 			if (in_array($key, $metadata->getForeingIdNames())) {

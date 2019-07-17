@@ -7,21 +7,25 @@ use AdventistCommons\Domain\File\FileSystem;
 
 class EntityMetadata
 {
-	private $fieldsData = [];
+	private $metadata = [];
 	private $className;
 	
 	public function __construct(string $className, array $metadata)
 	{
 		$this->className = $className;
-		foreach ($metadata as $field => $data) {
-			$this->fieldsData[$field] = new FieldMetadata($data);
-		}
+		array_walk(
+			$metadata['fields'],
+			function (&$data) {
+				$data = new FieldMetadata($data);
+			}
+		);
+		
+		$this->metadata = $metadata;
 	}
 	
 	public function getFieldsOfType($type)
 	{
-		$fields = $this->fieldsData;
-		
+		$fields = $this->get('fields');
 		return array_filter(
 			$fields,
 			function (FieldMetadata $metadata) use ($type) {
@@ -46,5 +50,10 @@ class EntityMetadata
 		);
 		
 		return $foreignIdNames;
+	}
+	
+	public function get($key)
+	{
+		return $this->metadata[$key];
 	}
 }

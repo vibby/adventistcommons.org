@@ -17,11 +17,12 @@ class ProductValidator
 		$errors[] = Validator\InListValidator::validate('Binding', $product->getBinding(), Product::BINDINGS);
 		$errors[] = Validator\InListValidator::validate('Type', $product->getType(), Product::TYPES);
 		$errors[] = Validator\InListValidator::validate('Audience', $product->getAudience(), Product::AUDIENCES);
-		$coverImage = $product->getCoverImage();
-		if ($coverImage instanceof Uploaded) {
-			$errors[] = Validator\UploadedFileValidator::validate('Cover image', $product->getCoverImage());
+		if ($coverImage = $product->getCoverImage()) {
+			$errors[] = Validator\FileImageValidator::validate('Cover image', $product->getCoverImage());
+			if ($coverImage instanceof Uploaded) {
+				$errors[] = Validator\UploadedFileValidator::validate('Cover image', $coverImage);
+			}
 		}
-        $errors[] = Validator\FileImageValidator::validate('Cover image', $product->getCoverImage());
 
 		$errors = array_filter($errors);
 		if ($errors) {

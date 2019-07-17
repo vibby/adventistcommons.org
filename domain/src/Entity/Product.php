@@ -4,6 +4,7 @@ namespace AdventistCommons\Domain\Entity;
 use AdventistCommons\Domain\EntityHydrator\FileHydrator;
 use AdventistCommons\Domain\EntityHydrator\ForeignHydrator;
 use AdventistCommons\Domain\File\File;
+use AdventistCommons\Domain\Validation\ProductValidator;
 
 /**
  * Class Product
@@ -42,28 +43,31 @@ class Product extends Entity
 	public static function __getMetaData(): array
 	{
 		return [
-			'cover_image' => [
-				'type'            => FileHydrator::TYPE,
-				'root_path_group' => 'images',
-			],
-			'xliff_file' => [
-				'type'      	  => FileHydrator::TYPE,
-				'root_path_group' => 'xliff',
-			],
-			'product_attachment' => [
-				'type'     => ForeignHydrator::TYPE,
-				'class'    => ProductAttachment::class,
-				'multiple' => true,
-			],
-			'project' => [
-				'type'     => ForeignHydrator::TYPE,
-				'class'    => Project::class,
-				'multiple' => true,
-			],
-			'series' => [
-				'type'     => ForeignHydrator::TYPE,
-				'class'    => Series::class,
-				'multiple' => false,
+			'validator_class' => ProductValidator::class,
+			'fields' => [
+				'cover_image' => [
+					'type'            => FileHydrator::TYPE,
+					'root_path_group' => 'images',
+				],
+				'xliff_file' => [
+					'type'      	  => FileHydrator::TYPE,
+					'root_path_group' => 'xliff',
+				],
+				'product_attachment' => [
+					'type'     => ForeignHydrator::TYPE,
+					'class'    => ProductAttachment::class,
+					'multiple' => true,
+				],
+				'project' => [
+					'type'     => ForeignHydrator::TYPE,
+					'class'    => Project::class,
+					'multiple' => true,
+				],
+				'series' => [
+					'type'     => ForeignHydrator::TYPE,
+					'class'    => Series::class,
+					'multiple' => false,
+				],
 			],
 		];
 	}

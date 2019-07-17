@@ -16,7 +16,7 @@ class FileStorer
 		$this->fileSystem = $fileSystem;
 	}
 	
-	public function storeFiles($entity, array $properties)
+	public function storeFiles($entity, array $properties, \closure $after = null)
 	{
 		foreach ($properties as $propertyName) {
 			$getMethodName = sprintf('get%s', ucfirst($propertyName));
@@ -25,7 +25,11 @@ class FileStorer
 			
 			if ($file instanceof Uploaded) {
 				$setMethodName = sprintf('set%s', ucfirst($propertyName));
-				$entity->$setMethodName($this->fileSystem->makeDefinitive($file));
+				$definitiveFile = $this->fileSystem->makeUploadedDefinitive($file);
+				$entity->$setMethodName($definitiveFile);
+				if ($after) {
+					$after($definitiveFile);
+				}
 			}
 		}
 		
@@ -34,21 +38,15 @@ class FileStorer
 	
 	public function storeImages($entity, array $properties)
 	{
-		foreach ($properties as $propertyName) {
-			$getMethodName = sprintf('get%s', ucfirst($propertyName));
-			/** @var File $file */
-			$file = $entity->$getMethodName();
-			
-			if ($file instanceof Uploaded) {
-				Image::open($file->getAbsolutePath())
+		return $this->storeFiles(
+			$entity,
+			$properties,
+			function ($definitiveFile) {
+				Image::open($definitiveFile->getAbsolutePath())
 					->useFallback(false)
 					->zoomCrop(768, 768, 0, 0)
-					->save($file->getAbsolutePath());
-				$setMethodName = sprintf('set%s', ucfirst($propertyName));
-				$entity->$setMethodName($this->fileSystem->makeDefinitive($file));
+					->save($definitiveFile->getAbsolutePath());				
 			}
-		}
-		
-		return $entity;
+		);
 	}
 }

@@ -106,16 +106,26 @@ class Container
 				);
 			}
 		);
+		$this->set(
+			\AdventistCommons\Domain\Repository\RepositoryLister::class,
+			function () {
+				return new \AdventistCommons\Domain\Repository\RepositoryLister(
+					$this->get(\AdventistCommons\Domain\Repository\ProductRepository::class),
+					$this->get(\AdventistCommons\Domain\Repository\SeriesRepository::class)
+				);
+			}
+		);
 		
 		/****************************
 		 * Builders
 		 ****************************/
 		$this->set(
-			\AdventistCommons\Domain\EntityBuilder\ProductBuilder::class,
+			\AdventistCommons\Domain\EntityBuilder\Builder::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityBuilder\ProductBuilder(
+				return new \AdventistCommons\Domain\EntityBuilder\Builder(
 					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class),
-					$this->get(\AdventistCommons\Domain\Repository\ProductRepository::class)
+					$this->get(\AdventistCommons\Domain\Repository\RepositoryLister::class),
+					$this->get(\AdventistCommons\Domain\EntityMetadata\MetadataManager::class)
 				);
 			}
 		);

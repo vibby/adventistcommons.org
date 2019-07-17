@@ -99,9 +99,13 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 
 		/** @var \AdventistCommons\Domain\EntityBuilder\ProductBuilder $productBuilder */
-		$productBuilder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\ProductBuilder::class);
+		$builder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\Builder::class);
 		try {
-			$product = $productBuilder->buildOrUpdateFromArray($this->input->post(), build_uploaded_files_from_request($_FILES));
+			$product = $builder->buildOrUpdateFromArray(
+				\AdventistCommons\Domain\Entity\Product::class,
+				$this->input->post(),
+				build_uploaded_files_from_request($_FILES)
+			);
 		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
 			/** @var \AdventistCommons\Domain\Validation\Violation\ViolationError $validationError */
 			foreach ($e->getErrors() as $validationError) {
@@ -185,9 +189,27 @@ class Products extends CI_Controller {
 		}
 
 		$this->output->set_content_type("application/json");
-		$data = $this->input->post();
-		$this->db->where( "id", $data["id"] );
-		$this->db->update( "products", $data );
+		
+		/** @var \AdventistCommons\Domain\EntityBuilder\ProductBuilder $productBuilder */
+		$builder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\Builder::class);
+		try {
+			$product = $builder->buildOrUpdateFromArray(
+				\AdventistCommons\Domain\Entity\Product::class,
+				$this->input->post(),
+				build_uploaded_files_from_request($_FILES)
+			);
+		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
+			/** @var \AdventistCommons\Domain\Validation\Violation\ViolationError $validationError */
+			foreach ($e->getErrors() as $validationError) {
+				$errorMessages[] = sprintf('<p>%s</p>', $validationError->getMessage());
+			}			
+			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
+			return false;
+		}
+		/** @var \AdventistCommons\Domain\Storage\ProductStorer $productStorer */
+		$productStorer = $this->container->get(\AdventistCommons\Domain\Storage\ProductStorer::class);
+		$product = $productStorer->store($product);		
+		
 		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 	}
 
@@ -230,40 +252,6 @@ class Products extends CI_Controller {
 			->delete( "products" );
 
 		redirect( "/products", "refresh" );
-	}
-
-	private function _uploadCoverImage() {
-		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
-		$config["allowed_types"] = "jpg|jpeg|png";
-		$config["max_size"] = 10000;
-		$config["encrypt_name"] = true;
-
-		$this->load->library( "upload", $config );
-		$this->upload->initialize( $config );
-
-		if ( ! $this->upload->do_upload( "cover_image" ) ) {
-			return false;
-		}
-		$image = $this->upload->data();
-		$source_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $image["file_name"];
-		$target_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/";
-
-		$config_manip = [
-			"image_library" => "gd2",
-			"source_image" => $source_path,
-			"maintain_ratio" => true,
-			"width" => 768,
-			"height" => 768,
-			"quality" => "70%",
-		];
-
-		$this->load->library( "image_lib", $config_manip );
-		if( ! $this->image_lib->resize() ) {
-			return false;
-		}
-
-		$this->image_lib->clear();
-		return $this->upload->data();
 	}
 
 	private function _uploadXliff() {

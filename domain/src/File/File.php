@@ -8,6 +8,7 @@ class File
 		'image' => [
 			'image/jpeg',
 			'image/png',
+			'image/gif',
 		],
 	];
 	
@@ -51,7 +52,7 @@ class File
 
 	public function getAbsolutePath()
 	{
-		return $this->base.DIRECTORY_SEPARATOR.$this->path;
+		return ($this->base ? $this->base.DIRECTORY_SEPARATOR : '').$this->path;
 	}
 
 	public function isInGroup($groupName)

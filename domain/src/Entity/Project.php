@@ -19,15 +19,17 @@ class Project extends Entity
 	public static function __getMetaData(): array
 	{
 		return [
-			'language' => [
-				'type'     => ForeignHydrator::TYPE,
-				'class'    => Language::class,
-				'multiple' => false,
-			],
-			'product' => [
-				'type'     => ForeignHydrator::TYPE,
-				'class'    => Product::class,
-				'multiple' => false,
+			'fields' => [
+					'language' => [
+					'type'     => ForeignHydrator::TYPE,
+					'class'    => Language::class,
+					'multiple' => false,
+				],
+				'product' => [
+					'type'     => ForeignHydrator::TYPE,
+					'class'    => Product::class,
+					'multiple' => false,
+				],
 			],
 		];
 	}
