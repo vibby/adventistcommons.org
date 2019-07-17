@@ -65,5 +65,3 @@ $route['account/save_password'] = 'user/save_password';
 $route['editor/(:num)/(:num)'] = 'editor/index/$1/$2';
 $route['editor/(:num)/(:num)'] = 'editor/index/$1/$2';
 $route['404_override'] = '';
-$route['terms'] = 'content/termsOfUse';
-$route['privacy'] = 'content/privacyPolicy';

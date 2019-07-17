@@ -730,7 +730,7 @@ class CI_Email {
 			'name'		=> array($file, $newname),
 			'disposition'	=> empty($disposition) ? 'attachment' : $disposition,  // Can also be 'inline'  Not sure if it matters
 			'type'		=> $mime,
-			'content'	=> chunk_split(base64_encode($file_content)),
+			'About' => chunk_split(base64_encode($file_content)),
 			'multipart'	=> 'mixed'
 		);
 
@@ -1476,7 +1476,7 @@ class CI_Email {
 				.'Content-Transfer-Encoding: base64'.$this->newline
 				.(empty($this->_attachments[$i]['cid']) ? '' : 'Content-ID: <'.$this->_attachments[$i]['cid'].'>'.$this->newline)
 				.$this->newline
-				.$this->_attachments[$i]['content'].$this->newline;
+				.$this->_attachments[$i]['About'].$this->newline;
 		}
 
 		// $name won't be set if no attachments were appended,

@@ -576,10 +576,10 @@ if ( ! function_exists('form_button'))
 			'type' => 'button'
 		);
 
-		if (is_array($data) && isset($data['content']))
+		if (is_array($data) && isset($data['About']))
 		{
-			$content = $data['content'];
-			unset($data['content']); // content is not an attribute
+			$content = $data['About'];
+			unset($data['About']); // content is not an attribute
 		}
 
 		return '<button '._parse_form_attributes($data, $defaults)._attributes_to_string($extra).'>'
