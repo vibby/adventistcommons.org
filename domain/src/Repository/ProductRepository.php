@@ -2,7 +2,8 @@
 
 namespace AdventistCommons\Domain\Repository;
 
-use AdventistCommons\Domain\EntityHydrator\ProductHydrator;
+use AdventistCommons\Domain\Entity\Product;
+use AdventistCommons\Domain\EntityHydrator\Hydrator;
 
 /**
  * Class ProductRepository
@@ -13,12 +14,12 @@ use AdventistCommons\Domain\EntityHydrator\ProductHydrator;
 class ProductRepository
 {
 	private $productFinder;
-	private $productHydrator;
+	private $commonHydrator;
 
-	public function __construct(ProductFinderInterface $productFinder, ProductHydrator $productHydrator)
+	public function __construct(ProductFinderInterface $productFinder, Hydrator $commonHydrator)
 	{
 		$this->productFinder = $productFinder;
-		$this->productHydrator = $productHydrator;
+		$this->commonHydrator = $commonHydrator;
 	}
 
 	public function findWithAttachmentsAndProjects($id)
@@ -27,7 +28,7 @@ class ProductRepository
 		if (!$data) {
 			return null;
 		}
-		$product = $this->productHydrator->hydrate(reset($data['product']));
+		$product = $this->commonHydrator->hydrate(Product::class, reset($data['product']));
 
 		return $product;
 	}
@@ -38,7 +39,7 @@ class ProductRepository
 		if (!$data) {
 			return null;
 		}
-		$product = $this->productHydrator->hydrate(reset($data['product']));
+		$product = $this->commonHydrator->hydrate(Product::class, reset($data['product']));
 
 		return $product;
 	}
@@ -49,7 +50,7 @@ class ProductRepository
 		$products = [];
 		if ($data) {
 			foreach ($data['product'] as $productData) {
-				$products[] = $this->productHydrator->hydrate($productData);
+				$products[] = $this->commonHydrator->hydrate(Product::class, $productData);
 			}
 		}
 

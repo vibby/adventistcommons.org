@@ -2,7 +2,8 @@
 
 namespace AdventistCommons\Domain\Repository;
 
-use AdventistCommons\Domain\EntityHydrator\SeriesHydrator;
+use AdventistCommons\Domain\Entity\Series;
+use AdventistCommons\Domain\EntityHydrator\Hydrator;
 
 /**
  * Class SeriesRepository
@@ -13,12 +14,12 @@ use AdventistCommons\Domain\EntityHydrator\SeriesHydrator;
 class SeriesRepository
 {
 	private $seriesFinder;
-	private $seriesHydrator;
+	private $hydrator;
 
-	public function __construct(SeriesFinderInterface $seriesFinder, SeriesHydrator $seriesHydrator)
+	public function __construct(SeriesFinderInterface $seriesFinder, Hydrator $hydrator)
 	{
 		$this->seriesFinder = $seriesFinder;
-		$this->seriesHydrator = $seriesHydrator;
+		$this->hydrator = $hydrator;
 	}
 
 	public function findAll()
@@ -27,7 +28,7 @@ class SeriesRepository
 		$series = [];
 		if ($data) {
 			foreach ($data['series'] as $seriesData) {
-				$series[] = $this->seriesHydrator->hydrate($seriesData);
+				$series[] = $this->hydrator->hydrate(Series::class, $seriesData);
 			}
 		}
 

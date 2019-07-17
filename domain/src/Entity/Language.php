@@ -15,7 +15,12 @@ class Language extends Entity
 	private $googleCode;
 	private $productAttachment;
 	private $project;
-
+	
+	public static function __getMetaData(): array
+	{
+		return [];
+	}
+	
 	public function getName(): ?string
 	{
 		return $this->name;

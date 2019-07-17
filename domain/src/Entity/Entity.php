@@ -6,7 +6,7 @@ namespace AdventistCommons\Domain\Entity;
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
-class Entity
+abstract class Entity
 {
 	protected $id;
 	
@@ -26,4 +26,6 @@ class Entity
 
 		return $this;
 	}
+	
+	abstract public static function __getMetadata(): array;
 }

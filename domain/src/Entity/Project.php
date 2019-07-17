@@ -2,18 +2,36 @@
 
 namespace AdventistCommons\Domain\Entity;
 
+use AdventistCommons\Domain\EntityHydrator\ForeignHydrator;
+
 /**
  * Class Project
  * @package AdventistCommons\Model
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
-class Project
+class Project extends Entity
 {
 	private $product;
 	private $language;
 	private $status;
-
+	
+	public static function __getMetaData(): array
+	{
+		return [
+			'language' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => Language::class,
+				'multiple' => false,
+			],
+			'product' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => Product::class,
+				'multiple' => false,
+			],
+		];
+	}
+	
 	public function getProduct(): Product
 	{
 		return $this->product;

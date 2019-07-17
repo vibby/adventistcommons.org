@@ -33,8 +33,18 @@ class Container
 			\AdventistCommons\Domain\File\FileSystem::class,
 			function () {
 				return new \AdventistCommons\Domain\File\FileSystem(
-					realpath(__DIR__.'/../../uploads')
+					[
+						'0'      => realpath(__DIR__.'/../../uploads'),
+						'images' => realpath(__DIR__.'/../../uploads'),
+						'xliff'  => realpath(__DIR__.'/../../uploads'),
+					]
 				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\EntityMetadata\MetadataManager::class,
+			function () {
+				return new \AdventistCommons\Domain\EntityMetadata\MetadataManager();
 			}
 		);
 
@@ -42,60 +52,39 @@ class Container
 		 * HYDRATORS
 		 ****************************/
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\LanguageHydrator::class,
+			\AdventistCommons\Domain\EntityHydrator\EntityCache::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\LanguageHydrator();
+				return new \AdventistCommons\Domain\EntityHydrator\EntityCache();
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\SeriesHydrator::class,
+			\AdventistCommons\Domain\EntityHydrator\FileHydrator::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\SeriesHydrator();
-			}
-		);
-		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\ProjectHydrator::class,
-			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\ProjectHydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\LanguageHydrator::class)
+				return new \AdventistCommons\Domain\EntityHydrator\FileHydrator(
+					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\ProductAttachmentHydrator::class,
+			\AdventistCommons\Domain\EntityHydrator\ForeignHydrator::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\ProductAttachmentHydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\LanguageHydrator::class)
+				return new \AdventistCommons\Domain\EntityHydrator\ForeignHydrator(
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\ProductFileHydrator::class,
+			\AdventistCommons\Domain\EntityHydrator\Hydrator::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\ProductFileHydrator(
-					realpath(__DIR__.'/../../uploads'),
-					realpath(__DIR__.'/../../uploads')
+				return new \AdventistCommons\Domain\EntityHydrator\Hydrator(
+					$this->get(\AdventistCommons\Domain\EntityHydrator\FileHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityHydrator\ForeignHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityMetadata\MetadataManager::class),
+					$this->get(\AdventistCommons\Domain\EntityHydrator\EntityCache::class)
 				);
 			}
 		);
-		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\ProductForeignHydrator::class,
-			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\ProductForeignHydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProjectHydrator::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductAttachmentHydrator::class)
-				);
-			}
-		);
-		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\ProductHydrator::class,
-			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\ProductHydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductFileHydrator::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductForeignHydrator::class)
-				);
-			}
-		);
+
+
 		/****************************
 		 * REPOSITORIES
 		 ****************************/
@@ -104,7 +93,7 @@ class Container
 			function () {
 				return new \AdventistCommons\Domain\Repository\ProductRepository(
 					$this->get(Product_model::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductHydrator::class)
+					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class)
 				);
 			}
 		);
@@ -113,7 +102,7 @@ class Container
 			function () {
 				return new \AdventistCommons\Domain\Repository\SeriesRepository(
 					$this->get(Product_model::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\SeriesHydrator::class)
+					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class)
 				);
 			}
 		);
@@ -125,7 +114,7 @@ class Container
 			\AdventistCommons\Domain\EntityBuilder\ProductBuilder::class,
 			function () {
 				return new \AdventistCommons\Domain\EntityBuilder\ProductBuilder(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ProductHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class),
 					$this->get(\AdventistCommons\Domain\Repository\ProductRepository::class)
 				);
 			}
@@ -158,7 +147,7 @@ class Container
 	private function set( $name, $service ): void
 	{
 		if ($this->closed) {
-			throw new \Exception('Cannot add services to container once it is closed');
+			throw new \Exception('Cannot add services to container since it was closed');
 		}
 
 		if ($service instanceof Closure) {
@@ -187,6 +176,10 @@ class Container
 	
 	public function has( $name )
 	{
+		if (!$this->closed) {
+			$this->init();
+		}
+		
 		return (isset($this->containerClosures[ $name ]) || isset($this->container[ $name ]));
 	}
 }

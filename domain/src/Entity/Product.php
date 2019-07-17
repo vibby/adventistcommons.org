@@ -1,6 +1,8 @@
 <?php
 
 namespace AdventistCommons\Domain\Entity;
+use AdventistCommons\Domain\EntityHydrator\FileHydrator;
+use AdventistCommons\Domain\EntityHydrator\ForeignHydrator;
 use AdventistCommons\Domain\File\File;
 
 /**
@@ -36,6 +38,35 @@ class Product extends Entity
 	private $series;
 	private $productAttachments = [];
 	private $projects = [];
+	
+	public static function __getMetaData(): array
+	{
+		return [
+			'cover_image' => [
+				'type'            => FileHydrator::TYPE,
+				'root_path_group' => 'images',
+			],
+			'xliff_file' => [
+				'type'      	  => FileHydrator::TYPE,
+				'root_path_group' => 'xliff',
+			],
+			'product_attachment' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => ProductAttachment::class,
+				'multiple' => true,
+			],
+			'project' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => Project::class,
+				'multiple' => true,
+			],
+			'series' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => Series::class,
+				'multiple' => false,
+			],
+		];
+	}
 
 	public function __construct()
 	{
@@ -274,6 +305,11 @@ class Product extends Entity
 	{
 		$this->productAttachments[] = $productAttachment;
 	}
+	
+	public function setProductAttachment(array $productAttachments)
+	{
+		$this->productAttachments = $productAttachments;
+	}
 
 	public function getProductAttachments(): ?array
 	{
@@ -283,6 +319,11 @@ class Product extends Entity
 	public function addProject(Project $project)
 	{
 		$this->projects[] = $project;
+	}
+
+	public function setProject(array $projects)
+	{
+		$this->projects = $projects;
 	}
 
 	public function getProjects(): ?array

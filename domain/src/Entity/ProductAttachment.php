@@ -2,6 +2,8 @@
 
 namespace AdventistCommons\Domain\Entity;
 
+use AdventistCommons\Domain\EntityHydrator\ForeignHydrator;
+
 /**
  * Class ProductAttachment
  * @package AdventistCommons\Model
@@ -20,7 +22,23 @@ class ProductAttachment extends Entity
 	private $product;
 	private $file;
 	private $fileType;
-
+	
+	public static function __getMetaData(): array
+	{
+		return [
+			'language' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => Language::class,
+				'multiple' => false,
+			],
+			'product' => [
+				'type'     => ForeignHydrator::TYPE,
+				'class'    => Product::class,
+				'multiple' => false,
+			],
+		];
+	}
+	
 	public function getLanguage(): ?Language
 	{
 		return $this->language;

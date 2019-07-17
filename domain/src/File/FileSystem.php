@@ -4,11 +4,11 @@ namespace AdventistCommons\Domain\File;
 
 class FileSystem
 {
-	private $uploadsDirectory;
+	private $rootPathByGroup;
 	
-	public function __construct($uploadsDirectory)
+	public function __construct(array $rootPathByPropertyName)
 	{
-		$this->uploadsDirectory = $uploadsDirectory;
+		$this->rootPathByGroup = $rootPathByPropertyName;
 	}
 	
 	public function copy($source, $destination)
@@ -21,8 +21,17 @@ class FileSystem
 		$definitiveFileName =
 			$definitiveFileName ??
 			sprintf('%s.%s', uniqid(rand(), true), $uploaded->getExtension());
-		$this->copy($uploaded->getAbsolutePath(), $this->uploadsDirectory.'/'.$definitiveFileName);
+		$this->copy($uploaded->getAbsolutePath(), $this->getRootPath().'/'.$definitiveFileName);
 		
-		return new File($this->uploadsDirectory, $definitiveFileName);
+		return new File($this->getRootPath(), $definitiveFileName);
+	}
+	
+	public function getRootPath($key = 0): string
+	{
+		if (!isset($this->rootPathByGroup[$key])) {
+			throw new \Exception(sprintf('Root path for property %s is not defined', $key));
+		}
+		
+		return $this->rootPathByGroup[$key];
 	}
 }
