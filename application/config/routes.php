@@ -67,4 +67,3 @@ $route['editor/(:num)/(:num)'] = 'editor/index/$1/$2';
 $route['404_override'] = '';
 $route['terms'] = 'content/termsOfUse';
 $route['privacy'] = 'content/privacyPolicy';
-$route['data-processing-agreement'] = 'content/dataProcessingAgreement';
