@@ -145,5 +145,24 @@
 		<script type="text/javascript" src="/assets/js/theme.js"></script>
 		<script type="text/javascript" src="/assets/js/app.js?v=8"></script>
 		<link href="/assets/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css" media="all" />
+		<script type="text/javascript" src="/assets/js/jquery.bs.gdpr.cookies.js"></script>
+		<script type="text/javascript">
+            const settings = {
+                message: 'This website uses cookies to improve your browsing experience. If you want to benefit from improved service, please opt-in.<br /><b> For more information, consult our  ',
+                moreLinkLabel: 'privacy policy.</b>',
+                moreLink: '/privacy-policy',
+                messageMaxHeightPercent: 30,
+                acceptButtonLabel: 'Accept cookies usage',
+                delay: 1000
+            };
+
+            $(document).ready(function() {
+                $('body').bsgdprcookies(settings);
+
+                $('#cookiesBtn').on('click', function(){
+                    $('body').bsgdprcookies(settings, 'reinit');
+                });
+            });
+		</script>
 	</body>
 </html>
