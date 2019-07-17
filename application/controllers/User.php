@@ -429,11 +429,13 @@ class User extends CI_Controller
 			return $language["language_id"];
 		}, $languages );
 		
+		$userSkills = unserialize( $this->ion_auth->user()->row()->skills );
+		
 		$data = [
 			"edit_user" => $this->ion_auth->user()->row(),
 			"languages" => $languages,
-			"skills" => $this->skills,
-			"selected_skills" => unserialize( $this->ion_auth->user()->row()->skills ),
+			"skills" => array_merge($this->skills, $userSkills),
+			"selected_skills" => $userSkills,
 		];
 		
 		$this->twig->addGlobal( "title", "Almost done" );
