@@ -36,7 +36,7 @@ class Builder
 			$uploadedFiles,
 			false
 		);
-		$validator = $this->metadataManager->getForClass($className)->get('validator_class');
+		$validator = $this->metadataManager->getForClass($className)->getValidator();
 		$validator::validate($entity);
 		
 		return $entity;

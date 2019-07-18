@@ -3,6 +3,8 @@
 namespace AdventistCommons\Domain\EntityHydrator;
 
 use AdventistCommons\Domain\Entity\Entity;
+use AdventistCommons\Domain\EntityHydrator\Preprocessor\HydratorAwareInterface;
+use AdventistCommons\Domain\EntityHydrator\Preprocessor\PreprocessorInterface;
 use AdventistCommons\Domain\EntityMetadata\EntityMetadata;
 use AdventistCommons\Domain\EntityMetadata\MetadataManager;
 use AdventistCommons\Domain\File\UploadedCollection;
@@ -10,19 +12,16 @@ use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
 
 class Hydrator
 {
-	private $fileHydrator;
-	private $foreignHydrator;
+	private $preprocessor;
 	private $metadataManager;
 	private $entityCache;
 	
 	public function __construct(
-		FileHydrator $fileHydrator,
-		ForeignHydrator $foreignHydrator,
+		PreprocessorInterface $preprocessor,
 		MetadataManager $metadataManager,
 		EntityCache $entityCache
 	) {
-		$this->fileHydrator = $fileHydrator;
-		$this->foreignHydrator = $foreignHydrator;
+		$this->preprocessor = $preprocessor;
 		$this->metadataManager = $metadataManager;
 		$this->entityCache = $entityCache;
 	}
@@ -37,8 +36,10 @@ class Hydrator
 			return $this->entityCache->get($className, $entityData['id']);
 		}
 		
-		$entityData = $this->fileHydrator->buildFiles($entityData, $metaData);
-		$entityData = $this->foreignHydrator->buildForeign($entityData, $metaData, $this);
+		if ($this->preprocessor instanceof HydratorAwareInterface) {
+			$this->preprocessor->setHydrator($this);
+		}
+		$entityData = $this->preprocessor->preprocess($entityData, $metaData);
 				
 		$entity = self::hydrateProperties($entity, $entityData, $metaData);
 		if ($uploadedCollection) {
@@ -76,7 +77,7 @@ class Hydrator
 	private static function hydrateProperties(Entity $entity, Iterable $data, EntityMetadata $metadata)
 	{
 		foreach ($data as $key => $value) {
-			if (in_array($key, $metadata->getForeingIdNames())) {
+			if (in_array($key, $metadata->getForeignIdNames())) {
 				continue;
 			}
 			$method = 'set'.CamelCaseFormatter::run($key);

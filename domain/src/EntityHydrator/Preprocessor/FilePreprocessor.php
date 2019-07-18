@@ -1,13 +1,14 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityHydrator;
+namespace AdventistCommons\Domain\EntityHydrator\Preprocessor;
 
+use AdventistCommons\Domain\EntityHydrator\Hydrator;
 use AdventistCommons\Domain\EntityMetadata\EntityMetadata;
 use AdventistCommons\Domain\EntityMetadata\FieldMetadata;
 use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\File\FileSystem;
 
-class FileHydrator
+class FilePreprocessor implements PreprocessorInterface
 {
 	const TYPE = 'file';
 	
@@ -18,7 +19,7 @@ class FileHydrator
 		$this->fileSystem = $fileSystem;
 	}
 	
-	public function buildFiles(array $productData, EntityMetadata $metaData)
+	public function preprocess(array $productData, EntityMetadata $metaData): array
 	{
 		/**
 		 * @var string $fileField

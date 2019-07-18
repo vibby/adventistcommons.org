@@ -41,11 +41,11 @@ class FileStorer
 		return $this->storeFiles(
 			$entity,
 			$properties,
-			function ($definitiveFile) {
+			function (File $definitiveFile) {
 				Image::open($definitiveFile->getAbsolutePath())
 					->useFallback(false)
 					->zoomCrop(768, 768, 0, 0)
-					->save($definitiveFile->getAbsolutePath());				
+					->save($definitiveFile->getAbsolutePath());
 			}
 		);
 	}

@@ -58,17 +58,28 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\FileHydrator::class,
+			\AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\FileHydrator(
+				return new \AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\ForeignHydrator::class,
+			\AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\ForeignHydrator(
+				return new \AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\EntityHydrator\Preprocessor\AggregatedPreprocessor::class,
+			function () {
+				return new \AdventistCommons\Domain\EntityHydrator\Preprocessor\AggregatedPreprocessor(
+					[
+						$this->get(\AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor::class),
+						$this->get(\AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor::class)
+					]
 				);
 			}
 		);
@@ -76,8 +87,7 @@ class Container
 			\AdventistCommons\Domain\EntityHydrator\Hydrator::class,
 			function () {
 				return new \AdventistCommons\Domain\EntityHydrator\Hydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\FileHydrator::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\ForeignHydrator::class),
+					$this->get(\AdventistCommons\Domain\EntityHydrator\Preprocessor\AggregatedPreprocessor::class),
 					$this->get(\AdventistCommons\Domain\EntityMetadata\MetadataManager::class),
 					$this->get(\AdventistCommons\Domain\EntityHydrator\EntityCache::class)
 				);

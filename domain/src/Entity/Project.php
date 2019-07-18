@@ -2,7 +2,7 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\EntityHydrator\ForeignHydrator;
+use AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor;
 
 /**
  * Class Project
@@ -21,12 +21,12 @@ class Project extends Entity
 		return [
 			'fields' => [
 					'language' => [
-					'type'     => ForeignHydrator::TYPE,
+					'type'     => ForeignPreprocessor::TYPE,
 					'class'    => Language::class,
 					'multiple' => false,
 				],
 				'product' => [
-					'type'     => ForeignHydrator::TYPE,
+					'type'     => ForeignPreprocessor::TYPE,
 					'class'    => Product::class,
 					'multiple' => false,
 				],

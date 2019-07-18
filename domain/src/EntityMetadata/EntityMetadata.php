@@ -2,8 +2,7 @@
 
 namespace AdventistCommons\Domain\EntityMetadata;
 
-use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\File\FileSystem;
+use AdventistCommons\Domain\Validation\EntityValidator;
 
 class EntityMetadata
 {
@@ -13,19 +12,24 @@ class EntityMetadata
 	public function __construct(string $className, array $metadata)
 	{
 		$this->className = $className;
-		array_walk(
-			$metadata['fields'],
-			function (&$data) {
-				$data = new FieldMetadata($data);
-			}
-		);
+		if (isset($metadata['fields'])) {
+			array_walk(
+				$metadata['fields'],
+				function (&$data) {
+					$data = new FieldMetadata($data);
+				}
+			);
+		}
 		
 		$this->metadata = $metadata;
 	}
 	
 	public function getFieldsOfType($type)
 	{
-		$fields = $this->get('fields');
+		if (!($fields = $this->get('fields'))) {
+			return [];
+		}
+		
 		return array_filter(
 			$fields,
 			function (FieldMetadata $metadata) use ($type) {
@@ -39,7 +43,7 @@ class EntityMetadata
 		return $this->className;
 	}
 	
-	public function getForeingIdNames()
+	public function getForeignIdNames()
 	{
 		$foreignIdNames = array_keys($this->getFieldsOfType('foreign'));
 		array_walk(
@@ -54,6 +58,20 @@ class EntityMetadata
 	
 	public function get($key)
 	{
-		return $this->metadata[$key];
+		return $this->metadata[$key] ?? null;
+	}
+	
+	public function getValidator()
+	{
+		$className = $this->get('validator_class');
+		if (!is_subclass_of($className, EntityValidator::class)) {
+			throw new \Exception(sprintf(
+				'Class given as validator for entity %s is not an entity validator, %s given',
+				$this->getClassName(),
+				$className
+			));
+		}
+		
+		return $className;
 	}
 }

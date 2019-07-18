@@ -1,8 +1,9 @@
 <?php
 
 namespace AdventistCommons\Domain\Entity;
-use AdventistCommons\Domain\EntityHydrator\FileHydrator;
-use AdventistCommons\Domain\EntityHydrator\ForeignHydrator;
+
+use AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor;
+use AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor;
 use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Validation\ProductValidator;
 
@@ -46,25 +47,25 @@ class Product extends Entity
 			'validator_class' => ProductValidator::class,
 			'fields' => [
 				'cover_image' => [
-					'type'            => FileHydrator::TYPE,
+					'type'            => FilePreprocessor::TYPE,
 					'root_path_group' => 'images',
 				],
 				'xliff_file' => [
-					'type'      	  => FileHydrator::TYPE,
+					'type'      	  => FilePreprocessor::TYPE,
 					'root_path_group' => 'xliff',
 				],
 				'product_attachment' => [
-					'type'     => ForeignHydrator::TYPE,
+					'type'     => ForeignPreprocessor::TYPE,
 					'class'    => ProductAttachment::class,
 					'multiple' => true,
 				],
 				'project' => [
-					'type'     => ForeignHydrator::TYPE,
+					'type'     => ForeignPreprocessor::TYPE,
 					'class'    => Project::class,
 					'multiple' => true,
 				],
 				'series' => [
-					'type'     => ForeignHydrator::TYPE,
+					'type'     => ForeignPreprocessor::TYPE,
 					'class'    => Series::class,
 					'multiple' => false,
 				],

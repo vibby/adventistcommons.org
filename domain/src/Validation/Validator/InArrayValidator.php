@@ -4,7 +4,7 @@ namespace AdventistCommons\Domain\Validation\Validator;
 
 use AdventistCommons\Domain\Validation\Violation\ViolationError;
 
-class InListValidator
+class InArrayValidator
 {
 	static public function validate(string $name, $data, array $list): ?ViolationError
 	{
