@@ -15,11 +15,6 @@ class ProductSpec extends ObjectBehavior
         $this->shouldHaveType(Product::class);
     }
 
-	function let()
-	{
-		$this->beConstructedWith('product_name');
-	}
-
     function it_gives_attachments_and_projects(
     	Language $lang1,
 		Language $lang2,

@@ -2,10 +2,11 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\Hydrator\Preprocessor as Hydrate;
 use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\Storage\Preprocessor as Storage;
+use AdventistCommons\Domain\Hydrator\Normalizer;
+use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Validation\ProductValidator;
+use AdventistCommons\Domain\Storage\Putter\Formatter;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -48,38 +49,42 @@ class Product extends Entity
 			'fields' => [
 				'cover_image' => [
 					// how to process data when the entity is hydrated (from database, form or any other input)
-					'hydrate_preprocessor' => Hydrate\FilePreprocessor::class,
+					'hydrate_normalizer' => Normalizer\FileNormalizer::class,
 					// how to process data when the entity is stored
-					'store_preprocessor' => [
-						Storage\UploadPreprocessor::class,
-						Storage\ImagePreprocessor::class,
+					'store_processor' => [
+						Processor\UploadProcessor::class,
+						Processor\ImageProcessor::class,
 					],
 					// special for files : define the base path through its group
 					'root_path_group' => 'images',
 				],
 				'xliff_file' => [
-					'hydrate_preprocessor' => Hydrate\FilePreprocessor::class,
-					'store_preprocessor' => [
-						Storage\UploadPreprocessor::class,
-						Storage\XliffPreprocessor::class,
+					'hydrate_normalizer' => Normalizer\FileNormalizer::class,
+					'store_processor' => [
+						Processor\UploadProcessor::class,
+						Processor\XliffProcessor::class,
 					],
 					'root_path_group' => 'xliff',
 				],
 				'product_attachment' => [
-					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
-					'store_preprocessor' => Storage\ForeignPreprocessor::class,
+					'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
+					'store_processor' => null,
 					'class'    => ProductAttachment::class,
 					'multiple' => true,
 				],
 				'project' => [
-					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
-					'store_preprocessor' => Storage\ForeignPreprocessor::class,
+					'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
+					'store_processor' => null,
 					'class'    => Project::class,
 					'multiple' => true,
 				],
 				'series' => [
-					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
-					'store_preprocessor' => Storage\ForeignPreprocessor::class,
+					'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
+					'store_processor' => [
+						Processor\ForeignCreateProcessor::class,
+						Processor\PutterProcessor::class,
+					],
+					'persist_formatter' => Formatter\IdFormatter::class,
 					'class'    => Series::class,
 					'multiple' => false,
 				],
@@ -92,12 +97,12 @@ class Product extends Entity
 		$this->setType('book');
 	}
 	
-	public function getName(): string
+	public function getName(): ?string
 	{
 		return $this->name;
 	}
 
-	public function setName(string $name): self
+	public function setName($name): self
 	{
 		$this->name = $name;
 
@@ -308,12 +313,12 @@ class Product extends Entity
 		return $this;
 	}
 
-	public function getSeries(): ?string
+	public function getSeries(): ?Series
 	{
 		return $this->series;
 	}
 
-	public function setSeries(Series $series): self
+	public function setSeries(?Series $series): self
 	{
 		$this->series = $series;
 

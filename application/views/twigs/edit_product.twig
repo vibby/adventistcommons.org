@@ -65,7 +65,7 @@
 										<select class="series-select col" name="series_id" placeholder="Search for a series...">
 											<option value="">None</option>
 											{% for item in series  %}
-												<option value="{{ item.id }}" {{ product.series_id == item.id ? "selected" : "" }}>{{ item.name }}</option>
+												<option value="{{ item.id }}" {{ product.series.id == item.id ? "selected" : "" }}>{{ item.name }}</option>
 											{% endfor %}
 										</select>
 									</div>

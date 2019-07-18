@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\Storage\Preprocessor;
+namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
@@ -11,11 +11,11 @@ use Gregwar\Image\Image;
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class ImagePreprocessor implements PreprocessorInterface
+class ImageProcessor implements ProcessorInterface
 {
-	public function preprocess(Entity $entity, EntityMetadata $entityMetadata): Entity
+	public function process(Entity $entity, EntityMetadata $entityMetadata): Entity
 	{
-		$fieldsMetadata = $entityMetadata->getFieldsForStorePreprocess(self::class);
+		$fieldsMetadata = $entityMetadata->getFieldsForStoreProcessor(self::class);
 		foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
 			$getMethodName = $entityMetadata::propertyToGetter($fieldName);
 			/** @var File $image */

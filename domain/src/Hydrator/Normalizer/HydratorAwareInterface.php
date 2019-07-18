@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\Hydrator\Preprocessor;
+namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
 use  AdventistCommons\Domain\Hydrator\Hydrator;
 

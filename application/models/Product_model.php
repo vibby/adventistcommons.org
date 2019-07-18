@@ -4,7 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Product_model extends CI_Model
 	implements \AdventistCommons\Domain\Repository\ProductFinderInterface,
 	\AdventistCommons\Domain\Repository\SeriesFinderInterface,
-	\AdventistCommons\Domain\Storage\Putter\ProductPutterInterface
+	\AdventistCommons\Domain\Storage\Putter\ProductPutterInterface,
+	\AdventistCommons\Domain\Storage\Putter\SeriesPutterInterface
 {
 
 	function __construct()
@@ -447,12 +448,16 @@ class Product_model extends CI_Model
 		return $parent;
 	}
 
+
+
 	public function getProductStructure(int $product_id): array
 	{
 		$query = $this->db->select(
-			$this->buildStructureSelect('products', 'product', 'product1').","
+			$this->buildStructureSelect('products', 'product', 'product1').",".
+			$this->buildStructureSelect('series', 'series', 's', 'product1')
 		)
 			->from( "products as product1" )
+			->join( "series as s", "s.id = product1.series_id", "LEFT" )
 			->where( "product1.id", $product_id )
 			->get();
 
@@ -499,6 +504,29 @@ class Product_model extends CI_Model
 		} else {
 		    $this->db->set($productData);
 			$this->db->insert( "products", $productData );
+			$id = $this->db->insert_id();
+		}
+		
+		return $id;
+	}
+
+	public function putSeriesAndGetId(array $seriesData): int
+	{
+		$allowed  = $this->getColumns("series");
+		$seriesData = array_filter(
+		    $seriesData,
+		    function ($key) use ($allowed) {
+		        return in_array($key, $allowed);
+		    },
+		    ARRAY_FILTER_USE_KEY
+		);
+
+		if( isset($seriesData["id"]) && $seriesData["id"] ) {
+			$this->db->where( "id", $seriesData["id"] );
+			$this->db->update( "series", $seriesData );
+			$id = $seriesData["id"];
+		} else {
+			$this->db->insert( "series", $seriesData );
 			$id = $this->db->insert_id();
 		}
 		

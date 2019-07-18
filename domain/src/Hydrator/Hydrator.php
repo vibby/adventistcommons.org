@@ -3,8 +3,8 @@
 namespace AdventistCommons\Domain\Hydrator;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Hydrator\Preprocessor\HydratorAwareInterface;
-use AdventistCommons\Domain\Hydrator\Preprocessor\PreprocessorInterface;
+use AdventistCommons\Domain\Hydrator\Normalizer\HydratorAwareInterface;
+use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\File\UploadedCollection;
@@ -15,22 +15,22 @@ use AdventistCommons\Domain\File\UploadedCollection;
  */
 class Hydrator
 {
-	private $preprocessor;
+	private $normalizer;
 	private $metadataManager;
 	private $entityCache;
 	
 	public function __construct(
-		PreprocessorInterface $preprocessor,
+		NormalizerInterface $normalizer,
 		MetadataManager $metadataManager,
 		EntityCache $entityCache
 	) {
-		$this->preprocessor = $preprocessor;
+		$this->normalizer = $normalizer;
 		$this->metadataManager = $metadataManager;
 		$this->entityCache = $entityCache;
 	}
 	
 	public function hydrate(
-		$object,
+		$object, // class name or entity itself
 		array $entityData,
 		UploadedCollection $uploadedCollection = null,
 		$useCache = true
@@ -44,10 +44,10 @@ class Hydrator
 			return $this->entityCache->get($className, $entityData['id']);
 		}
 		
-		if ($this->preprocessor instanceof HydratorAwareInterface) {
-			$this->preprocessor->setHydrator($this);
+		if ($this->normalizer instanceof HydratorAwareInterface) {
+			$this->normalizer->setHydrator($this);
 		}
-		$entityData = $this->preprocessor->preprocess($entityData, $metaData);
+		$entityData = $this->normalizer->normalize($entityData, $metaData);
 				
 		$entity = self::hydrateProperties($entity, $entityData, $metaData);
 		if ($uploadedCollection) {
@@ -86,7 +86,7 @@ class Hydrator
 	}
 	
 	private static function hydrateProperties(Entity $entity, Iterable $data, EntityMetadata $metadata)
-	{
+	{		
 		foreach ($data as $key => $value) {
 			if (in_array($key, $metadata->getForeignIdNames())) {
 				continue;

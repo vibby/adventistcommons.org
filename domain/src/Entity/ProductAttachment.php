@@ -2,8 +2,8 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\Hydrator\Preprocessor as Hydrate;
-use AdventistCommons\Domain\Storage\Preprocessor as Storage;
+use AdventistCommons\Domain\Hydrator\Normalizer as Hydrate;
+use AdventistCommons\Domain\Storage\Normalizer as Storage;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -27,14 +27,14 @@ class ProductAttachment extends Entity
 		return [
 			'fields' => [
 				'language' => [
-					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
-					'store_preprocessor' => Storage\ForeignPreprocessor::class,
+					'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
+					'store_normalizer' => Storage\ForeignNormalizer::class,
 					'class'    => Language::class,
 					'multiple' => false,
 				],
 				'product' => [
-					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
-					'store_preprocessor' => Storage\ForeignPreprocessor::class,
+					'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
+					'store_normalizer' => Storage\ForeignNormalizer::class,
 					'class'    => Product::class,
 					'multiple' => false,
 				],

@@ -27,7 +27,7 @@ class Putter
 		}
 	}
 	
-	public function put(Entity $entity, $entityData): int
+	public function put(Entity $entity, array $entityData): int
 	{
 		if (!isset($this->putters[get_class($entity)])) {
 			throw new \Exception(sprintf('Putter is not set for class %s', get_class($entity)));
@@ -35,7 +35,7 @@ class Putter
 		
 		$putter = $this->putters[get_class($entity)];
 		$methodName = sprintf('put%sAndGetId', EntityMetadata::extractShortClassName($entity));
-		
+
 		return $putter->$methodName($entityData);
 	}
 }

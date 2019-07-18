@@ -3,9 +3,10 @@
 namespace AdventistCommons\Domain\Metadata;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor;
+use AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer;
 use AdventistCommons\Domain\Validation\EntityValidator;
 use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
+use Kolyunya\StringProcessor\Format\SnakeCaseFormatter;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -18,46 +19,47 @@ class EntityMetadata
 	
 	public function __construct(string $className, array $metadata)
 	{
-		$this->className = $className;
-		if (isset($metadata['fields'])) {
-			array_walk(
-				$metadata['fields'],
-				function (&$data) {
-					$data = new FieldMetadata($data);
-				}
-			);
+		$reflection = new \ReflectionClass($className);
+		foreach ($reflection->getMethods() as $method) {
+			if (substr($method->getName(), 0, 3) === 'set') {
+				$fieldNames[] = SnakeCaseFormatter::run(substr($method->getName(), 3));
+			}
 		}
-		
+		$fields = array_fill_keys($fieldNames, []);
+		$metadata['fields'] = array_merge($fields, $metadata['fields'] ?? []);
+		array_walk(
+			$metadata['fields'],
+			function (&$data, $fieldName) {
+				$data = new FieldMetadata($fieldName, $data);
+			}
+		);
+				
 		$this->metadata = $metadata;
+		$this->className = $className;
 	}
 	
-	public function getFieldsForHydratorPreprocess($preprocessName)
+	public function getFieldsForHydratorNormalizer($normalizerName)
 	{
-		return $this->getFieldsForPreprocessor('hydrate_preprocessor', $preprocessName);
+		return $this->getFieldsWithProperty('hydrate_normalizer', $normalizerName);
 	}
 	
-	public function getFieldsForStorePreprocess($preprocessName)
+	public function getFieldsForStoreProcessor($processorName)
 	{
-		return $this->getFieldsForPreprocessor('store_preprocessor', $preprocessName);
+		return $this->getFieldsWithProperty('store_processor', $processorName);
 	}
 	
-	private function getFieldsForPreprocessor($preprocessType, $preprocessName)
+	private function getFieldsWithProperty($property, $value)
 	{
-		if (!($fields = $this->get('fields'))) {
-			return [];
-		}
-		
-		return array_filter(
-			$fields,
-			function (FieldMetadata $metadata) use ($preprocessType, $preprocessName) {
-				if (!$metadata->has($preprocessType)) {
+		return $this->filterFields(
+			function (FieldMetadata $metadata) use ($property, $value) {
+				if (!$metadata->has($property)) {
 					return false;
 				}
-				$preprocess = $metadata->get($preprocessType);
+				$thisValue = $metadata->get($property);
 				return (
-					$preprocess === $preprocessName
+					$thisValue === $value
 					||
-					is_array($preprocess) && in_array($preprocessName, $preprocess)
+					is_array($thisValue) && in_array($value, $thisValue)
 				);
 			}
 		);
@@ -70,13 +72,11 @@ class EntityMetadata
 	
 	public function getForeignIdNames()
 	{
-		$foreignIdNames = array_keys(
-			$this->getFieldsForHydratorPreprocess(ForeignPreprocessor::class)
-		);
+		$foreignIdNames = $this->getFieldsForHydratorNormalizer(ForeignNormalizer::class);
 		array_walk(
 			$foreignIdNames,
-			function (&$fieldName) {
-				$fieldName = sprintf('%s_id', $fieldName);
+			function (FieldMetadata &$fieldName) {
+				$fieldName = $fieldName->formatToId();
 			}
 		);
 		
@@ -117,5 +117,19 @@ class EntityMetadata
 		$path = explode('\\', get_class($entity));
 		
 		return array_pop($path);
+	}
+		
+	public function getFieldsToStore()
+	{
+		return $this->get('fields');
+	}
+	
+	private function filterFields(\closure $closure)
+	{
+		if (!($fields = $this->get('fields'))) {
+			return [];
+		}
+		
+		return array_filter($fields, $closure);
 	}
 }

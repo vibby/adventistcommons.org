@@ -58,27 +58,27 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Hydrator\Preprocessor\FilePreprocessor::class,
+			\AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer::class,
 			function () {
-				return new \AdventistCommons\Domain\Hydrator\Preprocessor\FilePreprocessor(
+				return new \AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor::class,
+			\AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer::class,
 			function () {
-				return new \AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor(
+				return new \AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer(
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Hydrator\Preprocessor\AggregatedPreprocessor::class,
+			\AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer::class,
 			function () {
-				return new \AdventistCommons\Domain\Hydrator\Preprocessor\AggregatedPreprocessor(
+				return new \AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer(
 					[
-						$this->get(\AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor::class),
-						$this->get(\AdventistCommons\Domain\Hydrator\Preprocessor\FilePreprocessor::class)
+						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer::class),
+						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer::class)
 					]
 				);
 			}
@@ -87,7 +87,7 @@ class Container
 			\AdventistCommons\Domain\Hydrator\Hydrator::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Hydrator(
-					$this->get(\AdventistCommons\Domain\Hydrator\Preprocessor\AggregatedPreprocessor::class),
+					$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer::class),
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
 					$this->get(\AdventistCommons\Domain\Hydrator\EntityCache::class)
 				);
@@ -152,36 +152,55 @@ class Container
 		 * Storage
 		 ****************************/
 		$this->set(
-			\AdventistCommons\Domain\Storage\Preprocessor\UploadPreprocessor::class,
+			\AdventistCommons\Domain\Storage\Processor\UploadProcessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Preprocessor\UploadPreprocessor(
+				return new \AdventistCommons\Domain\Storage\Processor\UploadProcessor(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\Preprocessor\ImagePreprocessor::class,
+			\AdventistCommons\Domain\Storage\Processor\ImageProcessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Preprocessor\ImagePreprocessor(
+				return new \AdventistCommons\Domain\Storage\Processor\ImageProcessor(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\Preprocessor\XliffPreprocessor::class,
+			\AdventistCommons\Domain\Storage\Processor\XliffProcessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Preprocessor\XliffPreprocessor(
+				return new \AdventistCommons\Domain\Storage\Processor\XliffProcessor(
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor::class,
+			\AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor(
+				return new \AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor(
+					$this->get(\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class),
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Processor\PutterProcessor(
+					$this->get(\AdventistCommons\Domain\Storage\Putter\Putter::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Processor\AggregatedProcessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Processor\AggregatedProcessor(
 					[
-						$this->get(\AdventistCommons\Domain\Storage\Preprocessor\UploadPreprocessor::class),
-						$this->get(\AdventistCommons\Domain\Storage\Preprocessor\ImagePreprocessor::class),
-						$this->get(\AdventistCommons\Domain\Storage\Preprocessor\XliffPreprocessor::class)
+						$this->get(\AdventistCommons\Domain\Storage\Processor\UploadProcessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Processor\ImageProcessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Processor\XliffProcessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class),
 					]
 				);
 			}
@@ -190,8 +209,7 @@ class Container
 			\AdventistCommons\Domain\Storage\Storer::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Storer(
-					$this->get(\AdventistCommons\Domain\Storage\Putter\Putter::class),
-					$this->get(\AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor::class),
+					$this->get(\AdventistCommons\Domain\Storage\Processor\AggregatedProcessor::class),
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
 				);
 			}

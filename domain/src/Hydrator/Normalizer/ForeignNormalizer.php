@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\Hydrator\Preprocessor;
+namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Hydrator\Hydrator;
@@ -10,7 +10,7 @@ use AdventistCommons\Domain\Metadata\FieldMetadata;
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class ForeignPreprocessor implements PreprocessorInterface, HydratorAwareInterface
+class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
 {
 	const TYPE = 'foreign';
 	
@@ -22,13 +22,13 @@ class ForeignPreprocessor implements PreprocessorInterface, HydratorAwareInterfa
 		$this->hydrator = $hydrator;
 	}
 	
-	public function preprocess(array $entityData, EntityMetadata $entityMetadata): array
+	public function normalize(array $entityData, EntityMetadata $entityMetadata): array
 	{
 		/**
 		 * @var string $fieldName
 		 * @var FieldMetadata $fieldMetadata
 		 */
-		foreach ($entityMetadata->getFieldsForHydratorPreprocess(self::class) as $fieldName => $fieldMetadata) {
+		foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
 			if (isset($entityData[$fieldName])) {
 				foreach ($entityData[$fieldName] as $index => $childData) {
 					if ($fieldMetadata->get('multiple')) {

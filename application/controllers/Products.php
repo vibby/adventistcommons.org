@@ -99,12 +99,21 @@ class Products extends CI_Controller {
 		}
 		$this->output->set_content_type("application/json");
 
-		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
+		$data = $this->input->post();
+		if( $data["series_id"] == "" ) {
+			$data["series"] = null;
+		} elseif( is_numeric( $data["series_id"] ) ) {
+			$data["series"][][ "id" ] = $data["series_id"];
+		} else {
+			$data["series"][][ "name" ] = $data["series_id"];
+		}
+
+		/** @var \AdventistCommons\Domain\Action\SubmitEntity $submitAction */
 		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
 		try {
 			$product = $submitAction->do(
 				\AdventistCommons\Domain\Entity\Product::class,
-				$this->input->post(),
+				$data,
 				build_uploaded_files_from_request($_FILES)
 			);
 		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
@@ -121,8 +130,8 @@ class Products extends CI_Controller {
 		$product = $storeAction->do($product);
 		
 		if ($is_new) {
-			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/%d", $product->getId() ) ] ) );			
-		} elseif( $_FILES["cover_image"]["name"] ) {
+			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/%d", $product->getId() ) ] ) );
+		} elseif( isset($_FILES["cover_image"]) && $_FILES["cover_image"]["name"] ) {
 			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/edit/%d", $product->getId() ) ] ) );
 		} else {
 			$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
