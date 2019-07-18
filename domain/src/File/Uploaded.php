@@ -2,6 +2,10 @@
 
 namespace AdventistCommons\Domain\File;
 
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
 class Uploaded extends File
 {
 	protected $originalName;

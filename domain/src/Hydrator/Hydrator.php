@@ -1,15 +1,18 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityHydrator;
+namespace AdventistCommons\Domain\Hydrator;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\EntityHydrator\Preprocessor\HydratorAwareInterface;
-use AdventistCommons\Domain\EntityHydrator\Preprocessor\PreprocessorInterface;
-use AdventistCommons\Domain\EntityMetadata\EntityMetadata;
-use AdventistCommons\Domain\EntityMetadata\MetadataManager;
+use AdventistCommons\Domain\Hydrator\Preprocessor\HydratorAwareInterface;
+use AdventistCommons\Domain\Hydrator\Preprocessor\PreprocessorInterface;
+use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\File\UploadedCollection;
-use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
 
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
 class Hydrator
 {
 	private $preprocessor;
@@ -26,8 +29,13 @@ class Hydrator
 		$this->entityCache = $entityCache;
 	}
 	
-	public function hydrate($object, array $entityData, UploadedCollection $uploadedCollection = null, $useCache = true, $path = [])
-	{
+	public function hydrate(
+		$object,
+		array $entityData,
+		UploadedCollection $uploadedCollection = null,
+		$useCache = true
+	) {
+		/** @TODO Set parent to children when defining foreign */
 		$entity = self::getEntity($object);
 		$className = get_class($entity);
 		$metaData = $this->metadataManager->getForClass($className);
@@ -62,7 +70,10 @@ class Hydrator
 			try {
 				$entity = new $className();
 			} catch (\Exception $e) {
-				throw new \Exception(sprintf('Entity %s must have a constructor without parameter', $className));
+				throw new \Exception(sprintf(
+					'Entity %s must have a constructor without parameter',
+					$className
+				));
 			}
 		} else {
 			throw new \Exception(sprintf(
@@ -80,9 +91,13 @@ class Hydrator
 			if (in_array($key, $metadata->getForeignIdNames())) {
 				continue;
 			}
-			$method = 'set'.CamelCaseFormatter::run($key);
+			$method = EntityMetadata::propertyToSetter($key);
 			if (!method_exists($entity, $method)) {
-				throw new \Exception(sprintf('Method %s does not exists on class %s', $method, get_class($entity)));
+				throw new \Exception(sprintf(
+					'Method %s does not exists on class %s',
+					$method,
+					get_class($entity)
+				));
 			}
 			$entity->$method($value);
 		}

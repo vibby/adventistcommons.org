@@ -29,6 +29,7 @@ class Products extends CI_Controller {
 	{
 		/** @var \AdventistCommons\Domain\Repository\ProductRepository $productRepo */
 		$productRepo = $this->container->get(\AdventistCommons\Domain\Repository\ProductRepository::class);
+		/** @var \AdventistCommons\Domain\Repository\seriesRepository  $seriesRepo */
 		$seriesRepo = $this->container->get(\AdventistCommons\Domain\Repository\SeriesRepository::class);
 		$data = [
 			"products" => $productRepo->findAll(),
@@ -98,10 +99,10 @@ class Products extends CI_Controller {
 		}
 		$this->output->set_content_type("application/json");
 
-		/** @var \AdventistCommons\Domain\EntityBuilder\ProductBuilder $productBuilder */
-		$builder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\Builder::class);
+		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
+		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
 		try {
-			$product = $builder->buildOrUpdateFromArray(
+			$product = $submitAction->do(
 				\AdventistCommons\Domain\Entity\Product::class,
 				$this->input->post(),
 				build_uploaded_files_from_request($_FILES)
@@ -114,10 +115,10 @@ class Products extends CI_Controller {
 			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
 			return false;
 		}
-		/** @var \AdventistCommons\Domain\Storage\ProductStorer $productStorer */
-		$productStorer = $this->container->get(\AdventistCommons\Domain\Storage\ProductStorer::class);
+		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
+		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
 		$is_new = !$product->isStored();
-		$product = $productStorer->store($product);
+		$product = $storeAction->do($product);
 		
 		if ($is_new) {
 			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/%d", $product->getId() ) ] ) );			
@@ -190,10 +191,10 @@ class Products extends CI_Controller {
 
 		$this->output->set_content_type("application/json");
 		
-		/** @var \AdventistCommons\Domain\EntityBuilder\ProductBuilder $productBuilder */
-		$builder = $this->container->get(\AdventistCommons\Domain\EntityBuilder\Builder::class);
+		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
+		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
 		try {
-			$product = $builder->buildOrUpdateFromArray(
+			$product = $submitAction->do(
 				\AdventistCommons\Domain\Entity\Product::class,
 				$this->input->post(),
 				build_uploaded_files_from_request($_FILES)
@@ -206,9 +207,9 @@ class Products extends CI_Controller {
 			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
 			return false;
 		}
-		/** @var \AdventistCommons\Domain\Storage\ProductStorer $productStorer */
-		$productStorer = $this->container->get(\AdventistCommons\Domain\Storage\ProductStorer::class);
-		$product = $productStorer->store($product);		
+		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
+		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
+		$storeAction->do($product);
 		
 		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 	}

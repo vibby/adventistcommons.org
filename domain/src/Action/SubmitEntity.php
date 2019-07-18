@@ -1,30 +1,38 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityBuilder;
+namespace AdventistCommons\Domain\Action;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\EntityHydrator\Hydrator;
-use AdventistCommons\Domain\File\UploadedBuilder;
+use AdventistCommons\Domain\Hydrator\Hydrator;
 use AdventistCommons\Domain\File\UploadedCollection;
 use AdventistCommons\Domain\Repository\RepositoryLister;
-use AdventistCommons\Domain\EntityHydrator\ProductAbstractHydrator;
-use AdventistCommons\Domain\EntityMetadata\MetadataManager;
+use AdventistCommons\Domain\Metadata\MetadataManager;
 
-class Builder
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
+class SubmitEntity
 {
 	private $hydrator;
 	private $repositoryLister;
 	private $metadataManager;
 	
-	public function __construct(Hydrator $hydrator, RepositoryLister $repositoryLister, MetadataManager $metadataManager)
-	{
+	public function __construct(
+		Hydrator $hydrator,
+		RepositoryLister $repositoryLister,
+		MetadataManager $metadataManager
+	) {
 		$this->hydrator = $hydrator;
 		$this->repositoryLister = $repositoryLister;
 		$this->metadataManager = $metadataManager;
 	}
 	
-	public function buildOrUpdateFromArray(string $className, array $entityData, UploadedCollection $uploadedFiles = null): Entity
-	{
+	public function do(
+		string $className,
+		array $entityData,
+		UploadedCollection $uploadedFiles = null
+	): Entity {
 		$entity = null;
 		$repository = $this->repositoryLister->getForClassName($className);
 		if (isset($entityData['id']) && $entityData['id']) {

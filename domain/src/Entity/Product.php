@@ -2,14 +2,12 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor;
-use AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor;
+use AdventistCommons\Domain\Hydrator\Preprocessor as Hydrate;
 use AdventistCommons\Domain\File\File;
+use AdventistCommons\Domain\Storage\Preprocessor as Storage;
 use AdventistCommons\Domain\Validation\ProductValidator;
 
 /**
- * Class Product
- * @package AdventistCommons\Model
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
@@ -44,28 +42,44 @@ class Product extends Entity
 	public static function __getMetaData(): array
 	{
 		return [
+			// class used to validate the entity
 			'validator_class' => ProductValidator::class,
+			// define meta for every field
 			'fields' => [
 				'cover_image' => [
-					'type'            => FilePreprocessor::TYPE,
+					// how to process data when the entity is hydrated (from database, form or any other input)
+					'hydrate_preprocessor' => Hydrate\FilePreprocessor::class,
+					// how to process data when the entity is stored
+					'store_preprocessor' => [
+						Storage\UploadPreprocessor::class,
+						Storage\ImagePreprocessor::class,
+					],
+					// special for files : define the base path through its group
 					'root_path_group' => 'images',
 				],
 				'xliff_file' => [
-					'type'      	  => FilePreprocessor::TYPE,
+					'hydrate_preprocessor' => Hydrate\FilePreprocessor::class,
+					'store_preprocessor' => [
+						Storage\UploadPreprocessor::class,
+						Storage\XliffPreprocessor::class,
+					],
 					'root_path_group' => 'xliff',
 				],
 				'product_attachment' => [
-					'type'     => ForeignPreprocessor::TYPE,
+					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
+					'store_preprocessor' => Storage\ForeignPreprocessor::class,
 					'class'    => ProductAttachment::class,
 					'multiple' => true,
 				],
 				'project' => [
-					'type'     => ForeignPreprocessor::TYPE,
+					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
+					'store_preprocessor' => Storage\ForeignPreprocessor::class,
 					'class'    => Project::class,
 					'multiple' => true,
 				],
 				'series' => [
-					'type'     => ForeignPreprocessor::TYPE,
+					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
+					'store_preprocessor' => Storage\ForeignPreprocessor::class,
 					'class'    => Series::class,
 					'multiple' => false,
 				],
@@ -340,6 +354,7 @@ class Product extends Entity
 	{
 		$relations = [];
 		foreach ($this->getProductAttachments() as $productAttachment) {
+			/** @var Language $language */
 			if ($language = $productAttachment->getLanguage()) {
 				if (!isset($relations[$language->getCode()])) {
 					$relations[$language->getCode()] = [
@@ -352,6 +367,7 @@ class Product extends Entity
 			}
 		}
 		foreach ($this->getProjects() as $project) {
+			/** @var Language $language */
 			if (($language = $project->getLanguage()) && !isset($relations[$language->getCode()])) {
 				$relations[$language->getCode()] = [
 					'language' => $language,

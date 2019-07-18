@@ -3,11 +3,9 @@
 namespace AdventistCommons\Domain\Repository;
 
 use AdventistCommons\Domain\Entity\Series;
-use AdventistCommons\Domain\EntityHydrator\Hydrator;
+use AdventistCommons\Domain\Hydrator\Hydrator;
 
 /**
- * Class SeriesRepository
- * @package AdventistCommons\Model
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */

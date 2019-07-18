@@ -1,15 +1,16 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityMetadata;
+namespace AdventistCommons\Domain\Metadata;
 
-use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\File\FileSystem;
-
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
 class MetadataManager
 {
 	private $metadataByClassName;
 	
-	public function getForClass($className)
+	public function getForClass($className): EntityMetadata
 	{
 		if (!isset($this->metadataByClassName[$className])) {
 			if (!method_exists($className, '__getMetaData')) {

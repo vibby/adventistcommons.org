@@ -3,8 +3,6 @@
 namespace AdventistCommons\Domain\Entity;
 
 /**
- * Class Language
- * @package AdventistCommons\Model
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */

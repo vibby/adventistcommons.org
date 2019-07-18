@@ -1,10 +1,11 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityMetadata;
+namespace AdventistCommons\Domain\Metadata;
 
-use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\File\FileSystem;
-
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
 class FieldMetadata
 {
 	private $metadata;
@@ -18,5 +19,10 @@ class FieldMetadata
 	public function get($dataName)
 	{
 		return $this->metadata[$dataName];
+	}
+	
+	public function has($dataName)
+	{
+		return isset($this->metadata[$dataName]);
 	}
 }

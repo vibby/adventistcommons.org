@@ -42,9 +42,9 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityMetadata\MetadataManager::class,
+			\AdventistCommons\Domain\Metadata\MetadataManager::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityMetadata\MetadataManager();
+				return new \AdventistCommons\Domain\Metadata\MetadataManager();
 			}
 		);
 
@@ -52,44 +52,44 @@ class Container
 		 * HYDRATORS
 		 ****************************/
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\EntityCache::class,
+			\AdventistCommons\Domain\Hydrator\EntityCache::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\EntityCache();
+				return new \AdventistCommons\Domain\Hydrator\EntityCache();
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor::class,
+			\AdventistCommons\Domain\Hydrator\Preprocessor\FilePreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor(
+				return new \AdventistCommons\Domain\Hydrator\Preprocessor\FilePreprocessor(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor::class,
+			\AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor(
+				return new \AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor(
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\Preprocessor\AggregatedPreprocessor::class,
+			\AdventistCommons\Domain\Hydrator\Preprocessor\AggregatedPreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\Preprocessor\AggregatedPreprocessor(
+				return new \AdventistCommons\Domain\Hydrator\Preprocessor\AggregatedPreprocessor(
 					[
-						$this->get(\AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor::class),
-						$this->get(\AdventistCommons\Domain\EntityHydrator\Preprocessor\FilePreprocessor::class)
+						$this->get(\AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor::class),
+						$this->get(\AdventistCommons\Domain\Hydrator\Preprocessor\FilePreprocessor::class)
 					]
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\EntityHydrator\Hydrator::class,
+			\AdventistCommons\Domain\Hydrator\Hydrator::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityHydrator\Hydrator(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\Preprocessor\AggregatedPreprocessor::class),
-					$this->get(\AdventistCommons\Domain\EntityMetadata\MetadataManager::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\EntityCache::class)
+				return new \AdventistCommons\Domain\Hydrator\Hydrator(
+					$this->get(\AdventistCommons\Domain\Hydrator\Preprocessor\AggregatedPreprocessor::class),
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
+					$this->get(\AdventistCommons\Domain\Hydrator\EntityCache::class)
 				);
 			}
 		);
@@ -103,7 +103,7 @@ class Container
 			function () {
 				return new \AdventistCommons\Domain\Repository\ProductRepository(
 					$this->get(Product_model::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class)
+					$this->get(\AdventistCommons\Domain\Hydrator\Hydrator::class)
 				);
 			}
 		);
@@ -112,7 +112,7 @@ class Container
 			function () {
 				return new \AdventistCommons\Domain\Repository\SeriesRepository(
 					$this->get(Product_model::class),
-					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class)
+					$this->get(\AdventistCommons\Domain\Hydrator\Hydrator::class)
 				);
 			}
 		);
@@ -127,15 +127,23 @@ class Container
 		);
 		
 		/****************************
-		 * Builders
+		 * Actions
 		 ****************************/
 		$this->set(
-			\AdventistCommons\Domain\EntityBuilder\Builder::class,
+			\AdventistCommons\Domain\Action\SubmitEntity::class,
 			function () {
-				return new \AdventistCommons\Domain\EntityBuilder\Builder(
-					$this->get(\AdventistCommons\Domain\EntityHydrator\Hydrator::class),
+				return new \AdventistCommons\Domain\Action\SubmitEntity(
+					$this->get(\AdventistCommons\Domain\Hydrator\Hydrator::class),
 					$this->get(\AdventistCommons\Domain\Repository\RepositoryLister::class),
-					$this->get(\AdventistCommons\Domain\EntityMetadata\MetadataManager::class)
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Action\StoreEntity::class,
+			function () {
+				return new \AdventistCommons\Domain\Action\StoreEntity(
+					$this->get(\AdventistCommons\Domain\Storage\Storer::class)
 				);
 			}
 		);
@@ -144,23 +152,51 @@ class Container
 		 * Storage
 		 ****************************/
 		$this->set(
-			\AdventistCommons\Domain\Storage\FileStorer::class,
+			\AdventistCommons\Domain\Storage\Preprocessor\UploadPreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\FileStorer(
+				return new \AdventistCommons\Domain\Storage\Preprocessor\UploadPreprocessor(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\ProductStorer::class,
+			\AdventistCommons\Domain\Storage\Preprocessor\ImagePreprocessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\ProductStorer(
-					$this->get(Product_model::class),
-					$this->get(\AdventistCommons\Domain\Storage\FileStorer::class)
+				return new \AdventistCommons\Domain\Storage\Preprocessor\ImagePreprocessor(
+					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
-
+		$this->set(
+			\AdventistCommons\Domain\Storage\Preprocessor\XliffPreprocessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Preprocessor\XliffPreprocessor(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor(
+					[
+						$this->get(\AdventistCommons\Domain\Storage\Preprocessor\UploadPreprocessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Preprocessor\ImagePreprocessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Preprocessor\XliffPreprocessor::class)
+					]
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Storer::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Storer(
+					$this->get(Product_model::class),
+					$this->get(\AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor::class),
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
+			}
+		);
+		
 		$this->closed = true;
 	}
 

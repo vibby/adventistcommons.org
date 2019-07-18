@@ -2,13 +2,17 @@
 
 namespace AdventistCommons\Domain\Storage;
 
-use AdventistCommons\Domain\Validation\Violation\ViolationError;
+use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Entity\Product;
 use Kolyunya\StringProcessor\Format\SnakeCaseFormatter;
 
-class Formater
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
+class ArrayFormater
 {
-	static public function formatToArray($entity): array
+	static public function formatToArray(Entity $entity): array
 	{
 		$reflection = new \ReflectionClass(get_class($entity));
 		$rightNamespace = join(

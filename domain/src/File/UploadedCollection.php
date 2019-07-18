@@ -2,6 +2,10 @@
 
 namespace AdventistCommons\Domain\File;
 
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
 class UploadedCollection implements \ArrayAccess, \Iterator
 {
 	private $files = [];
@@ -53,5 +57,17 @@ class UploadedCollection implements \ArrayAccess, \Iterator
 	function valid()
 	{
 		return key($this->files) !== null;
+	}
+	
+	static function buildFromRequestsFiles($files)
+	{
+		$collection = new self;
+		foreach ($files as $name => $fileInfo) {
+			if ($file = UploadedBuilder::build($fileInfo)) {
+				$collection[$name] = $file;
+			}
+		}
+		
+		return $collection;
 	}
 }

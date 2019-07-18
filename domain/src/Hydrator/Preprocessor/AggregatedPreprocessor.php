@@ -1,10 +1,14 @@
 <?php
 
-namespace AdventistCommons\Domain\EntityHydrator\Preprocessor;
+namespace AdventistCommons\Domain\Hydrator\Preprocessor;
 
-use AdventistCommons\Domain\EntityHydrator\Hydrator;
-use AdventistCommons\Domain\EntityMetadata\EntityMetadata;
+use AdventistCommons\Domain\Hydrator\Hydrator;
+use AdventistCommons\Domain\Metadata\EntityMetadata;
 
+/**
+ * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @copyright 2019
+ */
 class AggregatedPreprocessor implements PreprocessorInterface, HydratorAwareInterface
 {
 	private $preprocessors;

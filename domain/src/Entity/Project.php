@@ -2,11 +2,10 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\EntityHydrator\Preprocessor\ForeignPreprocessor;
+use AdventistCommons\Domain\Hydrator\Preprocessor as Hydrate;
+use AdventistCommons\Domain\Storage\Preprocessor as Storage;
 
 /**
- * Class Project
- * @package AdventistCommons\Model
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
  */
@@ -20,13 +19,15 @@ class Project extends Entity
 	{
 		return [
 			'fields' => [
-					'language' => [
-					'type'     => ForeignPreprocessor::TYPE,
+				'language' => [
+					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
+					'store_preprocessor' => Storage\ForeignPreprocessor::class,
 					'class'    => Language::class,
 					'multiple' => false,
 				],
 				'product' => [
-					'type'     => ForeignPreprocessor::TYPE,
+					'hydrate_preprocessor' => Hydrate\ForeignPreprocessor::class,
+					'store_preprocessor' => Storage\ForeignPreprocessor::class,
 					'class'    => Product::class,
 					'multiple' => false,
 				],
