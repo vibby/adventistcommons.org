@@ -6,6 +6,7 @@ use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Storage\Preprocessor\PreprocessorInterface;
 use AdventistCommons\Domain\Storage\Preprocessor\StorerAwareInterface;
+use AdventistCommons\Domain\Storage\Putter\Putter;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -13,17 +14,16 @@ use AdventistCommons\Domain\Storage\Preprocessor\StorerAwareInterface;
  */
 class Storer
 {
-	private $productPutter;
+	private $putter;
 	private $preprocessor;
 	private $metadataManager;
 	
 	public function __construct(
-		ProductPutterInterface $productPutter,
+		Putter $putter,
 		PreprocessorInterface $preprocessor,
 		MetadataManager $metadataManager
 	) {
-		/** @TODO do not use productPutter put a service that gives the right putter */
-		$this->productPutter = $productPutter;
+		$this->putter = $putter;
 		$this->preprocessor = $preprocessor;
 		$this->metadataManager = $metadataManager;
 	}
@@ -35,9 +35,8 @@ class Storer
 			$this->preprocessor->setStorer($this);
 		}
 		$entity = $this->preprocessor->preprocess($entity, $metadata);
-		$productData = ArrayFormater::formatToArray($entity);
-
-		$id = $this->productPutter->putProductAndGetId($productData);
+		$entityData = ArrayFormater::formatToArray($entity);
+		$id = $this->putter->put($entity, $entityData);
 		$entity->setId($id);
 
 		return $entity;

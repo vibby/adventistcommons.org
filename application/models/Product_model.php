@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Product_model extends CI_Model
 	implements \AdventistCommons\Domain\Repository\ProductFinderInterface,
 	\AdventistCommons\Domain\Repository\SeriesFinderInterface,
-	\AdventistCommons\Domain\Storage\ProductPutterInterface	
+	\AdventistCommons\Domain\Storage\Putter\ProductPutterInterface
 {
 
 	function __construct()

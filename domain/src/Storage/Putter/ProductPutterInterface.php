@@ -1,6 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\Storage;
+namespace AdventistCommons\Domain\Storage\Putter;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -8,5 +8,5 @@ namespace AdventistCommons\Domain\Storage;
  */
 interface ProductPutterInterface
 {
-	public function putProductAndGetId(array $productData): int;
+	public function putProductAndGetId(array $entityData): int;
 }

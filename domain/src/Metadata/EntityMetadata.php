@@ -2,6 +2,7 @@
 
 namespace AdventistCommons\Domain\Metadata;
 
+use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Hydrator\Preprocessor\ForeignPreprocessor;
 use AdventistCommons\Domain\Validation\EntityValidator;
 use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
@@ -109,5 +110,12 @@ class EntityMetadata
 	public static function propertyToSetter(string $propertyName)
 	{
 		return sprintf('set%s', ucfirst(CamelCaseFormatter::run($propertyName)));
+	}
+	
+	public static function extractShortClassName(Entity $entity)
+	{
+		$path = explode('\\', get_class($entity));
+		
+		return array_pop($path);
 	}
 }

@@ -190,10 +190,18 @@ class Container
 			\AdventistCommons\Domain\Storage\Storer::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Storer(
-					$this->get(Product_model::class),
+					$this->get(\AdventistCommons\Domain\Storage\Putter\Putter::class),
 					$this->get(\AdventistCommons\Domain\Storage\Preprocessor\AggregatedPreprocessor::class),
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
 				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Putter\Putter::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Putter\Putter([
+					$this->get(Product_model::class),
+				]);
 			}
 		);
 		
