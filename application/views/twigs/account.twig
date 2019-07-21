@@ -11,14 +11,9 @@
 					<li class="nav-item">
 						<a class="nav-link" id="password-tab" data-toggle="tab" href="#password" role="tab">Password</a>
 					</li>
-					{% if is_admin_edit %}
+					{% if user.is_admin and permission_groups %}
 						<li class="nav-item">
 							<a class="nav-link" id="permissions-tab" data-toggle="tab" href="#permissions" role="tab">Permissions</a>
-						</li>
-					{% endif %}
-					{% if not is_admin_edit %}
-						<li class="nav-item">
-							<a class="nav-link" id="advanced-tab" data-toggle="tab" href="#advanced" role="tab">Advanced</a>
 						</li>
 					{% endif %}
 				</ul>
@@ -103,15 +98,7 @@
 									</div>
 								</form>
 							</div>
-							{% if not is_admin_edit %}
-								<div class="tab-pane fade" role="tabpanel" id="advanced">
-									<form action="/user/delete" method="post" class="auto-submit">
-										<button type="submit" class="p-0 btn btn-link text-danger confirm-dialog" data-confirm-message="Are you sure? This cannot be undone!">Delete my account</button>
-										<br><small>WARNING: this can never be undone. All your personal information will be immediately deleted, but contributed content including comments and translations will remain.</small>
-									</form>
-								</div>
-							{% endif %}
-							{% if is_admin_edit %}
+							{% if user.is_admin and permission_groups %}
 								<div class="tab-pane fade" role="tabpanel" id="permissions">
 									<form action="/user/save_permissions" method="post" class="auto-submit">
 										<h6>Site Permissions</h6>

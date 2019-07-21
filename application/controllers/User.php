@@ -82,7 +82,6 @@ class User extends CI_Controller
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
-			"is_admin_edit" => true,
 		];
 		
 		$data["edit_user"]->image = md5( strtolower( trim( $user->email ) ) );
@@ -435,7 +434,7 @@ class User extends CI_Controller
 		$data = [
 			"edit_user" => $this->ion_auth->user()->row(),
 			"languages" => $languages,
-			"skills" => array_merge( $this->skills, (array) $userSkills ),
+			"skills" => array_merge($this->skills, $userSkills),
 			"selected_skills" => $userSkills,
 		];
 		
@@ -570,37 +569,6 @@ class User extends CI_Controller
 			$id = $this->db->insert_id();
 			$this->output->set_output( json_encode( [ "success" => "Permissions updated successfully" ] ) );
 		}
-	}
-	
-	public function delete() {
-		if( ! $this->ion_auth->logged_in() ) {
-			show_404();
-		}
-		
-		$this->output->set_content_type( "application/json" );
-
-		$data = [
-			"first_name" => "Inactive",
-			"last_name" => "user",
-			"ip_address" => null,
-			"username" => null,
-			"password" => null,
-			"email" => null,
-			"last_login" => null,
-			"active" => false,
-			"location" => null,
-			"bio" => null,
-			"mother_language_id" => null,
-			"skills" => null,
-			"product_notify" => null,
-			"pro_translator" => null,
-		];
-		
-		$this->db->where( "id", $this->ion_auth->user()->row()->id );
-		$this->db->update( "users", $data );
-		$this->ion_auth->logout();
-		
-		$this->output->set_output( json_encode( [ "redirect" => "/" ] ) );
 	}
 
 	public function _get_csrf_nonce()
