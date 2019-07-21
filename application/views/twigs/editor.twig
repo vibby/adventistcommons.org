@@ -58,15 +58,18 @@
 									<div id="{{ "p_%s_revisions"|format( p.id ) }}" class="collapse">
 										<div class="accordion" id="{{ "p_%s_revisions_accordian"|format( p.id ) }}">
 											{% for revision in p.revisions  %}
-												<div class="card mb-0">
+												<div class="card mb-0 revision">
 													<div class="card-header p-2 revision-header">
 														<img alt="Image" src="https://www.gravatar.com/avatar/{{ md5email }}?s=60&d=mp" class="avatar mr-1" />
 														{{ revision.first_name ~ " " ~ revision.last_name }}
-														<time class="text-small float-right" datetime="{{ revision.created_at }} {{ revision.created_at_formatted }}</time>
+														<time class="text-small float-right" datetime="{{ revision.created_at }}">{{ revision.created_at_formatted }}</time>
 													</div>
 													<div class="revision-content collapse">
 														<div class="card-body text-small p-2">
-															{{ revision.diff }}
+															{{ revision.diff|raw }}
+															{% if ( can_always_commit or is_reviewer ) and not loop.first %}
+																<p><button class="restore-revision btn btn-outline-secondary btn-xs mt-1" data-id="{{ revision.id }}">Restore this revision</button></p>
+															{% endif %}
 														</div>
 													</div>
 												</div>

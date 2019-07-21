@@ -36,32 +36,27 @@ function handleFormResponse( $form, message, type = "danger" ) {
 	}, 6000);
 }
 
-$( "form.auto-submit" ).submit( function(e) {
-	$form = $(this);
-	$btn = $form.find( "button[type='submit']" );
-	$response_target = $form;
-	if( $form.find( ".modal-body" ).length > 0 ) {
-		$response_target = $form.find( ".modal-body" );
-	}
+function ajax( url, data, $btn, $response_region, success_callback ) {
 	btn_text = $btn.text();
-	$btn.text( "..." ).prop( "disabled", true );
-	e.preventDefault();
-	action = $(this).attr( "action" );
+	$btn.text( "loading..." ).prop( "disabled", true );
 	
 	$.ajax({
-		url: action, 
+		url: url, 
 		type: "POST",             
-		data: new FormData( $form[0] ),
+		data: data,
 		contentType: false,
 		cache: false,
 		processData: false,
 		success: function( response ) {
 			$btn.text( btn_text ).prop( "disabled", false );
 			if( response.error ) {
-				handleFormResponse( $response_target, response.error );
+				handleFormResponse( $response_region, response.error );
 				return;
 			} else if( response.success ) {
-				handleFormResponse( $response_target, response.success, "success" );
+				handleFormResponse( $response_region, response.success, "success" );
+			}
+			if( typeof callback === "function" ) {
+				callback( response );
 			}
 			if( response.redirect ) {
 				$btn.text( btn_text ).prop( "disabled", true );
@@ -80,10 +75,22 @@ $( "form.auto-submit" ).submit( function(e) {
 			}
 		},
 		error: function() {
-			handleFormResponse( $response_target, "An error has occured" );
+			handleFormResponse( $response_region, "An error has occured" );
 			$btn.text( btn_text ).prop( "disabled", false );
 		}
 	});
+}
+
+$( "form.auto-submit" ).submit( function(e) {
+	$form = $(this);
+	$btn = $form.find( "button[type='submit']" );
+	$response_target = $form;
+	if( $form.find( ".modal-body" ).length > 0 ) {
+		$response_target = $form.find( ".modal-body" );
+	}
+	action = $(this).attr( "action" );
+	
+	ajax( action, new FormData( $form[0] ), $btn, $response_target );
 });
 
 $( ".custom-file input" ).change( function (e) {
@@ -288,6 +295,15 @@ $( ".editor-item textarea" ).on( "keyup input", function() {
 	$parent = $(this).parents( ".editor-item" );
 	var is_empty = $(this).val().length == 0;
 	$parent.find( ".auto-translate" ).toggleClass( "hidden", ! is_empty );
+});
+
+$( ".restore-revision" ).click( function(e) {
+	e.preventDefault();
+	$response_region = $(this).parents( ".revision" );
+	$btn = $(this);
+	revision_id = $btn.attr( "data-id" );
+	
+	ajax( "/editor/restore/" + revision_id, null, $btn, $response_region );
 });
 
 $( ".skills-select" ).selectize( {
