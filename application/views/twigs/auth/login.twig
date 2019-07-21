@@ -4,7 +4,7 @@
 	<h1 class="h2">Welcome Back &#x1f44b;</h1>
 	<p class="lead">Log in to your account to continue</p>
 	{% if message %}
-		<div class="alert alert-warning">{{ message }}</div>
+		<div class="alert alert-warning">{{ message|raw }}</div>
 	{% endif %}
 
 	<form action="login" method="post" data-loading-text="loading...">
