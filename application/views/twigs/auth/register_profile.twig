@@ -29,8 +29,8 @@
 			</div>
 		</div>
 		<div class="form-group">
-			<label>Other skills</label>
-			<select class="selectize" multiple name="skills[]" data-placeholder="Select skills...">
+			<label for="skills">Other skills</label>
+			<select id="skills" class="skills-select" multiple name="skills[]" data-placeholder="Select skills...">
 				{% for skill in skills %}
 					$selected = in_array( $skill, $selected_skills ) ? "selected" : "";
 					<option {{ skill in selected_skills ? "selected" : "" }}>{{ skill }} </option>;

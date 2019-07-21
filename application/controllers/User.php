@@ -75,12 +75,16 @@ class User extends CI_Controller
         
 		$this->load->model( "project_model" );
 		
+		$user = $this->ion_auth->user( $user_id )->row();
+		
         $data = [
-			"edit_user" => $this->ion_auth->user( $user_id )->row(),
+			"edit_user" => $user,
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
 		];
+		
+		$data["edit_user"]->image = md5( strtolower( trim( $user->email ) ) );
         
 		$this->breadcrumbs[] = [
             "label" => "Edit",
@@ -424,12 +428,18 @@ class User extends CI_Controller
 		$languages = array_map( function( $language ) {
 			return $language["language_id"];
 		}, $languages );
-		$this->twig->addGlobal("user", $this->ion_auth->user()->row());
-		$this->twig->addGlobal("languages", $languages);
-		$this->twig->addGlobal("skills", $this->skills);
-		$this->twig->addGlobal("selected_skills", unserialize( $this->ion_auth->user()->row()->skills ));
-		$this->twig->addGlobal("title", "Almost done");
-		$this->twig->display("twigs/auth/register_profile");
+		
+		$userSkills = unserialize( $this->ion_auth->user()->row()->skills );
+		
+		$data = [
+			"edit_user" => $this->ion_auth->user()->row(),
+			"languages" => $languages,
+			"skills" => array_merge($this->skills, $userSkills),
+			"selected_skills" => $userSkills,
+		];
+		
+		$this->twig->addGlobal( "title", "Almost done" );
+		$this->twig->display( "twigs/auth/register_profile", $data );
 	}
 	
 	public function register_profile_save() {
@@ -470,8 +480,12 @@ class User extends CI_Controller
 	public function account()
 	{
 		$data = [
-			"user" => $this->ion_auth->user()->row(),
+			"edit_user" => $this->ion_auth->user()->row(),
+			"permission_groups" => $this->ion_auth->groups()->result_array(),
 		];
+		
+		$data["edit_user"]->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+		
 		$breadcrumbs = [
 			[
 				"label" => "Account",
@@ -481,11 +495,9 @@ class User extends CI_Controller
 				"label" => "Settings",
 			]
 		];
-		$this->twig->addGlobal("title", "Account Settings");
-		$this->twig->addGlobal("breadcrumbs", $breadcrumbs);
-		$this->twig->addGlobal("user", $this->ion_auth->user()->row());
-		$this->twig->addGlobal("permission_groups", $this->ion_auth->groups()->result_array());
-		$this->twig->display("twigs/account");
+		$this->twig->addGlobal( "title", "Account Settings" );
+		$this->twig->addGlobal( "breadcrumbs", $breadcrumbs );
+		$this->twig->display( "twigs/account", $data );
 	}
 	
 	public function save_account() {

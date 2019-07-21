@@ -4,7 +4,7 @@
 	<h1 class="h2">Create account</h1>
 	<p class="lead">Enter the information below to start translating</p>
 	{% if message %}
-		<div class="alert alert-warning">{{ message }}</div>
+		<div class="alert alert-warning">{{ message|raw }}</div>
 	{% endif %}
 	<hr>
 	<form action="register" method="post" data-loading-text="loading...">
@@ -35,7 +35,7 @@
 		<button class="btn btn-lg btn-block btn-primary" role="button" type="submit">
 			Create account
 		</button>
-		<small>By clicking 'Create Account' you agree to our <a href="#">Terms of Use</a>
+		<small>By clicking 'Create Account' you agree to our <a href="/termsOfUse" target="_blank">Terms of Use</a>
 		</small>
 	</form>
 

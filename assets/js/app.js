@@ -305,3 +305,7 @@ $( ".restore-revision" ).click( function(e) {
 	
 	ajax( "/editor/restore/" + revision_id, null, $btn, $response_region );
 });
+
+$( ".skills-select" ).selectize( {
+    "create": true,
+});
