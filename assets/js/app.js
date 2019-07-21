@@ -299,7 +299,6 @@ $( ".editor-item textarea" ).on( "keyup input", function() {
 
 $( ".restore-revision" ).click( function(e) {
 	e.preventDefault();
-	$editor_item = $(this).parents( ".editor-item" );
 	$response_region = $(this).parents( ".revision" );
 	$btn = $(this);
 	revision_id = $btn.attr( "data-id" );
