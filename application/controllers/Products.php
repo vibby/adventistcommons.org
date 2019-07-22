@@ -136,7 +136,6 @@ class Products extends CI_Controller {
 			return false;
 		}
 		$data = $this->input->post();
-		$data['audience'] = $data['audience'] ? array_values($data['audience']) : [];
 		
 		$is_new = ! array_key_exists( "id", $data );
 		
@@ -165,18 +164,18 @@ class Products extends CI_Controller {
 			$data["series_id"] = $this->db->insert_id();
 		}
 		
+		$data['audience'] = serialize($data['audience'] ?? []);
 		if( $is_new ) {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
 			
-			if( $xliff_file ) {
+			if( isset($xliff_file) ) {
 				$this->_parseXliff( $xliff_file["file_name"], $id );
 			}
 			
 			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
 		} else {
 			$this->db->where( "id", $data["id"] );
-			$data['audience'] = serialize($data['audience']);
 			$this->db->update( "products", $data );
 			if( $_FILES["cover_image"]["name"] ) {
 				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );

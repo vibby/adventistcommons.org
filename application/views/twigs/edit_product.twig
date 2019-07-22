@@ -69,17 +69,13 @@
 											{% endfor %}
 										</select>
 									</div>
-									<hr>
-									<h6>Product audience</h6>
-									<div class="row">
-										{% for audience in audience_options  %}
-											<div class="col">
-												<div class="custom-control custom-checkbox">
-													<input type="checkbox" id="audience-{{ audience }}" name="audience[{{ audience }}]" class="custom-control-input" value="{{ audience }}" {{ ( audience in product.audience ) ? "checked" : "" }} />
-													<label class="custom-control-label" for="audience-{{ audience}}">{{ audience|capitalize }}</label>
-												</div>
-											</div>
-										{% endfor %}
+									<div class="form-group row align-items-center">
+										<label for="audience" class="col-3">Audience</label>
+										<select id="audience" class="col selectize" multiple name="audience[]" data-placeholder="Select audience(s) ...">
+                                            {% for audience in audience_options %}
+												<option {% if audience in product.audience %}selected{% endif %}>{{ audience }}</option>
+                                            {% endfor %}
+										</select>
 									</div>
 									<hr>
 									<h6>Product type</h6>
