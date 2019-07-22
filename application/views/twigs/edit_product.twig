@@ -1,3 +1,4 @@
+
 {% extends "twigs/template.twig" %}
 
 {% block content %}
@@ -75,7 +76,7 @@
 											<div class="col">
 												<div class="custom-control custom-checkbox">
 													<input type="checkbox" id="audience-{{ audience }}" name="audience[{{ audience }}]" class="custom-control-input" value="{{ audience }}" {{ ( audience in product.audience ) ? "checked" : "" }} />
-													<label class="custom-control-label" for="audience-{{ audience}} ">{{ audience|capitalize }}</label>
+													<label class="custom-control-label" for="audience-{{ audience}}">{{ audience|capitalize }}</label>
 												</div>
 											</div>
 										{% endfor %}
@@ -87,7 +88,7 @@
 											<div class="col">
 												<div class="custom-control custom-radio">
 													<input type="radio" id="type-{{ type }}" name="type" class="custom-control-input" value="{{ type }}" {{ (product.type == type ) ? "checked" : "" }} />
-													<label class="custom-control-label" for="type-{{ type}} ">{{ product.type|capitalize }}</label>
+													<label class="custom-control-label" for="type-{{ type}}">{{ product.type|capitalize }}</label>
 												</div>
 											</div>
 										{% endfor %}
