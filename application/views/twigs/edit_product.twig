@@ -170,7 +170,7 @@
 								</form>
 							</div>
 							<div class="tab-pane fade" role="tabpanel" id="advanced">
-								<form action="/products/save_xliff" method="post" class="auto-submit">
+								<form action="/products/save_xliff" method="POST" class="auto-submit">
 									<h6>InDesign Translation File (.xliff)</h6>
 									{% if product.xliff_file %}
 										<a href="/uploads/{{ product.xliff_file }}">Download original XLIFF file</a>

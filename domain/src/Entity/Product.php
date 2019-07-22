@@ -39,6 +39,7 @@ class Product extends Entity
 	private $series;
 	private $productAttachments = [];
 	private $projects = [];
+	private $sections = [];
 	
 	public static function __getMetaData(): array
 	{
@@ -59,10 +60,12 @@ class Product extends Entity
 					'root_path_group' => 'images',
 				],
 				'xliff_file' => [
-					'hydrate_normalizer' => Normalizer\FileNormalizer::class,
+					'hydrate_normalizer' => [
+						Normalizer\FileNormalizer::class,
+						Normalizer\XliffNormalizer::class,
+					],
 					'store_processor' => [
 						Processor\UploadProcessor::class,
-						Processor\XliffProcessor::class,
 					],
 					'root_path_group' => 'xliff',
 				],
@@ -87,6 +90,14 @@ class Product extends Entity
 					'persist_formatter' => Formatter\IdFormatter::class,
 					'class'    => Series::class,
 					'multiple' => false,
+				],
+				'section' => [
+					'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
+					'store_processor' => [
+						Processor\ForeignCreateProcessor::class,
+					],
+					'class'    => Section::class,
+					'multiple' => true,
 				],
 			],
 		];
@@ -339,7 +350,7 @@ class Product extends Entity
 	{
 		return $this->productAttachments;
 	}
-
+	
 	public function addProject(Project $project)
 	{
 		$this->projects[] = $project;
@@ -354,7 +365,22 @@ class Product extends Entity
 	{
 		return $this->projects;
 	}
-
+	
+	public function addSection(Section $section)
+	{
+		$this->sections[] = $section;
+	}
+	
+	public function setSection(array $sections)
+	{
+		$this->sections = $sections;
+	}
+	
+	public function getSection(): ?array
+	{
+		return $this->sections;
+	}
+	
 	public function getLanguagesRelations(): array
 	{
 		$relations = [];

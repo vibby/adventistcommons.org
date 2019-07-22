@@ -47,6 +47,12 @@ class Container
 				return new \AdventistCommons\Domain\Metadata\MetadataManager();
 			}
 		);
+		$this->set(
+			\AdventistCommons\Domain\Xliff\XliffParser::class,
+			function () {
+				return new \AdventistCommons\Domain\Xliff\XliffParser();
+			}
+		);
 
 		/****************************
 		 * HYDRATORS
@@ -73,12 +79,21 @@ class Container
 			}
 		);
 		$this->set(
+			\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class,
+			function () {
+				return new \AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer(
+					$this->get(\AdventistCommons\Domain\Xliff\XliffParser::class)
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer(
 					[
 						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer::class),
-						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer::class)
+						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer::class),
+						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class)
 					]
 				);
 			}
@@ -168,13 +183,6 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\Processor\XliffProcessor::class,
-			function () {
-				return new \AdventistCommons\Domain\Storage\Processor\XliffProcessor(
-				);
-			}
-		);
-		$this->set(
 			\AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor(
@@ -198,7 +206,6 @@ class Container
 					[
 						$this->get(\AdventistCommons\Domain\Storage\Processor\UploadProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\ImageProcessor::class),
-						$this->get(\AdventistCommons\Domain\Storage\Processor\XliffProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class),
 					]
