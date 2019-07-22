@@ -1306,8 +1306,8 @@ class Ion_auth_model extends CI_Model
 		if ( $row ) {
 			$row->skills = unserialize( $row->skills );
 			$row->languages = $this->getLanguageIdsForUser( $row );
-			$user->image = md5( strtolower( $row->email ) ) );
-			$user->is_admin = $this->ion_auth->is_admin();
+			$row->image = md5( strtolower( trim( $row->email ) ) );
+			$row->is_admin = $this->ion_auth->is_admin();
 		}
 
 		return $row;
@@ -2815,35 +2815,33 @@ class Ion_auth_model extends CI_Model
 	 * @param int $user_id
 	 * @param array $user
 	 */
-	public function updateUser(int $user_id, array $user): void
+	public function update_user_custom(int $user_id, array $user): void
 	{
 		$user["pro_translator"] = isset($user["pro_translator"]);
-		$user["username"] = $user["email"];
-		$user["skills"] = serialize($user["skills"]);
-		$user = $this->addOrUpdateLanguages($user_id, $user);
+		if (isset($user["email"])) {
+			$user["username"] = $user["email"];
+		}
+		$user["skills"] = serialize($user["skills"] ??  []);
+		$user = $this->update_languages($user_id, $user);
 		$this->db->where( "id", $user_id );
 		$this->db->update( "users", $user );
 	}
 
-	private function addOrUpdateLanguages(int $user_id, array $user): array
+	private function update_languages(int $user_id, array $user): array
 	{
-		if (isset($user["languages"])) {
-			$db = $this->db;
-			array_walk(
-				$user["languages"],
-				function($language_id) use ($db, $user_id) {
-					$db->query(str_replace(
-						"INSERT INTO",
-						"INSERT IGNORE INTO",
-						$db->insert_string(
-							"user_languages",
-							["user_id" => $user_id, "language_id" => $language_id]
-						)
-					));
-				}
-			);
-			unset($user["languages"]);
-		}
+		$user["languages"] = $user["languages"] ?? [];
+		$db = $this->db;
+		$db->where( "user_id", $user_id )->delete( "user_languages" );
+		array_walk(
+			$user["languages"],
+			function($language_id) use ($db, $user_id) {
+				$db->insert(
+					"user_languages",
+					["user_id" => $user_id, "language_id" => $language_id]
+				);
+			}
+		);
+		unset($user["languages"]);
 
 		return $user;
 	}

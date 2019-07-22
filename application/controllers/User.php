@@ -28,6 +28,7 @@ class User extends CI_Controller
 		$this->lang->load( "auth" );
 		$user = $this->ion_auth->user()->row();
 		if ( $user ) {
+			$this->user = $user;
 			$this->twig->addGlobal( "user",  $user );
 		}
 	}
@@ -73,8 +74,10 @@ class User extends CI_Controller
 
 		$this->load->model( "project_model" );
 
+		$user = $this->ion_auth->user( $user_id )->row();
         $data = [
-			"edit_user" => $this->ion_auth->user( $user_id )->row(),
+			"edit_user" => $user,
+			"skills" => array_merge($user->skills, $this->skills),
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
@@ -413,8 +416,7 @@ class User extends CI_Controller
 
 		$data = [
 			"edit_user" => $this->user,
-			"languages" => $languages,
-			"skills" => array_merge($this->skills, $user->skills),
+			"skills" => array_merge($this->skills, is_array($this->user->skills) ? $this->user->skills : []),
 		];
 
 		$this->twig->addGlobal( "title", "Almost done" );
@@ -435,22 +437,11 @@ class User extends CI_Controller
 				"bio" => $post_data["bio"],
 				"location" => $post_data["location"],
 				"mother_language_id" => $post_data["mother_language_id"],
-				"skills" => serialize( $post_data["skills"] ),
+				"skills" => $post_data["skills"] ?? [],
+				"languages" => $post_data["languages"] ?? [],
 				"pro_translator" => $post_data[ "pro_translator" ] ?? false,
 			];
-			$this->db->where( "id", $user_id );
-			$this->db->update( "users", $data );
-
-			$this->db->where( "user_id", $user_id )
-				->delete( "user_languages" );
-
-			foreach( $post_data["languages"] as $language ) {
-				$data = [
-					"user_id" => $user_id,
-					"language_id" => $language,
-				];
-				$this->db->insert( "user_languages", $data );
-			}
+			$this->ion_auth->update_user_custom($user_id, $data);
 
 			$this->output->set_output( json_encode( [ "redirect" => "/projects" ] ) );
 		}
@@ -488,7 +479,7 @@ class User extends CI_Controller
 		} else {
 			$data = $this->input->post();
 			$user_id = $this->ion_auth->is_admin() ? $data["id"] : $this->ion_auth->user()->row()->id;
-			$this->ion_auth->updateUser($user_id, $data);
+			$this->ion_auth->update_user_custom($user_id, $data);
 			$this->output->set_output( json_encode( [ "success" => "Account info updated" ] ) );
 		}
 	}
