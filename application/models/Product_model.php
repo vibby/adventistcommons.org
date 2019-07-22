@@ -5,7 +5,9 @@ class Product_model extends CI_Model
 	implements \AdventistCommons\Domain\Repository\ProductFinderInterface,
 	\AdventistCommons\Domain\Repository\SeriesFinderInterface,
 	\AdventistCommons\Domain\Storage\Putter\ProductPutterInterface,
-	\AdventistCommons\Domain\Storage\Putter\SeriesPutterInterface
+	\AdventistCommons\Domain\Storage\Putter\SeriesPutterInterface,
+	\AdventistCommons\Domain\Storage\Remover\ProductRemoverInterface,
+	\AdventistCommons\Domain\Storage\Remover\SeriesRemoverInterface
 {
 
 	function __construct()
@@ -531,5 +533,17 @@ class Product_model extends CI_Model
 		}
 		
 		return $id;
+	}
+	
+	public function removeProduct(int $id): void
+	{		
+		$this->db->where( "id", $id )
+			->delete( "products" );
+	}
+	
+	public function removeSeries(int $id): void
+	{		
+		$this->db->where( "id", $id )
+			->delete( "series" );
 	}
 }

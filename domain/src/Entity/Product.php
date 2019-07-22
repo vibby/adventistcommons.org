@@ -56,6 +56,7 @@ class Product extends Entity
 						Processor\UploadProcessor::class,
 						Processor\ImageProcessor::class,
 					],
+					'remove_processor' => Processor\FileRemoveProcessor::class,
 					// special for files : define the base path through its group
 					'root_path_group' => 'images',
 				],
@@ -67,6 +68,7 @@ class Product extends Entity
 					'store_processor' => [
 						Processor\UploadProcessor::class,
 					],
+					'remove_processor' => Processor\FileRemoveProcessor::class,
 					'root_path_group' => 'xliff',
 				],
 				'product_attachment' => [

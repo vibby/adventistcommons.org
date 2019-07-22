@@ -4,42 +4,39 @@ namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
-use AdventistCommons\Domain\Storage\Storer;
 use AdventistCommons\Domain\Metadata\MetadataManager;
+use AdventistCommons\Domain\Storage\Storer;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class ForeignCreateProcessor implements ProcessorInterface{
+class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface
+{
 	/** @var PutterProcessor */
-	private $persistProcessor;
+	private $putterProcessor;
 	
-	/** @var MetadataManager */
-	private $metadataManager;
-	
-	public function __construct(PutterProcessor $persistProcessor, MetadataManager $metadataManager)
+	public function __construct(PutterProcessor $putterProcessor)
 	{
-		$this->persistProcessor = $persistProcessor;
-		$this->metadataManager = $metadataManager;
+		$this->putterProcessor = $putterProcessor;
 	}
 	
-	public function process(Entity $entity, EntityMetadata $entityMetadata): Entity
+	protected function processOne(Entity $entity, $value, string $fieldName): Entity
 	{
-		$fieldsMetadata = $entityMetadata->getFieldsForStoreProcessor(self::class);
-		foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-			$getMethodName = $entityMetadata::propertyToGetter($fieldName);
-			$setMethodName = $entityMetadata::propertyToSetter($fieldName);
-			$foreign = $entity->$getMethodName();
-			if (is_array($foreign)) {
-				$changed = [];
-				foreach ($foreign as $index => $otherEntity) {
-					$this->createForeign($entity, $otherEntity, $setMethodName);
+		$setMethodName = EntityMetadata::propertyToSetter($fieldName);
+		if (is_array($value)) {
+			$changed = [];
+			foreach ($value as $index => $otherEntity) {
+				if (!$otherEntity instanceof Entity) {
+					throw new \Exception('A foreign field value must be an entity or an array of entities');
 				}
-				$entity->$setMethodName($changed);
-			} elseif ($foreign instanceof Entity) {
-				$this->createForeign($entity, $foreign, $setMethodName);
+				$this->createForeign($entity, $otherEntity, $setMethodName);
 			}
+			$entity->$setMethodName($changed);
+		} elseif ($value instanceof Entity) {
+			$this->createForeign($entity, $value, $setMethodName);
+		} else {
+			throw new \Exception('A foreign field value must be an entity or an array of entities');
 		}
 		
 		return $entity;
@@ -48,7 +45,7 @@ class ForeignCreateProcessor implements ProcessorInterface{
 	private function createForeign(Entity &$parent , Entity $foreign, string $setMethodName)
 	{
 		if (!$foreign->getId()) {
-			$parent->$setMethodName($this->persistProcessor->process($foreign, $this->metadataManager->getForClass(get_class($foreign))));
+			$parent->$setMethodName($this->putterProcessor->process($foreign, $this->metadataManager->getForClass(get_class($foreign))));
 		}
 	}
 }

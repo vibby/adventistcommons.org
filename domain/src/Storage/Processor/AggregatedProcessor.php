@@ -25,10 +25,10 @@ class AggregatedProcessor implements ProcessorInterface
 		$this->processors = $processors;
 	}
 	
-	public function process(Entity $entity, EntityMetadata $metaData): Entity
+	public function process(Entity $entity, EntityMetadata $metaData, string $action): Entity
 	{
 		foreach ($this->processors as $processor) {
-			$entity = $processor->process($entity, $metaData);
+			$entity = $processor->process($entity, $metaData, $action);
 		}
 		
 		return $entity;

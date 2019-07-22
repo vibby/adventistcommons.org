@@ -215,9 +215,11 @@ class Products extends CI_Controller {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-
-		$this->db->where( "id", $product_id )
-			->delete( "products" );
+		$productRepo = $this->container->get(\AdventistCommons\Domain\Repository\ProductRepository::class);
+		$product = $productRepo->find($product_id);
+		if( ! $product ) show_404();
+		$removeAction = $this->container->get(\AdventistCommons\Domain\Action\RemoveEntity::class);
+		$product = $removeAction->do($product);
 
 		redirect( "/products", "refresh" );
 	}

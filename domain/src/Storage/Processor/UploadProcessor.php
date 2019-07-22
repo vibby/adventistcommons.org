@@ -5,14 +5,14 @@ namespace AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\File\Uploaded;
 use AdventistCommons\Domain\File\FileSystem;
+use AdventistCommons\Domain\File\Uploaded;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class UploadProcessor implements ProcessorInterface
+class UploadProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface
 {
 	protected $fileSystem;
 	
@@ -21,25 +21,14 @@ class UploadProcessor implements ProcessorInterface
 		$this->fileSystem = $fileSystem;
 	}
 	
-	public function process(Entity $entity, EntityMetadata $entityMetadata): Entity
+	protected function processOne(Entity $entity, $value, string $fieldName): Entity
 	{
-		$fieldsMetadata = $entityMetadata->getFieldsForStoreProcessor(self::class);
-		foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-			$entity = $this->moveUploadedFile($entity, $fieldName);
+		if (!$value instanceof File) {
+			throw new \Exception('An uploadable property must be a file');
 		}
-		
-		return $entity;
-	}
-	
-	protected function moveUploadedFile(Entity $entity, string $propertyName): Entity
-	{
-		$getMethodName = EntityMetadata::propertyToGetter($propertyName);
-		/** @var File $file */
-		$file = $entity->$getMethodName();
-		
-		if ($file instanceof Uploaded) {
-			$setMethodName = EntityMetadata::propertyToSetter($propertyName);
-			$definitiveFile = $this->fileSystem->makeUploadedDefinitive($file);
+		if ($value instanceof Uploaded) {
+			$definitiveFile = $this->fileSystem->makeUploadedDefinitive($value);
+			$setMethodName = EntityMetadata::propertyToSetter($fieldName);
 			$entity->$setMethodName($definitiveFile);
 		}
 		

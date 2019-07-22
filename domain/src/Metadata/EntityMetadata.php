@@ -43,9 +43,9 @@ class EntityMetadata
 		return $this->getFieldsWithProperty('hydrate_normalizer', $normalizerName);
 	}
 	
-	public function getFieldsForStoreProcessor($processorName)
+	public function getFieldsForProcessor(string $processorName, string $action)
 	{
-		return $this->getFieldsWithProperty('store_processor', $processorName);
+		return $this->getFieldsWithProperty($action, $processorName);
 	}
 	
 	private function getFieldsWithProperty($property, $value)

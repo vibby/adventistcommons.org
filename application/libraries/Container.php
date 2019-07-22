@@ -162,6 +162,14 @@ class Container
 				);
 			}
 		);
+		$this->set(
+			\AdventistCommons\Domain\Action\RemoveEntity::class,
+			function () {
+				return new \AdventistCommons\Domain\Action\RemoveEntity(
+					$this->get(\AdventistCommons\Domain\Storage\Storer::class)
+				);
+			}
+		);
 		
 		/****************************
 		 * Storage
@@ -178,6 +186,14 @@ class Container
 			\AdventistCommons\Domain\Storage\Processor\ImageProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\ImageProcessor(
+					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Processor\FileRemoveProcessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Processor\FileRemoveProcessor(
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
@@ -200,7 +216,15 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\Processor\AggregatedProcessor::class,
+			\AdventistCommons\Domain\Storage\Processor\RemoverProcessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Processor\RemoverProcessor(
+					$this->get(\AdventistCommons\Domain\Storage\Remover\Remover::class)
+				);
+			}
+		);
+		$this->set(
+			'storeProcessor',
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\AggregatedProcessor(
 					[
@@ -213,10 +237,22 @@ class Container
 			}
 		);
 		$this->set(
+			'removeProcessor',
+			function () {
+				return new \AdventistCommons\Domain\Storage\Processor\AggregatedProcessor(
+					[
+						$this->get(\AdventistCommons\Domain\Storage\Processor\FileRemoveProcessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Processor\RemoverProcessor::class),
+					]
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\Storage\Storer::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Storer(
-					$this->get(\AdventistCommons\Domain\Storage\Processor\AggregatedProcessor::class),
+					$this->get('storeProcessor'),
+					$this->get('removeProcessor'),
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
 				);
 			}
@@ -225,6 +261,14 @@ class Container
 			\AdventistCommons\Domain\Storage\Putter\Putter::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Putter\Putter([
+					$this->get(Product_model::class),
+				]);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Remover\Remover::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Remover\Remover([
 					$this->get(Product_model::class),
 				]);
 			}
