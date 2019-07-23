@@ -12,25 +12,25 @@ use AdventistCommons\Domain\Entity\Series;
  */
 class RepositoryLister
 {
-	private $repositoryByClassName = [];
+    private $repositoryByClassName = [];
 
-	public function __construct(array $repositories)
-	{		
-		foreach ($repositories as $repository) {
-			if ($repository instanceof ProductRepository) {
-				$this->repositoryByClassName[Product::class] = $repository;
-			}
-			if ($repository instanceof ProductAttachmentRepository) {
-				$this->repositoryByClassName[ProductAttachment::class] = $repository;
-			}
-			if ($repository instanceof SeriesRepository) {
-				$this->repositoryByClassName[Series::class] = $repository;
-			}
-		}
-	}
+    public function __construct(array $repositories)
+    {
+        foreach ($repositories as $repository) {
+            if ($repository instanceof ProductRepository) {
+                $this->repositoryByClassName[Product::class] = $repository;
+            }
+            if ($repository instanceof ProductAttachmentRepository) {
+                $this->repositoryByClassName[ProductAttachment::class] = $repository;
+            }
+            if ($repository instanceof SeriesRepository) {
+                $this->repositoryByClassName[Series::class] = $repository;
+            }
+        }
+    }
 
-	public function getForClassName($className)
-	{
-		return $this->repositoryByClassName[$className];
-	}
+    public function getForClassName($className)
+    {
+        return $this->repositoryByClassName[$className];
+    }
 }

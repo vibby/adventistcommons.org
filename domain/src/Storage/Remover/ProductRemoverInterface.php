@@ -8,5 +8,5 @@ namespace AdventistCommons\Domain\Storage\Remover;
  */
 interface ProductRemoverInterface
 {
-	public function removeProduct(int $id): void;
+    public function removeProduct(int $id): void;
 }

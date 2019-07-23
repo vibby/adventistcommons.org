@@ -13,30 +13,30 @@ use AdventistCommons\Domain\Storage\Putter\Putter;
  */
 class PutterProcessor implements ProcessorInterface
 {
-	private $putter;
-	
-	public function __construct(Putter $putter)
-	{
-		$this->putter = $putter;
-	}
-	
-	public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
-	{
-		$fieldsMetadata = $entityMetadata->getFieldsForProcessor(self::class, $action);
-		$entityData = [];
-		/**
-		 * @var string $fieldName
-		 * @var FieldMetadata $fieldMetadata
-		 */
-		foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-			$formatter = $fieldMetadata->get('persist_formatter');
-			$getMethodName = $entityMetadata::propertyToGetter($fieldName);
-			$value = $entity->$getMethodName();
-			$entityData = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
-		}
-		$id = $this->putter->put($entity, $entityData);
-		$entity->setId($id);
-		
-		return $entity;
-	}
+    private $putter;
+    
+    public function __construct(Putter $putter)
+    {
+        $this->putter = $putter;
+    }
+    
+    public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
+    {
+        $fieldsMetadata = $entityMetadata->getFieldsForProcessor(self::class, $action);
+        $entityData = [];
+        /**
+         * @var string $fieldName
+         * @var FieldMetadata $fieldMetadata
+         */
+        foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
+            $formatter = $fieldMetadata->get('persist_formatter');
+            $getMethodName = $entityMetadata::propertyToGetter($fieldName);
+            $value = $entity->$getMethodName();
+            $entityData = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
+        }
+        $id = $this->putter->put($entity, $entityData);
+        $entity->setId($id);
+        
+        return $entity;
+    }
 }

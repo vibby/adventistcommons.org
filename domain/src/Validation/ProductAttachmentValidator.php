@@ -10,15 +10,15 @@ use AdventistCommons\Domain\Validation\Validator;
 
 class ProductAttachmentValidator extends EntityValidator
 {
-	public static function validate(Entity $productAttachment): void
-	{
-		$errors = [];
-		$errors[] = Validator\InstanceOfValidator::validate($productAttachment, ProductAttachment::class);
-		self::throwExceptionIfError($errors);
-		
-		/** @var ProductAttachment $productAttachment */
-		$errors[] = Validator\NotEmptyValidator::validate('Product', $productAttachment->getProduct());
+    public static function validate(Entity $productAttachment): void
+    {
+        $errors = [];
+        $errors[] = Validator\InstanceOfValidator::validate($productAttachment, ProductAttachment::class);
+        self::throwExceptionIfError($errors);
+        
+        /** @var ProductAttachment $productAttachment */
+        $errors[] = Validator\NotEmptyValidator::validate('Product', $productAttachment->getProduct());
 
-		self::throwExceptionIfError($errors);
-	}
+        self::throwExceptionIfError($errors);
+    }
 }

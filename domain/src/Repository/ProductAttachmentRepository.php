@@ -11,23 +11,23 @@ use AdventistCommons\Domain\Hydrator\Hydrator;
  */
 class ProductAttachmentRepository
 {
-	private $productAttachmentFinder;
-	private $commonHydrator;
+    private $productAttachmentFinder;
+    private $commonHydrator;
 
-	public function __construct(ProductAttachmentFinderInterface $productAttachmentFinder, Hydrator $commonHydrator)
-	{
-		$this->productAttachmentFinder = $productAttachmentFinder;
-		$this->commonHydrator = $commonHydrator;
-	}
+    public function __construct(ProductAttachmentFinderInterface $productAttachmentFinder, Hydrator $commonHydrator)
+    {
+        $this->productAttachmentFinder = $productAttachmentFinder;
+        $this->commonHydrator = $commonHydrator;
+    }
 
-	public function find($id)
-	{
-		$data = $this->productAttachmentFinder->getProductAttachmentStructure($id);
-		if (!$data) {
-			return null;
-		}
-		$product = $this->commonHydrator->hydrate(ProductAttachment::class, reset($data['product_attachment']));
+    public function find($id)
+    {
+        $data = $this->productAttachmentFinder->getProductAttachmentStructure($id);
+        if (!$data) {
+            return null;
+        }
+        $product = $this->commonHydrator->hydrate(ProductAttachment::class, reset($data['product_attachment']));
 
-		return $product;
-	}
+        return $product;
+    }
 }

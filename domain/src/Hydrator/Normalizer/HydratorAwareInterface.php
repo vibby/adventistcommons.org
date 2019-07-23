@@ -10,5 +10,5 @@ use  AdventistCommons\Domain\Hydrator\Hydrator;
  */
 interface HydratorAwareInterface
 {
-	public function setHydrator(Hydrator $hydrator): void;
+    public function setHydrator(Hydrator $hydrator): void;
 }

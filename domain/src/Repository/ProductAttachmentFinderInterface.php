@@ -8,10 +8,10 @@ namespace AdventistCommons\Domain\Repository;
  */
 interface ProductAttachmentFinderInterface
 {
-	/**
-	 * Get structure data about the Product only
-	 * @param int $product_id
-	 * @return array
-	 */
-	public function getProductAttachmentStructure(int $product_attachment_id): array;
+    /**
+     * Get structure data about the Product only
+     * @param int $product_id
+     * @return array
+     */
+    public function getProductAttachmentStructure(int $product_attachment_id): array;
 }

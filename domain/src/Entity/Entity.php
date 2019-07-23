@@ -8,24 +8,24 @@ namespace AdventistCommons\Domain\Entity;
  */
 abstract class Entity
 {
-	protected $id;
-	
-	public function isStored(): bool
-	{
-		return (bool) $this->id;
-	}
+    protected $id;
+    
+    public function isStored(): bool
+    {
+        return (bool) $this->id;
+    }
 
-	public function getId(): ?string
-	{
-		return $this->id;
-	}
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
 
-	public function setId(int $id): self
-	{
-		$this->id = $id;
+    public function setId(int $id): self
+    {
+        $this->id = $id;
 
-		return $this;
-	}
-	
-	abstract public static function __getMetadata(): array;
+        return $this;
+    }
+    
+    abstract public static function __getMetadata(): array;
 }

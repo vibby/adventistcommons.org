@@ -6,15 +6,15 @@ use AdventistCommons\Domain\Validation\Violation\ViolationError;
 
 class NotEmptyValidator
 {
-	static public function validate(string $name, $data): ?ViolationError
-	{
-		if (is_string($data)) {
-			$data = trim($data);
-		}
-		if (!$data) {
-			return new ViolationError(sprintf('Field %s cannot be empty', $name));
-		}
-		
-		return null;
-	}
+    public static function validate(string $name, $data): ?ViolationError
+    {
+        if (is_string($data)) {
+            $data = trim($data);
+        }
+        if (!$data) {
+            return new ViolationError(sprintf('Field %s cannot be empty', $name));
+        }
+        
+        return null;
+    }
 }

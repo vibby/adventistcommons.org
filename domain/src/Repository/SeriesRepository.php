@@ -11,25 +11,25 @@ use AdventistCommons\Domain\Hydrator\Hydrator;
  */
 class SeriesRepository
 {
-	private $seriesFinder;
-	private $hydrator;
+    private $seriesFinder;
+    private $hydrator;
 
-	public function __construct(SeriesFinderInterface $seriesFinder, Hydrator $hydrator)
-	{
-		$this->seriesFinder = $seriesFinder;
-		$this->hydrator = $hydrator;
-	}
+    public function __construct(SeriesFinderInterface $seriesFinder, Hydrator $hydrator)
+    {
+        $this->seriesFinder = $seriesFinder;
+        $this->hydrator = $hydrator;
+    }
 
-	public function findAll()
-	{
-		$data = $this->seriesFinder->getSeriesStructureAll();
-		$series = [];
-		if ($data) {
-			foreach ($data['series'] as $seriesData) {
-				$series[] = $this->hydrator->hydrate(Series::class, $seriesData);
-			}
-		}
+    public function findAll()
+    {
+        $data = $this->seriesFinder->getSeriesStructureAll();
+        $series = [];
+        if ($data) {
+            foreach ($data['series'] as $seriesData) {
+                $series[] = $this->hydrator->hydrate(Series::class, $seriesData);
+            }
+        }
 
-		return $series;
-	}
+        return $series;
+    }
 }

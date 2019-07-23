@@ -8,5 +8,5 @@ namespace AdventistCommons\Domain\Storage\Remover;
  */
 interface SeriesRemoverInterface
 {
-	public function removeSeries(int $id): void;
+    public function removeSeries(int $id): void;
 }

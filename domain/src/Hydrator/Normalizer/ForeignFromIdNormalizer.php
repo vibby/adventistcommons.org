@@ -12,30 +12,30 @@ use AdventistCommons\Domain\Metadata\FieldMetadata;
  */
 class ForeignFromIdNormalizer implements NormalizerInterface, HydratorAwareInterface
 {
-	/** @var Hydrator */
-	private $hydrator;
-	
-	public function setHydrator(Hydrator $hydrator): void
-	{
-		$this->hydrator = $hydrator;
-	}
-	
-	public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
-	{
-		/**
-		 * @var string $fieldName
-		 * @var FieldMetadata $fieldMetadata
-		 */
-		foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
-			$fieldIdName = $fieldMetadata->formatToId();
-			if (isset($entityData[$fieldIdName])) {
-				$entityData[$fieldName] = $this->hydrator->hydrate(
-					$fieldMetadata->get('class'),
-					['id' => $entityData[$fieldIdName]]
-				);
-			}
-		}
-		
-		return $entityData;
-	}
+    /** @var Hydrator */
+    private $hydrator;
+    
+    public function setHydrator(Hydrator $hydrator): void
+    {
+        $this->hydrator = $hydrator;
+    }
+    
+    public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
+    {
+        /**
+         * @var string $fieldName
+         * @var FieldMetadata $fieldMetadata
+         */
+        foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
+            $fieldIdName = $fieldMetadata->formatToId();
+            if (isset($entityData[$fieldIdName])) {
+                $entityData[$fieldName] = $this->hydrator->hydrate(
+                    $fieldMetadata->get('class'),
+                    ['id' => $entityData[$fieldIdName]]
+                );
+            }
+        }
+        
+        return $entityData;
+    }
 }

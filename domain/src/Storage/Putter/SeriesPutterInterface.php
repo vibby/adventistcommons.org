@@ -8,5 +8,5 @@ namespace AdventistCommons\Domain\Storage\Putter;
  */
 interface SeriesPutterInterface
 {
-	public function putSeriesAndGetId(array $entityData): int;
+    public function putSeriesAndGetId(array $entityData): int;
 }

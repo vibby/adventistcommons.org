@@ -11,63 +11,63 @@ use AdventistCommons\Domain\Storage\Normalizer as Storage;
  */
 class Project extends Entity
 {
-	private $product;
-	private $language;
-	private $status;
-	
-	public static function __getMetaData(): array
-	{
-		return [
-			'fields' => [
-				'language' => [
-					'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-					'store_normalizer' => Storage\ForeignNormalizer::class,
-					'class'    => Language::class,
-					'multiple' => false,
-				],
-				'product' => [
-					'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-					'store_normalizer' => Storage\ForeignNormalizer::class,
-					'class'    => Product::class,
-					'multiple' => false,
-				],
-			],
-		];
-	}
-	
-	public function getProduct(): Product
-	{
-		return $this->product;
-	}
+    private $product;
+    private $language;
+    private $status;
+    
+    public static function __getMetaData(): array
+    {
+        return [
+            'fields' => [
+                'language' => [
+                    'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
+                    'store_normalizer' => Storage\ForeignNormalizer::class,
+                    'class'    => Language::class,
+                    'multiple' => false,
+                ],
+                'product' => [
+                    'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
+                    'store_normalizer' => Storage\ForeignNormalizer::class,
+                    'class'    => Product::class,
+                    'multiple' => false,
+                ],
+            ],
+        ];
+    }
+    
+    public function getProduct(): Product
+    {
+        return $this->product;
+    }
 
-	public function setProduct(Product $product): self
-	{
-		$this->product = $product;
+    public function setProduct(Product $product): self
+    {
+        $this->product = $product;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getLanguage(): ?Language
-	{
-		return $this->language;
-	}
+    public function getLanguage(): ?Language
+    {
+        return $this->language;
+    }
 
-	public function setLanguage(Language $language): self
-	{
-		$this->language = $language;
+    public function setLanguage(Language $language): self
+    {
+        $this->language = $language;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function getStatus(): ?string
-	{
-		return $this->status;
-	}
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
 
-	public function setStatus(string $status): self
-	{
-		$this->status = $status;
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
-		return $this;
-	}
+        return $this;
+    }
 }

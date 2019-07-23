@@ -13,17 +13,17 @@ use AdventistCommons\Domain\File\FileSystem;
  */
 class FileRemoveProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface
 {
-	protected $fileSystem;
-	
-	public function __construct(FileSystem $fileSystem)
-	{
-		$this->fileSystem = $fileSystem;
-	}
-	
-	protected function processOne(Entity $entity, $value, string $fieldName): Entity
-	{
-		$this->fileSystem->remove($file);
-		
-		return $entity;
-	}
+    protected $fileSystem;
+    
+    public function __construct(FileSystem $fileSystem)
+    {
+        $this->fileSystem = $fileSystem;
+    }
+    
+    protected function processOne(Entity $entity, $value, string $fieldName): Entity
+    {
+        $this->fileSystem->remove($file);
+        
+        return $entity;
+    }
 }

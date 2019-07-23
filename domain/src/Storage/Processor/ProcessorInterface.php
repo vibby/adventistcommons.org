@@ -11,5 +11,5 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 interface ProcessorInterface
 {
-	public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity;
+    public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity;
 }

@@ -13,13 +13,13 @@ use Gregwar\Image\Image;
  */
 class ImageProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface
 {
-	protected function processOne(Entity $entity, $value, string $fieldName): Entity
-	{
-		Image::open($image->getAbsolutePath())
-			->useFallback(false)
-			->zoomCrop(768, 768, 0, 0)
-			->save($image->getAbsolutePath());
-		
-		return $entity;
-	}
+    protected function processOne(Entity $entity, $value, string $fieldName): Entity
+    {
+        Image::open($image->getAbsolutePath())
+            ->useFallback(false)
+            ->zoomCrop(768, 768, 0, 0)
+            ->save($image->getAbsolutePath());
+        
+        return $entity;
+    }
 }

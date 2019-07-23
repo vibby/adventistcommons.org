@@ -13,17 +13,17 @@ use AdventistCommons\Domain\Storage\Remover\Remover;
  */
 class RemoverProcessor implements ProcessorInterface
 {
-	private $remover;
-	
-	public function __construct(Remover $remover)
-	{
-		$this->remover = $remover;
-	}
-	
-	public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
-	{
-		$this->remover->remove($entity);
-		
-		return $entity;
-	}
+    private $remover;
+    
+    public function __construct(Remover $remover)
+    {
+        $this->remover = $remover;
+    }
+    
+    public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
+    {
+        $this->remover->remove($entity);
+        
+        return $entity;
+    }
 }

@@ -14,24 +14,24 @@ use AdventistCommons\Domain\File\Uploaded;
  */
 class UploadProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface
 {
-	protected $fileSystem;
-	
-	public function __construct(FileSystem $fileSystem)
-	{
-		$this->fileSystem = $fileSystem;
-	}
-	
-	protected function processOne(Entity $entity, $value, string $fieldName): Entity
-	{
-		if (!$value instanceof File) {
-			throw new \Exception('An uploadable property must be a file');
-		}
-		if ($value instanceof Uploaded) {
-			$definitiveFile = $this->fileSystem->makeUploadedDefinitive($value);
-			$setMethodName = EntityMetadata::propertyToSetter($fieldName);
-			$entity->$setMethodName($definitiveFile);
-		}
-		
-		return $entity;
-	}
+    protected $fileSystem;
+    
+    public function __construct(FileSystem $fileSystem)
+    {
+        $this->fileSystem = $fileSystem;
+    }
+    
+    protected function processOne(Entity $entity, $value, string $fieldName): Entity
+    {
+        if (!$value instanceof File) {
+            throw new \Exception('An uploadable property must be a file');
+        }
+        if ($value instanceof Uploaded) {
+            $definitiveFile = $this->fileSystem->makeUploadedDefinitive($value);
+            $setMethodName = EntityMetadata::propertyToSetter($fieldName);
+            $entity->$setMethodName($definitiveFile);
+        }
+        
+        return $entity;
+    }
 }

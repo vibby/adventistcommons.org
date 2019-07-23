@@ -8,5 +8,5 @@ namespace AdventistCommons\Domain\Storage\Putter;
  */
 interface ProductPutterInterface
 {
-	public function putProductAndGetId(array $entityData): int;
+    public function putProductAndGetId(array $entityData): int;
 }

@@ -7,4 +7,5 @@ composer.phar
 /application/config/database.php
 /application/google_translate_authentication.json
 /application/cache
-/Domain/vendor
+/domain/vendor
+*.cache

@@ -11,33 +11,33 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterface
 {
-	private $normalizers;
-	private $hydrator;
-	
-	public function __construct(array $normalizers)
-	{
-		foreach ($normalizers as $normalizer) {
-			if (!$normalizer instanceof NormalizerInterface) {
-				throw new \Exception('Parameter of aggregrated normalizer must be an array of normalizers');
-			}
-		}
-		$this->normalizers = $normalizers;
-	}
-	
-	public function setHydrator(Hydrator $hydrator): void
-	{
-		$this->hydrator = $hydrator;
-	}
-	
-	public function normalize(iterable $entityData, EntityMetadata $metaData): iterable
-	{
-		foreach ($this->normalizers as $normalizer) {
-			if ($normalizer instanceof HydratorAwareInterface) {
-				$normalizer->setHydrator($this->hydrator);
-			}
-			$entityData = $normalizer->normalize($entityData, $metaData);
-		}
-		
-		return $entityData;
-	}
+    private $normalizers;
+    private $hydrator;
+    
+    public function __construct(array $normalizers)
+    {
+        foreach ($normalizers as $normalizer) {
+            if (!$normalizer instanceof NormalizerInterface) {
+                throw new \Exception('Parameter of aggregrated normalizer must be an array of normalizers');
+            }
+        }
+        $this->normalizers = $normalizers;
+    }
+    
+    public function setHydrator(Hydrator $hydrator): void
+    {
+        $this->hydrator = $hydrator;
+    }
+    
+    public function normalize(iterable $entityData, EntityMetadata $metaData): iterable
+    {
+        foreach ($this->normalizers as $normalizer) {
+            if ($normalizer instanceof HydratorAwareInterface) {
+                $normalizer->setHydrator($this->hydrator);
+            }
+            $entityData = $normalizer->normalize($entityData, $metaData);
+        }
+        
+        return $entityData;
+    }
 }

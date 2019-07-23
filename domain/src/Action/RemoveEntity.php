@@ -11,18 +11,18 @@ use AdventistCommons\Domain\Storage\Storer;
  */
 class RemoveEntity
 {
-	private $storer;
-	
-	public function __construct(
-		Storer $storer
-	) {
-		$this->storer = $storer;
-	}
-	
-	public function do(Entity $entity): Entity
-	{
-		$entity = $this->storer->remove($entity);
-		
-		return $entity;
-	}
+    private $storer;
+    
+    public function __construct(
+        Storer $storer
+    ) {
+        $this->storer = $storer;
+    }
+    
+    public function do(Entity $entity): Entity
+    {
+        $entity = $this->storer->remove($entity);
+        
+        return $entity;
+    }
 }

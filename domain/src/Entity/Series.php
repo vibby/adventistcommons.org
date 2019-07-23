@@ -8,22 +8,22 @@ namespace AdventistCommons\Domain\Entity;
  */
 class Series extends Entity
 {
-	private $name;
-	
-	public static function __getMetaData(): array
-	{
-		return [];
-	}
-	
-	public function getName(): ?string
-	{
-		return $this->name;
-	}
+    private $name;
+    
+    public static function __getMetaData(): array
+    {
+        return [];
+    }
+    
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
 
-	public function setName(?string $name): self
-	{
-		$this->name = $name;
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
 
-		return $this;
-	}
+        return $this;
+    }
 }

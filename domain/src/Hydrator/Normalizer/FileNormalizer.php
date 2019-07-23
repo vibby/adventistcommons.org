@@ -13,30 +13,30 @@ use AdventistCommons\Domain\File\FileSystem;
  */
 class FileNormalizer implements NormalizerInterface
 {
-	private $fileSystem;
-	
-	public function __construct(FileSystem $fileSystem)
-	{
-		$this->fileSystem = $fileSystem;
-	}
-	
-	public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
-	{
-		/**
-		 * @var string $fieldName
-		 * @var FieldMetadata $fieldMetadata
-		 */
-		foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
-			if (isset($entityData[$fieldName])) {
-				if ($entityData[$fieldName] && is_string($entityData[$fieldName])) {
-					$basePath = $this->fileSystem->getRootPath($fieldMetadata->get('root_path_group'));
-					$entityData[$fieldName] = new File($basePath, $entityData[$fieldName]);
-				} elseif (!$entityData[$fieldName] instanceof File) {
-					$entityData[$fieldName] = null;
-				}
-			}
-		}
-		
-		return $entityData;
-	}
+    private $fileSystem;
+    
+    public function __construct(FileSystem $fileSystem)
+    {
+        $this->fileSystem = $fileSystem;
+    }
+    
+    public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
+    {
+        /**
+         * @var string $fieldName
+         * @var FieldMetadata $fieldMetadata
+         */
+        foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
+            if (isset($entityData[$fieldName])) {
+                if ($entityData[$fieldName] && is_string($entityData[$fieldName])) {
+                    $basePath = $this->fileSystem->getRootPath($fieldMetadata->get('root_path_group'));
+                    $entityData[$fieldName] = new File($basePath, $entityData[$fieldName]);
+                } elseif (!$entityData[$fieldName] instanceof File) {
+                    $entityData[$fieldName] = null;
+                }
+            }
+        }
+        
+        return $entityData;
+    }
 }
