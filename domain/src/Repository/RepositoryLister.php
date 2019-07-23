@@ -17,7 +17,7 @@ class RepositoryLister
 	public function __construct(array $repositories)
 	{		
 		foreach ($repositories as $repository) {
-			if ($repositories instanceof ProductRepository) {
+			if ($repository instanceof ProductRepository) {
 				$this->repositoryByClassName[Product::class] = $repository;
 			}
 			if ($repository instanceof ProductAttachmentRepository) {

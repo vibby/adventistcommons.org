@@ -20,7 +20,7 @@ class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
 		$this->hydrator = $hydrator;
 	}
 	
-	public function normalize(array $entityData, EntityMetadata $entityMetadata): array
+	public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
 	{
 		/**
 		 * @var string $fieldName
@@ -32,20 +32,12 @@ class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
 					if ($fieldMetadata->get('multiple')) {
 						$entityData[$fieldName][$index] = $this->hydrator->hydrate(
 							$fieldMetadata->get('class'),
-							$childData,
-							null,
-							true,
-							$entityData['id'],
-							$entityMetadata
+							$childData
 						);
 					} else {
 						$entityData[$fieldName] = $this->hydrator->hydrate(
 							$fieldMetadata->get('class'),
-							$childData,
-							null,
-							true,
-							$entityData['id'],
-							$entityMetadata
+							$childData
 						);
 					}
 				}

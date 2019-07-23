@@ -100,15 +100,7 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 
 		$data = $this->input->post();
-		if( !isset($data["series_id"]) || $data["series_id"] == "" ) {
-			$data["series"] = null;
-		} elseif( is_numeric( $data["series_id"] ) ) {
-			$data["series"][][ "id" ] = $data["series_id"];
-		} else {
-			$data["series"][][ "name" ] = $data["series_id"];
-		}
-		
-		if (!$product = $this->submit_product($data)) {
+		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
 			return false;
 		}
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
@@ -129,10 +121,9 @@ class Products extends CI_Controller {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		if (!$product = $this->submit_product($this->input->post())) {
+		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
 			return false;
 		}
-		
 		$this->output->set_content_type("application/json");
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
@@ -147,38 +138,15 @@ class Products extends CI_Controller {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		if (!$product = $this->submit_product($this->input->post())) {
+		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
 			return false;
 		}
-		
 		$this->output->set_content_type("application/json");
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
 		$storeAction->do($product);
 		
 		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
-	}
-	
-	private function submit_product(array $data) {
-		
-		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
-		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
-		try {
-			$product = $submitAction->do(
-				\AdventistCommons\Domain\Entity\Product::class,
-				$data,
-				build_uploaded_files_from_request($_FILES)
-			);
-		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
-			/** @var \AdventistCommons\Domain\Validation\Violation\ViolationError $validationError */
-			foreach ($e->getErrors() as $validationError) {
-				$errorMessages[] = sprintf('<p>%s</p>', $validationError->getMessage());
-			}
-			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
-			return false;
-		}
-		
-		return $product;
 	}
 
 	public function add_file() {
@@ -194,14 +162,40 @@ class Products extends CI_Controller {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
 			return false;
 		}
-		$data = $this->input->post();
+		
+		if (!$productAttachment = $this->submit_entity(\AdventistCommons\Domain\Entity\ProductAttachment::class, $this->input->post())) {
+			return false;
+		}
+		
+		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
+		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
+		$storeAction->do($productAttachment);
+		
+		$this->output->set_content_type("application/json");
+		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $productAttachment->getProduct()->getId() ] ) );
+	}
 
+	public function delete( $product_id ) {
+		if( ! $this->ion_auth->is_admin() ) {
+			show_404();
+		}
+		$productRepo = $this->container->get(\AdventistCommons\Domain\Repository\ProductRepository::class);
+		$product = $productRepo->find($product_id);
+		if( ! $product ) show_404();
+		$removeAction = $this->container->get(\AdventistCommons\Domain\Action\RemoveEntity::class);
+		$removeAction->do($product);
+
+		redirect( "/products", "refresh" );
+	}
+	
+	private function submit_entity($entityClass, array $data) {
+		
 		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
 		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
 		try {
 			$product = $submitAction->do(
-				\AdventistCommons\Domain\Entity\ProductAttachment::class,
-				$data,
+				$entityClass,
+				build_entity_params_from_request($data),
 				build_uploaded_files_from_request($_FILES)
 			);
 		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
@@ -213,24 +207,6 @@ class Products extends CI_Controller {
 			return false;
 		}
 		
-		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
-		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
-		$storeAction->do($product);
-		
-		$this->output->set_content_type("application/json");
-		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $data["product_id"] ] ) );
-	}
-
-	public function delete( $product_id ) {
-		if( ! $this->ion_auth->is_admin() ) {
-			show_404();
-		}
-		$productRepo = $this->container->get(\AdventistCommons\Domain\Repository\ProductRepository::class);
-		$product = $productRepo->find($product_id);
-		if( ! $product ) show_404();
-		$removeAction = $this->container->get(\AdventistCommons\Domain\Action\RemoveEntity::class);
-		$product = $removeAction->do($product);
-
-		redirect( "/products", "refresh" );
+		return $product;
 	}
 }

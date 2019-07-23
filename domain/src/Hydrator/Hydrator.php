@@ -7,7 +7,7 @@ use AdventistCommons\Domain\Hydrator\Normalizer\HydratorAwareInterface;
 use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
-use AdventistCommons\Domain\File\UploadedCollection;
+use AdventistCommons\Domain\Request\UploadedCollection;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -31,11 +31,9 @@ class Hydrator
 	
 	public function hydrate(
 		$object, // class name or entity itself
-		array $entityData,
+		iterable $entityData,
 		UploadedCollection $uploadedCollection = null,
 		$useCache = true
-//		int $parentId = null,
-//		EntityMetadata $parentMetadata = null
 	) {
 		$entity = self::getEntity($object);
 		$className = get_class($entity);
@@ -50,11 +48,6 @@ class Hydrator
 		}
 		$entityData = $this->normalizer->normalize($entityData, $metaData);
 		
-//		$entityData[$parentMetadata->getClassName()] = $this->hydrate(
-//			$parentMetadata->getClassName(),
-//			['id' => $parentId]
-//		);
-				
 		$entity = self::hydrateProperties($entity, $entityData, $metaData);
 		if ($uploadedCollection) {
 			$entity = self::hydrateProperties($entity, $uploadedCollection, $metaData);
@@ -75,7 +68,7 @@ class Hydrator
 			$className = $object;
 			try {
 				$entity = new $className();
-			} catch (\Exception $e) {
+			} catch (\ArgumentCountError $e) {
 				throw new \Exception(sprintf(
 					'Entity %s must have a constructor without parameter',
 					$className

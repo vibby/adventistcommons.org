@@ -10,5 +10,5 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 interface NormalizerInterface
 {
-	public function normalize(array $entityData, EntityMetadata $metaData): array;
+	public function normalize(iterable $entityData, EntityMetadata $metaData): iterable ;
 }

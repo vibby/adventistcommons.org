@@ -29,7 +29,7 @@ class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterfac
 		$this->hydrator = $hydrator;
 	}
 	
-	public function normalize(array $entityData, EntityMetadata $metaData): array
+	public function normalize(iterable $entityData, EntityMetadata $metaData): iterable
 	{
 		foreach ($this->normalizers as $normalizer) {
 			if ($normalizer instanceof HydratorAwareInterface) {

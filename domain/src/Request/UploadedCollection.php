@@ -1,6 +1,9 @@
 <?php
 
-namespace AdventistCommons\Domain\File;
+namespace AdventistCommons\Domain\Request;
+
+use AdventistCommons\Domain\File\Uploaded;
+use AdventistCommons\Domain\File\UploadedBuilder;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -59,7 +62,7 @@ class UploadedCollection implements \ArrayAccess, \Iterator
 		return key($this->files) !== null;
 	}
 	
-	static function buildFromRequestsFiles($files)
+	static function buildFromRequestsFiles(array $files): self
 	{
 		$collection = new self;
 		foreach ($files as $name => $fileInfo) {

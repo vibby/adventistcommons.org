@@ -27,7 +27,7 @@ class XliffNormalizer implements NormalizerInterface, HydratorAwareInterface
 		$this->hydrator = $hydrator;
 	}
 	
-	public function normalize(array $entityData, EntityMetadata $entityMetadata): array
+	public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
 	{
 		/**
 		 * @var string $fieldName

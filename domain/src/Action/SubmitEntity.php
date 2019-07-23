@@ -4,9 +4,10 @@ namespace AdventistCommons\Domain\Action;
 
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Hydrator\Hydrator;
-use AdventistCommons\Domain\File\UploadedCollection;
-use AdventistCommons\Domain\Repository\RepositoryLister;
 use AdventistCommons\Domain\Metadata\MetadataManager;
+use AdventistCommons\Domain\Repository\RepositoryLister;
+use AdventistCommons\Domain\Request\ParameterCollection;
+use AdventistCommons\Domain\Request\UploadedCollection;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -30,7 +31,7 @@ class SubmitEntity
 	
 	public function do(
 		string $className,
-		array $entityData,
+		ParameterCollection $entityData,
 		UploadedCollection $uploadedFiles = null
 	): Entity {
 		$entity = null;

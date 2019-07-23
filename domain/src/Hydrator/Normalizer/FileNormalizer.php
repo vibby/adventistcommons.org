@@ -20,7 +20,7 @@ class FileNormalizer implements NormalizerInterface
 		$this->fileSystem = $fileSystem;
 	}
 	
-	public function normalize(array $entityData, EntityMetadata $entityMetadata): array
+	public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
 	{
 		/**
 		 * @var string $fieldName

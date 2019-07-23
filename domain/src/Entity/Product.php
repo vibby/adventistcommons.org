@@ -105,7 +105,7 @@ class Product extends Entity
 		];
 	}
 
-	public function __construct()
+	public function __construct($test)
 	{
 		$this->setType('book');
 	}
