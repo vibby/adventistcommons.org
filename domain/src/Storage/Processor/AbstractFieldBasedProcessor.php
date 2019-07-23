@@ -11,14 +11,17 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 abstract class AbstractFieldBasedProcessor
 {
+	protected $action;
+	
     public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
     {
-        $fieldsMetadata = $entityMetadata->getFieldsForProcessor(self::class, $action);
+    	$this->action = $action;
+        $fieldsMetadata = $entityMetadata->getFieldsForProcessor(static::class, $action);
         foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
             $getMethodName = $entityMetadata::propertyToGetter($fieldName);
             $value = $entity->$getMethodName();
             if ($value) {
-                $entity = $this->processOne($value);
+                $entity = $this->processOne($entity, $value, $fieldName);
             }
         }
         

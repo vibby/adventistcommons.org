@@ -22,7 +22,7 @@ class FileRemoveProcessor extends AbstractFieldBasedProcessor implements Process
     
     protected function processOne(Entity $entity, $value, string $fieldName): Entity
     {
-        $this->fileSystem->remove($file);
+        $this->fileSystem->remove($value);
         
         return $entity;
     }

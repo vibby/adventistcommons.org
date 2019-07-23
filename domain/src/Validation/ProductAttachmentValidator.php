@@ -18,6 +18,8 @@ class ProductAttachmentValidator extends EntityValidator
         
         /** @var ProductAttachment $productAttachment */
         $errors[] = Validator\NotEmptyValidator::validate('Product', $productAttachment->getProduct());
+		$errors[] = Validator\NotEmptyValidator::validate('Language', $productAttachment->getLanguage());
+		$errors[] = Validator\NotEmptyValidator::validate('File type', $productAttachment->getFileType());
 
         self::throwExceptionIfError($errors);
     }

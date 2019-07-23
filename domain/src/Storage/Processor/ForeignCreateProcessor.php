@@ -16,9 +16,13 @@ class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements Proc
     /** @var PutterProcessor */
     private $putterProcessor;
     
-    public function __construct(PutterProcessor $putterProcessor)
+    /** @var MetadataManager */
+    private $metadataManager;
+    
+    public function __construct(PutterProcessor $putterProcessor, MetadataManager $metadataManager)
     {
         $this->putterProcessor = $putterProcessor;
+		$this->metadataManager = $metadataManager;
     }
     
     protected function processOne(Entity $entity, $value, string $fieldName): Entity
@@ -45,7 +49,11 @@ class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements Proc
     private function createForeign(Entity &$parent, Entity $foreign, string $setMethodName)
     {
         if (!$foreign->getId()) {
-            $parent->$setMethodName($this->putterProcessor->process($foreign, $this->metadataManager->getForClass(get_class($foreign))));
+            $parent->$setMethodName($this->putterProcessor->process(
+            	$foreign,
+				$this->metadataManager->getForClass(get_class($foreign)),
+				$this->action
+			));
         }
     }
 }

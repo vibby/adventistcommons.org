@@ -15,10 +15,10 @@ class ImageProcessor extends AbstractFieldBasedProcessor implements ProcessorInt
 {
     protected function processOne(Entity $entity, $value, string $fieldName): Entity
     {
-        Image::open($image->getAbsolutePath())
+        Image::open($value->getAbsolutePath())
             ->useFallback(false)
             ->zoomCrop(768, 768, 0, 0)
-            ->save($image->getAbsolutePath());
+            ->save($value->getAbsolutePath());
         
         return $entity;
     }

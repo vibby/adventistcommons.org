@@ -14,7 +14,7 @@ class FieldMetadata
     const DEFAULTS = [
         'hydrate_normalizer' => null,
         'store_processor' => Processor\PutterProcessor::class,
-        'persist_formatter' => Formatter\DefaultFormatter::class,
+        'putter_formatter' => Formatter\DefaultFormatter::class,
     ];
     
     private $metadata;

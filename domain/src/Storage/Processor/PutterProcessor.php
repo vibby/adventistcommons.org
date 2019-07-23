@@ -29,7 +29,7 @@ class PutterProcessor implements ProcessorInterface
          * @var FieldMetadata $fieldMetadata
          */
         foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-            $formatter = $fieldMetadata->get('persist_formatter');
+            $formatter = $fieldMetadata->get('putter_formatter');
             $getMethodName = $entityMetadata::propertyToGetter($fieldName);
             $value = $entity->$getMethodName();
             $entityData = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);

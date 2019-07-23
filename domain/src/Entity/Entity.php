@@ -9,11 +9,6 @@ namespace AdventistCommons\Domain\Entity;
 abstract class Entity
 {
     protected $id;
-    
-    public function isStored(): bool
-    {
-        return (bool) $this->id;
-    }
 
     public function getId(): ?string
     {

@@ -100,11 +100,21 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 
 		$data = $this->input->post();
+		if( !isset($data["series_id"]) || $data["series_id"] == "" ) {
+			$data["series"] = null;
+		} elseif( is_numeric( $data["series_id"] ) ) {
+			$data["series"][][ "id" ] = $data["series_id"];
+		} else {
+			$data["series"][][ "name" ] = $data["series_id"];
+		}
+		if( isset($data["series_id"]) ) {
+			unset($data["series_id"]);
+		}
 		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
 			return false;
 		}
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
-		$is_new = !$product->isStored();
+		$is_new = ($product->getId() === null);
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
 		$product = $storeAction->do($product);
 		
@@ -154,15 +164,6 @@ class Products extends CI_Controller {
 			show_404();
 		}
 
-		$this->form_validation->set_rules( "language_id", "Language", "required" );
-		$this->form_validation->set_rules( "product_id", "Product ID", "required" );
-		$this->form_validation->set_rules( "file_type", "File type", "required" );
-
-		if( $this->form_validation->run() === false ) {
-			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
-			return false;
-		}
-		
 		if (!$productAttachment = $this->submit_entity(\AdventistCommons\Domain\Entity\ProductAttachment::class, $this->input->post())) {
 			return false;
 		}
@@ -188,7 +189,7 @@ class Products extends CI_Controller {
 		redirect( "/products", "refresh" );
 	}
 	
-	private function submit_entity($entityClass, array $data) {
+	private function submit_entity(string $entityClass, array $data) {
 		
 		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
 		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);

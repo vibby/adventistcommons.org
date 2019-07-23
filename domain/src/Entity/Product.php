@@ -89,7 +89,7 @@ class Product extends Entity
                         Processor\ForeignCreateProcessor::class,
                         Processor\PutterProcessor::class,
                     ],
-                    'persist_formatter' => Formatter\IdFormatter::class,
+                    'putter_formatter' => Formatter\IdFormatter::class,
                     'class'    => Series::class,
                     'multiple' => false,
                 ],

@@ -80,13 +80,6 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Hydrator\Normalizer\ForeignFromIdNormalizer::class,
-			function () {
-				return new \AdventistCommons\Domain\Hydrator\Normalizer\ForeignFromIdNormalizer(
-				);
-			}
-		);
-		$this->set(
 			\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer(
@@ -100,7 +93,6 @@ class Container
 				return new \AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer(
 					[
 						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer::class),
-						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\ForeignFromIdNormalizer::class),
 						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer::class),
 						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class),
 					]
