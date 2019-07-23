@@ -34,8 +34,9 @@ class Hydrator
 		array $entityData,
 		UploadedCollection $uploadedCollection = null,
 		$useCache = true
+//		int $parentId = null,
+//		EntityMetadata $parentMetadata = null
 	) {
-		/** @TODO Set parent to children when defining foreign */
 		$entity = self::getEntity($object);
 		$className = get_class($entity);
 		$metaData = $this->metadataManager->getForClass($className);
@@ -48,6 +49,11 @@ class Hydrator
 			$this->normalizer->setHydrator($this);
 		}
 		$entityData = $this->normalizer->normalize($entityData, $metaData);
+		
+//		$entityData[$parentMetadata->getClassName()] = $this->hydrate(
+//			$parentMetadata->getClassName(),
+//			['id' => $parentId]
+//		);
 				
 		$entity = self::hydrateProperties($entity, $entityData, $metaData);
 		if ($uploadedCollection) {

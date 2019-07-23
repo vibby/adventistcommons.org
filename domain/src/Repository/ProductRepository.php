@@ -12,12 +12,12 @@ use AdventistCommons\Domain\Hydrator\Hydrator;
 class ProductRepository
 {
 	private $productFinder;
-	private $commonHydrator;
+	private $hydrator;
 
-	public function __construct(ProductFinderInterface $productFinder, Hydrator $commonHydrator)
+	public function __construct(ProductFinderInterface $productFinder, Hydrator $hydrator)
 	{
 		$this->productFinder = $productFinder;
-		$this->commonHydrator = $commonHydrator;
+		$this->hydrator = $hydrator;
 	}
 
 	public function findWithAttachmentsAndProjects($id)
@@ -26,7 +26,7 @@ class ProductRepository
 		if (!$data) {
 			return null;
 		}
-		$product = $this->commonHydrator->hydrate(Product::class, reset($data['product']));
+		$product = $this->hydrator->hydrate(Product::class, reset($data['product']));
 
 		return $product;
 	}
@@ -37,7 +37,7 @@ class ProductRepository
 		if (!$data) {
 			return null;
 		}
-		$product = $this->commonHydrator->hydrate(Product::class, reset($data['product']));
+		$product = $this->hydrator->hydrate(Product::class, reset($data['product']));
 
 		return $product;
 	}
@@ -48,7 +48,7 @@ class ProductRepository
 		$products = [];
 		if ($data) {
 			foreach ($data['product'] as $productData) {
-				$products[] = $this->commonHydrator->hydrate(Product::class, $productData);
+				$products[] = $this->hydrator->hydrate(Product::class, $productData);
 			}
 		}
 

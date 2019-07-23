@@ -8,7 +8,10 @@ class NotEmptyValidator
 {
 	static public function validate(string $name, $data): ?ViolationError
 	{
-		if (!trim($data)) {
+		if (is_string($data)) {
+			$data = trim($data);
+		}
+		if (!$data) {
 			return new ViolationError(sprintf('Field %s cannot be empty', $name));
 		}
 		

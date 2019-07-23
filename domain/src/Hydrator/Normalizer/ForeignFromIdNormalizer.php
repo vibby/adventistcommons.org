@@ -10,7 +10,7 @@ use AdventistCommons\Domain\Metadata\FieldMetadata;
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
+class ForeignFromIdNormalizer implements NormalizerInterface, HydratorAwareInterface
 {
 	/** @var Hydrator */
 	private $hydrator;
@@ -27,28 +27,12 @@ class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
 		 * @var FieldMetadata $fieldMetadata
 		 */
 		foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
-			if (isset($entityData[$fieldName])) {
-				foreach ($entityData[$fieldName] as $index => $childData) {
-					if ($fieldMetadata->get('multiple')) {
-						$entityData[$fieldName][$index] = $this->hydrator->hydrate(
-							$fieldMetadata->get('class'),
-							$childData,
-							null,
-							true,
-							$entityData['id'],
-							$entityMetadata
-						);
-					} else {
-						$entityData[$fieldName] = $this->hydrator->hydrate(
-							$fieldMetadata->get('class'),
-							$childData,
-							null,
-							true,
-							$entityData['id'],
-							$entityMetadata
-						);
-					}
-				}
+			$fieldIdName = $fieldMetadata->formatToId();
+			if (isset($entityData[$fieldIdName])) {
+				$entityData[$fieldName] = $this->hydrator->hydrate(
+					$fieldMetadata->get('class'),
+					['id' => $entityData[$fieldIdName]]
+				);
 			}
 		}
 		

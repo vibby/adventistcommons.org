@@ -3,6 +3,7 @@
 namespace AdventistCommons\Domain\Repository;
 
 use AdventistCommons\Domain\Entity\Product;
+use AdventistCommons\Domain\Entity\ProductAttachment;
 use AdventistCommons\Domain\Entity\Series;
 
 /**
@@ -13,12 +14,19 @@ class RepositoryLister
 {
 	private $repositoryByClassName = [];
 
-	public function __construct(ProductRepository $productRepository, SeriesRepository $seriesRepository)
+	public function __construct(array $repositories)
 	{		
-		$this->repositoryByClassName = [
-			Product::class => $productRepository,
-			Series::class  => $seriesRepository,
-		];
+		foreach ($repositories as $repository) {
+			if ($repositories instanceof ProductRepository) {
+				$this->repositoryByClassName[Product::class] = $repository;
+			}
+			if ($repository instanceof ProductAttachmentRepository) {
+				$this->repositoryByClassName[ProductAttachment::class] = $repository;
+			}
+			if ($repository instanceof SeriesRepository) {
+				$this->repositoryByClassName[Series::class] = $repository;
+			}
+		}
 	}
 
 	public function getForClassName($className)

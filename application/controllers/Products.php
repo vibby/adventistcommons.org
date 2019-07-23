@@ -186,8 +186,6 @@ class Products extends CI_Controller {
 			show_404();
 		}
 
-		$this->output->set_content_type("application/json");
-
 		$this->form_validation->set_rules( "language_id", "Language", "required" );
 		$this->form_validation->set_rules( "product_id", "Product ID", "required" );
 		$this->form_validation->set_rules( "file_type", "File type", "required" );
@@ -198,16 +196,28 @@ class Products extends CI_Controller {
 		}
 		$data = $this->input->post();
 
-		$attachment = $this->_uploadAttachment();
-		if( ! $attachment ) {
-			$this->output->set_output( json_encode( [ "error" => "Error uploading file" ] ) );
+		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
+		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
+		try {
+			$product = $submitAction->do(
+				\AdventistCommons\Domain\Entity\ProductAttachment::class,
+				$data,
+				build_uploaded_files_from_request($_FILES)
+			);
+		} catch (\AdventistCommons\Domain\Validation\Violation\ViolationException $e) {
+			/** @var \AdventistCommons\Domain\Validation\Violation\ViolationError $validationError */
+			foreach ($e->getErrors() as $validationError) {
+				$errorMessages[] = sprintf('<p>%s</p>', $validationError->getMessage());
+			}
+			$this->output->set_output( json_encode( [ "error" => implode('', $errorMessages) ] ) );
 			return false;
 		}
-
-		$data["file"] = $attachment["file_name"];
-
-		$this->db->insert( "product_attachments", $data );
-		$id = $this->db->insert_id();
+		
+		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
+		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
+		$storeAction->do($product);
+		
+		$this->output->set_content_type("application/json");
 		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $data["product_id"] ] ) );
 	}
 

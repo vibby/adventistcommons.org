@@ -2,9 +2,12 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Product_model extends CI_Model
-	implements \AdventistCommons\Domain\Repository\ProductFinderInterface,
+	implements
+	\AdventistCommons\Domain\Repository\ProductFinderInterface,
+	\AdventistCommons\Domain\Repository\ProductAttachmentFinderInterface,
 	\AdventistCommons\Domain\Repository\SeriesFinderInterface,
 	\AdventistCommons\Domain\Storage\Putter\ProductPutterInterface,
+	\AdventistCommons\Domain\Storage\Putter\ProductAttachmentPutterInterface,
 	\AdventistCommons\Domain\Storage\Putter\SeriesPutterInterface,
 	\AdventistCommons\Domain\Storage\Remover\ProductRemoverInterface,
 	\AdventistCommons\Domain\Storage\Remover\SeriesRemoverInterface
@@ -476,6 +479,20 @@ class Product_model extends CI_Model
 
 		return self::structureQueryResults($query->result_array());
 	}
+	
+	public function getProductAttachmentStructure(int $id): array
+	{
+		$query = $this->db->select(
+			$this->buildStructureSelect('product_attachments', 'product_attachment', 'pa1').",".
+			$this->buildStructureSelect('products', 'product', 'p1', 'pa1')
+		)
+			->from( "product_attachments as pa1" )
+			->join( "products as p1", "p1.id = pa1.product_id", "LEFT" )
+			->where( "pa1.id", $id )
+			->get();
+
+		return self::structureQueryResults($query->result_array());
+	}
 
 	public function getSeriesStructureAll(): array
 	{
@@ -488,47 +505,38 @@ class Product_model extends CI_Model
 		return self::structureQueryResults($query->result_array());
 	}
 	
-	public function putProductAndGetId(array $productData): int
+	public function putProductAndGetId(array $product_data): int
 	{
-		$allowed  = $this->getColumns("products");
-		$productData = array_filter(
-		    $productData,
-		    function ($key) use ($allowed) {
-		        return in_array($key, $allowed);
-		    },
-		    ARRAY_FILTER_USE_KEY
-		);
-
-		if( isset($productData["id"]) && $productData["id"] ) {
-			$this->db->where( "id", $productData["id"] );
-			$this->db->update( "products", $productData );
-			$id = $productData["id"];
-		} else {
-		    $this->db->set($productData);
-			$this->db->insert( "products", $productData );
-			$id = $this->db->insert_id();
-		}
-		
-		return $id;
+		return $this->insert( "products", $product_data );
 	}
 
-	public function putSeriesAndGetId(array $seriesData): int
+	public function putProductAttachmentAndGetId(array $product_attachment_data): int
 	{
-		$allowed  = $this->getColumns("series");
-		$seriesData = array_filter(
-		    $seriesData,
+		return $this->insert( "product_attachments", $product_attachment_data );
+	}
+
+	public function putSeriesAndGetId(array $series_data): int
+	{
+		return $this->insert( "series", $series_data );
+	}
+	
+	private function insert($table_name, $data)
+	{
+		$allowed  = $this->getColumns($table_name);
+		$data = array_filter(
+		    $data,
 		    function ($key) use ($allowed) {
 		        return in_array($key, $allowed);
 		    },
 		    ARRAY_FILTER_USE_KEY
 		);
 
-		if( isset($seriesData["id"]) && $seriesData["id"] ) {
-			$this->db->where( "id", $seriesData["id"] );
-			$this->db->update( "series", $seriesData );
-			$id = $seriesData["id"];
+		if( isset( $data[ "id" ] ) && $data[ "id" ] ) {
+			$this->db->where( "id", $data[ "id" ] );
+			$this->db->update( $table_name, $data );
+			$id = $data[ "id" ];
 		} else {
-			$this->db->insert( "series", $seriesData );
+			$this->db->insert( $table_name, $data );
 			$id = $this->db->insert_id();
 		}
 		

@@ -2,8 +2,11 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\Hydrator\Normalizer as Hydrate;
-use AdventistCommons\Domain\Storage\Normalizer as Storage;
+use AdventistCommons\Domain\File\File;
+use AdventistCommons\Domain\Hydrator\Normalizer;
+use AdventistCommons\Domain\Storage\Processor;
+use AdventistCommons\Domain\Validation\ProductAttachmentValidator;
+use AdventistCommons\Domain\Storage\Putter\Formatter;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -14,7 +17,7 @@ class ProductAttachment extends Entity
 	const FILE_TYPES = [
 		"pdf_printing" => "PDF (Production)",
 		"pdf_personal" => "PDF (Personal)",
-		"indd" => "InDesign",
+		"indd"         => "InDesign",
 	];
 
 	private $language;
@@ -25,18 +28,31 @@ class ProductAttachment extends Entity
 	public static function __getMetaData(): array
 	{
 		return [
+			'validator_class' => ProductAttachmentValidator::class,
 			'fields' => [
 				'language' => [
-					'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-					'store_normalizer' => Storage\ForeignNormalizer::class,
+					'hydrate_normalizer' => [
+						Normalizer\ForeignNormalizer::class,
+						Normalizer\ForeignFromIdNormalizer::class,
+					],
+					'persist_formatter' => Formatter\IdFormatter::class,
 					'class'    => Language::class,
 					'multiple' => false,
 				],
 				'product' => [
-					'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-					'store_normalizer' => Storage\ForeignNormalizer::class,
+					'hydrate_normalizer' => [
+						Normalizer\ForeignNormalizer::class,
+						Normalizer\ForeignFromIdNormalizer::class,
+					],
+					'persist_formatter' => Formatter\IdFormatter::class,
 					'class'    => Product::class,
 					'multiple' => false,
+				],
+				'file' => [
+					'hydrate_normalizer' => Normalizer\FileNormalizer::class,
+					'store_processor' => Processor\UploadProcessor::class,
+					'remove_processor' => Processor\FileRemoveProcessor::class,
+					'root_path_group' => 'attachment',
 				],
 			]
 		];
@@ -54,7 +70,7 @@ class ProductAttachment extends Entity
 		return $this;
 	}
 
-	public function getProduct(): Product
+	public function getProduct(): ?Product
 	{
 		return $this->product;
 	}
@@ -66,12 +82,12 @@ class ProductAttachment extends Entity
 		return $this;
 	}
 
-	public function getFile(): string
+	public function getFile(): ?File
 	{
 		return $this->file;
 	}
 
-	public function setFile(string $file): self
+	public function setFile(?File $file): self
 	{
 		$this->file = $file;
 

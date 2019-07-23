@@ -37,6 +37,7 @@ class Container
 						'0'      => realpath(__DIR__.'/../../uploads'),
 						'images' => realpath(__DIR__.'/../../uploads'),
 						'xliff'  => realpath(__DIR__.'/../../uploads'),
+						'attachment'  => realpath(__DIR__.'/../../uploads'),
 					]
 				);
 			}
@@ -79,6 +80,13 @@ class Container
 			}
 		);
 		$this->set(
+			\AdventistCommons\Domain\Hydrator\Normalizer\ForeignFromIdNormalizer::class,
+			function () {
+				return new \AdventistCommons\Domain\Hydrator\Normalizer\ForeignFromIdNormalizer(
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer(
@@ -92,8 +100,9 @@ class Container
 				return new \AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer(
 					[
 						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer::class),
+						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\ForeignFromIdNormalizer::class),
 						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\FileNormalizer::class),
-						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class)
+						$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class),
 					]
 				);
 			}
@@ -123,6 +132,15 @@ class Container
 			}
 		);
 		$this->set(
+			\AdventistCommons\Domain\Repository\ProductAttachmentRepository::class,
+			function () {
+				return new \AdventistCommons\Domain\Repository\ProductAttachmentRepository(
+					$this->get(Product_model::class),
+					$this->get(\AdventistCommons\Domain\Hydrator\Hydrator::class)
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\Repository\SeriesRepository::class,
 			function () {
 				return new \AdventistCommons\Domain\Repository\SeriesRepository(
@@ -134,10 +152,11 @@ class Container
 		$this->set(
 			\AdventistCommons\Domain\Repository\RepositoryLister::class,
 			function () {
-				return new \AdventistCommons\Domain\Repository\RepositoryLister(
+				return new \AdventistCommons\Domain\Repository\RepositoryLister([
 					$this->get(\AdventistCommons\Domain\Repository\ProductRepository::class),
+					$this->get(\AdventistCommons\Domain\Repository\ProductAttachmentRepository::class),
 					$this->get(\AdventistCommons\Domain\Repository\SeriesRepository::class)
-				);
+				]);
 			}
 		);
 		
