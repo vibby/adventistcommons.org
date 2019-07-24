@@ -66,6 +66,11 @@ class UploadedCollection implements \ArrayAccess, \Iterator
     {
         return key($this->files) !== null;
     }
+        
+    public function toArray(): array
+    {
+        return $this->files;
+    }
     
     public static function buildFromRequestsFiles(array $files): self
     {

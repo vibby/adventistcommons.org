@@ -45,6 +45,8 @@ class SubmitEntity
             $uploadedFiles,
             false
         );
+        dump($entity);
+        die;
         $validator = $this->metadataManager->getForClass($className)->getValidator();
         $validator::validate($entity);
         

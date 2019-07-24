@@ -2,6 +2,9 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Project_model extends CI_Model
+	implements
+	\AdventistCommons\Domain\Storage\Putter\SectionPutterInterface,
+	\AdventistCommons\Domain\Storage\Putter\ContentPutterInterface
 {
 	
 	function __construct()
@@ -329,5 +332,48 @@ class Project_model extends CI_Model
 			->where( "id", $id )
 			->get()
 			->row_array();
+	}
+
+	public function putSectionAndGetId(array $section_data): int
+	{
+		return $this->insert( "product_sections", $section_data );
+	}
+	
+	public function putContentAndGetId(array $content_data): int
+	{
+		return $this->insert( "product_content", $content_data );
+	}
+	
+	private function insert($table_name, $data)
+	{
+		$allowed  = $this->getColumns($table_name);
+		$data = array_filter(
+		    $data,
+		    function ($key) use ($allowed) {
+		        return in_array($key, $allowed);
+		    },
+		    ARRAY_FILTER_USE_KEY
+		);
+
+		if( isset( $data[ "id" ] ) && $data[ "id" ] ) {
+			$this->db->where( "id", $data[ "id" ] );
+			$this->db->update( $table_name, $data );
+			$id = $data[ "id" ];
+		} else {
+			$this->db->insert( $table_name, $data );
+			$id = $this->db->insert_id();
+		}
+		
+		return $id;
+	}
+
+	private function getColumns($tableName)
+	{		
+		$field_names = [];
+		foreach ($this->db->query("SHOW COLUMNS FROM $tableName")->result_array() as $column) {
+			$field_names[] = $column["Field"];
+		}
+		
+		return $field_names;
 	}
 }

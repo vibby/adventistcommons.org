@@ -17,9 +17,11 @@ class Container
 		 ****************************/
 		$CI->load->model('ion_auth_model');
 		$CI->load->model('product_model');
+		$CI->load->model('project_model');
 		$CIclasses = [
 			Product_model::class  => $CI->product_model,
 			Ion_auth_model::class => $CI->ion_auth_model,
+			Project_model::class => $CI->project_model,
 		];
 
 		foreach ($CIclasses as $className => $object) {
@@ -100,12 +102,21 @@ class Container
 			}
 		);
 		$this->set(
+			\AdventistCommons\Domain\Hydrator\ParentSetter::class,
+			function () {
+				return new \AdventistCommons\Domain\Hydrator\ParentSetter(
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
+			}
+		);
+		$this->set(
 			\AdventistCommons\Domain\Hydrator\Hydrator::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Hydrator(
 					$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer::class),
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
-					$this->get(\AdventistCommons\Domain\Hydrator\EntityCache::class)
+					$this->get(\AdventistCommons\Domain\Hydrator\EntityCache::class),
+					$this->get(\AdventistCommons\Domain\Hydrator\ParentSetter::class)
 				);
 			}
 		);
@@ -273,6 +284,7 @@ class Container
 			function () {
 				return new \AdventistCommons\Domain\Storage\Putter\Putter([
 					$this->get(Product_model::class),
+					$this->get(Project_model::class),
 				]);
 			}
 		);

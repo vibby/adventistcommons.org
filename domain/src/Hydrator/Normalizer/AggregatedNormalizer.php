@@ -2,17 +2,18 @@
 
 namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
-use AdventistCommons\Domain\Hydrator\Hydrator;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterface
+class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterface, PreviousEntityAwareInterface
 {
+    use  HydratorAwareTrait;
+    use  PreviousEntityAwareTrait;
+    
     private $normalizers;
-    private $hydrator;
     
     public function __construct(array $normalizers)
     {
@@ -24,16 +25,14 @@ class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterfac
         $this->normalizers = $normalizers;
     }
     
-    public function setHydrator(Hydrator $hydrator): void
-    {
-        $this->hydrator = $hydrator;
-    }
-    
     public function normalize(iterable $entityData, EntityMetadata $metaData): iterable
     {
         foreach ($this->normalizers as $normalizer) {
             if ($normalizer instanceof HydratorAwareInterface) {
                 $normalizer->setHydrator($this->hydrator);
+            }
+            if ($normalizer instanceof PreviousEntityAwareInterface) {
+                $normalizer->setPreviousEntity($this->previousEntity);
             }
             $entityData = $normalizer->normalize($entityData, $metaData);
         }

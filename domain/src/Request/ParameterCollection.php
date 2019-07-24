@@ -62,6 +62,11 @@ class ParameterCollection implements \ArrayAccess, \Iterator
         return key($this->params) !== null;
     }
     
+    public function toArray(): array
+    {
+        return $this->params;
+    }
+    
     public static function buildFromRequestsParams(array $params): self
     {
         foreach ($params as $key => $value) {

@@ -3,6 +3,7 @@
 namespace AdventistCommons\Domain\Entity;
 
 use AdventistCommons\Domain\Hydrator\Normalizer;
+use AdventistCommons\Domain\Storage\Putter\Formatter;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -11,7 +12,7 @@ use AdventistCommons\Domain\Hydrator\Normalizer;
 class Section extends Entity
 {
     private $name;
-    private $region;
+    private $xliffXliffRegion;
     private $product;
     private $contents = [];
     
@@ -22,12 +23,14 @@ class Section extends Entity
                 'content' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
                     'store_processor'    => null,
+                    'putter_formatter'   => Formatter\IdFormatter::class,
                     'class'              => Content::class,
                     'multiple'           => true,
                 ],
                 'product' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
                     'store_processor'    => null,
+                    'putter_formatter'   => Formatter\IdFormatter::class,
                     'class'              => Product::class,
                     'multiple'           => true,
                 ],
@@ -51,14 +54,14 @@ class Section extends Entity
         return $this;
     }
     
-    public function getRegion(): ?string
+    public function getXliffRegion(): ?string
     {
-        return $this->region;
+        return $this->xliffXliffRegion;
     }
 
-    public function setRegion($region): self
+    public function setXliffRegion($xliffXliffRegion): self
     {
-        $this->region = $region;
+        $this->xliffXliffRegion = $xliffXliffRegion;
 
         return $this;
     }
@@ -68,7 +71,7 @@ class Section extends Entity
         $this->product = $product;
     }
 
-    public function getProduct(): Product
+    public function getProduct(): ?Product
     {
         return $this->product;
     }
@@ -84,7 +87,7 @@ class Section extends Entity
         $this->contents = $contents;
     }
     
-    public function getContents(): ?array
+    public function getContent(): ?array
     {
         return $this->contents;
     }

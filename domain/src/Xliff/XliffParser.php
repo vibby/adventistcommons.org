@@ -60,8 +60,8 @@ class XliffParser implements HydratorAwareInterface
             ;
             foreach ($paragraphs as $p) {
                 $contentData = [
-                    'content'   => $p,
-                    'is_hidden' => empty($p),
+                    'xliff_content'   => $p,
+                    'is_hidden'       => empty($p),
                 ];
                 $section->addContent($this->hydrator->hydrate(Content::class, $contentData));
             }

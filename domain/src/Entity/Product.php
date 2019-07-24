@@ -48,6 +48,9 @@ class Product extends Entity
             'validator_class' => ProductValidator::class,
             // define meta for every field
             'fields' => [
+                'id' => [
+                    'hydrate_normalizer' => Normalizer\CheckSameNormalizer::class,
+                ],
                 'cover_image' => [
                     // how to process data when the entity is hydrated (from database, form or any other input)
                     'hydrate_normalizer' => Normalizer\FileNormalizer::class,
@@ -55,6 +58,7 @@ class Product extends Entity
                     'store_processor' => [
                         Processor\UploadProcessor::class,
                         Processor\ImageProcessor::class,
+                        Processor\PutterProcessor::class,
                     ],
                     'remove_processor' => Processor\FileRemoveProcessor::class,
                     // special for files : define the base path through its group
@@ -64,6 +68,7 @@ class Product extends Entity
                     'hydrate_normalizer' => [
                         Normalizer\FileNormalizer::class,
                         Normalizer\XliffNormalizer::class,
+                        Processor\PutterProcessor::class,
                     ],
                     'store_processor' => [
                         Processor\UploadProcessor::class,
@@ -99,6 +104,7 @@ class Product extends Entity
                         Processor\ForeignCreateProcessor::class,
                     ],
                     'class'    => Section::class,
+                    'reverse'  => 'product',
                     'multiple' => true,
                 ],
             ],
@@ -348,7 +354,7 @@ class Product extends Entity
         $this->productAttachments = $productAttachments;
     }
 
-    public function getProductAttachments(): ?array
+    public function getProductAttachment(): ?array
     {
         return $this->productAttachments;
     }
@@ -363,7 +369,7 @@ class Product extends Entity
         $this->projects = $projects;
     }
 
-    public function getProjects(): ?array
+    public function getProject(): ?array
     {
         return $this->projects;
     }
@@ -386,7 +392,7 @@ class Product extends Entity
     public function getLanguagesRelations(): array
     {
         $relations = [];
-        foreach ($this->getProductAttachments() as $productAttachment) {
+        foreach ($this->getProductAttachment() as $productAttachment) {
             /** @var Language $language */
             if ($language = $productAttachment->getLanguage()) {
                 if (! isset($relations[$language->getCode()])) {
@@ -399,7 +405,7 @@ class Product extends Entity
                 }
             }
         }
-        foreach ($this->getProjects() as $project) {
+        foreach ($this->getProject() as $project) {
             /** @var Language $language */
             if (($language = $project->getLanguage()) && ! isset($relations[$language->getCode()])) {
                 $relations[$language->getCode()] = [

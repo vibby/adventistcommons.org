@@ -22,7 +22,7 @@
 					<div class="card-body">
 						<div class="tab-content">
 							<div class="tab-pane fade show active" role="tabpanel" id="general">
-								<form class="auto-submit" action="/products/save" method="post">
+								<form class="auto-submit" action="/products/save" method="post" enctype="multipart/form-data">
 									<div class="media mb-4">
 										<img alt="Image" width="80" src="/uploads/{{ product.coverImage }}" class="rounded" />
 										<div class="media-body ml-3">
@@ -97,7 +97,7 @@
 								</form>
 							</div>
 							<div class="tab-pane fade" role="tabpanel" id="specs">
-								<form action="/products/save_specs" method="post" class="auto-submit">
+								<form action="/products/save_specs" method="post" class="auto-submit" enctype="multipart/form-data">
 									<h6>Format</h6>
 									<div class="row">
 										<div class="col">
@@ -170,7 +170,7 @@
 								</form>
 							</div>
 							<div class="tab-pane fade" role="tabpanel" id="advanced">
-								<form action="/products/save_xliff" method="POST" class="auto-submit">
+								<form action="/products/save_xliff" method="POST" class="auto-submit" enctype="multipart/form-data">
 									<h6>InDesign Translation File (.xliff)</h6>
 									{% if product.xliff_file %}
 										<a href="/uploads/{{ product.xliff_file }}">Download original XLIFF file</a>

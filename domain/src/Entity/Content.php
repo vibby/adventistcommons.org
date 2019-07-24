@@ -14,6 +14,7 @@ class Content extends Entity
     private $region;
     private $section;
     private $content;
+    private $xliffTag;
     private $isHidden;
     
     public static function __getMetaData(): array
@@ -24,7 +25,6 @@ class Content extends Entity
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
                     'store_processor'    => null,
                     'class'              => Section::class,
-                    'multiple'           => true,
                 ],
             ],
         ];
@@ -58,6 +58,18 @@ class Content extends Entity
         return $this;
     }
     
+    public function getXliffTag(): ?string
+    {
+        return $this->xliffTag;
+    }
+
+    public function setXliffTag($xliffTag): self
+    {
+        $this->xliffTag = $xliffTag;
+
+        return $this;
+    }
+        
     public function getContent(): ?string
     {
         return $this->content;
@@ -87,7 +99,7 @@ class Content extends Entity
         $this->section = $section;
     }
 
-    public function getSection(): Section
+    public function getSection(): ?Section
     {
         return $this->section;
     }

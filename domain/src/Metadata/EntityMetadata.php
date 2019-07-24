@@ -113,6 +113,11 @@ class EntityMetadata
         return sprintf('set%s', ucfirst(CamelCaseFormatter::run($propertyName)));
     }
     
+    public static function propertyToAdder(string $propertyName)
+    {
+        return sprintf('add%s', ucfirst(CamelCaseFormatter::run($propertyName)));
+    }
+    
     public static function extractShortClassName(Entity $entity)
     {
         $path = explode('\\', get_class($entity));

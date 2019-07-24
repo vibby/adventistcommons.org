@@ -15,6 +15,7 @@ class FieldMetadata
         'hydrate_normalizer' => null,
         'store_processor'    => Processor\PutterProcessor::class,
         'putter_formatter'   => Formatter\DefaultFormatter::class,
+        'multiple'           => false,
     ];
     
     private $metadata;

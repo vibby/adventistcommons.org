@@ -9,9 +9,9 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
+class CheckSameNormalizer implements NormalizerInterface, PreviousEntityAwareInterface
 {
-    use HydratorAwareTrait;
+    use PreviousEntityAwareTrait;
     
     public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
     {
@@ -21,18 +21,9 @@ class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
          */
         foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
             if (isset($entityData[$fieldName])) {
-                foreach ($entityData[$fieldName] as $index => $childData) {
-                    if ($fieldMetadata->get('multiple')) {
-                        $entityData[$fieldName][$index] = $this->hydrator->hydrate(
-                            $fieldMetadata->get('class'),
-                            $childData
-                        );
-                    } else {
-                        $entityData[$fieldName] = $this->hydrator->hydrate(
-                            $fieldMetadata->get('class'),
-                            $childData
-                        );
-                    }
+                $methodName = EntityMetadata::getter($fieldName);
+                if ($entityData[$fieldName] !== $this->previousEntity->$methodName()) {
+                    throw new Exception('Values are not the same !');
                 }
             }
         }

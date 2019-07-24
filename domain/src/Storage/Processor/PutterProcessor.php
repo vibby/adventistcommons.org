@@ -34,6 +34,7 @@ class PutterProcessor implements ProcessorInterface
             $value         = $entity->$getMethodName();
             $entityData    = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
         }
+        dump($entity, $entityData);
         $id = $this->putter->put($entity, $entityData);
         $entity->setId($id);
         

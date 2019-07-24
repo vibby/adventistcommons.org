@@ -2,11 +2,8 @@
 
 namespace AdventistCommons\Domain\Storage\Putter;
 
-use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Entity\Series;
-use AdventistCommons\Domain\Entity\Product;
+use AdventistCommons\Domain\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
-use AdventistCommons\Domain\Entity\ProductAttachment;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -20,18 +17,24 @@ class Putter
     {
         foreach ($putters as $putter) {
             if ($putter instanceof ProductPutterInterface) {
-                $this->putters[Product::class] = $putter;
+                $this->putters[Entity\Product::class] = $putter;
             }
             if ($putter instanceof ProductAttachmentPutterInterface) {
-                $this->putters[ProductAttachment::class] = $putter;
+                $this->putters[Entity\ProductAttachment::class] = $putter;
             }
             if ($putter instanceof SeriesPutterInterface) {
-                $this->putters[Series::class] = $putter;
+                $this->putters[Entity\Series::class] = $putter;
+            }
+            if ($putter instanceof SeriesPutterInterface) {
+                $this->putters[Entity\Series::class] = $putter;
+            }
+            if ($putter instanceof SectionPutterInterface) {
+                $this->putters[Entity\Section::class] = $putter;
             }
         }
     }
     
-    public function put(Entity $entity, array $entityData): int
+    public function put(Entity\Entity $entity, array $entityData): int
     {
         if (! isset($this->putters[get_class($entity)])) {
             throw new \Exception(sprintf('Putter is not set for class %s', get_class($entity)));

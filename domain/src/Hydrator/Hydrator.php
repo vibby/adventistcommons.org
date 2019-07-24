@@ -18,15 +18,18 @@ class Hydrator
     private $normalizer;
     private $metadataManager;
     private $entityCache;
+    private $parentSetter;
     
     public function __construct(
         NormalizerInterface $normalizer,
         MetadataManager $metadataManager,
-        EntityCache $entityCache
+        EntityCache $entityCache,
+        ParentSetter $parentSetter
     ) {
         $this->normalizer      = $normalizer;
         $this->metadataManager = $metadataManager;
         $this->entityCache     = $entityCache;
+        $this->parentSetter    = $parentSetter;
     }
     
     public function hydrate(
@@ -46,12 +49,14 @@ class Hydrator
         if ($this->normalizer instanceof HydratorAwareInterface) {
             $this->normalizer->setHydrator($this);
         }
-        $entityData = $this->normalizer->normalize($entityData, $metaData);
+        $entityData = array_merge(
+            is_array($entityData) ? $entityData : $entityData->toArray(),
+            $uploadedCollection ? $uploadedCollection->toArray() : []
+        );
+        $entityData = $this->normalizer->normalize($entityData, $metaData, $entity);
         
         $entity = self::hydrateProperties($entity, $entityData, $metaData);
-        if ($uploadedCollection) {
-            $entity = self::hydrateProperties($entity, $uploadedCollection, $metaData);
-        }
+        $entity = $this->parentSetter->setParentDeep($entity);
         
         if (isset($entityData['id'])) {
             $this->entityCache->set($className, $entityData['id'], $entity);
