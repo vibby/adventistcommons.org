@@ -13,8 +13,8 @@ class FieldMetadata
 {
     const DEFAULTS = [
         'hydrate_normalizer' => null,
-        'store_processor' => Processor\PutterProcessor::class,
-        'putter_formatter' => Formatter\DefaultFormatter::class,
+        'store_processor'    => Processor\PutterProcessor::class,
+        'putter_formatter'   => Formatter\DefaultFormatter::class,
     ];
     
     private $metadata;
@@ -23,7 +23,7 @@ class FieldMetadata
     public function __construct(string $fieldName, array $metadata)
     {
         $this->fieldName = $fieldName;
-        $this->metadata = array_merge(self::DEFAULTS, $metadata);
+        $this->metadata  = array_merge(self::DEFAULTS, $metadata);
     }
     
     public function get($dataName)

@@ -32,7 +32,7 @@ class FileSystem
     
     public function getRootPath($key = 0): string
     {
-        if (!isset($this->rootPathByGroup[$key])) {
+        if (! isset($this->rootPathByGroup[$key])) {
             throw new \Exception(sprintf('Root path for property %s is not defined', $key));
         }
         

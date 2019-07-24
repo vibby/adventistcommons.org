@@ -8,7 +8,7 @@ class InstanceOfValidator
 {
     public static function validate($object, $className): ?ViolationError
     {
-        if (!$object instanceof $className) {
+        if (! $object instanceof $className) {
             return new ViolationError(sprintf('Object %s expected for validation', $className));
         }
         

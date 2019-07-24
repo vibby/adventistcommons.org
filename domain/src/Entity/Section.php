@@ -21,15 +21,15 @@ class Section extends Entity
             'fields' => [
                 'content' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => null,
-                    'class'    => Content::class,
-                    'multiple' => true,
+                    'store_processor'    => null,
+                    'class'              => Content::class,
+                    'multiple'           => true,
                 ],
                 'product' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => null,
-                    'class'    => Product::class,
-                    'multiple' => true,
+                    'store_processor'    => null,
+                    'class'              => Product::class,
+                    'multiple'           => true,
                 ],
             ],
         ];

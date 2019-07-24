@@ -12,7 +12,7 @@ class ParameterCollection implements \ArrayAccess, \Iterator
     
     public function __construct($params)
     {
-        $this->params = $params;
+        $this->params   = $params;
         $this->position = 0;
     }
     
@@ -67,10 +67,10 @@ class ParameterCollection implements \ArrayAccess, \Iterator
         foreach ($params as $key => $value) {
             if (substr($key, -3) === '_id') {
                 $realKey =  substr($key, 0, -3);
-                if (!$value) {
+                if (! $value) {
                     $params[$realKey] = null;
                 } else {
-                    $params[$realKey][][ "id" ] = $value;
+                    $params[$realKey][]['id'] = $value;
                 }
                 unset($params[$key]);
             }

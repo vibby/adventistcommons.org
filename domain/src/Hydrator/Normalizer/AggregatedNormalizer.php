@@ -17,7 +17,7 @@ class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterfac
     public function __construct(array $normalizers)
     {
         foreach ($normalizers as $normalizer) {
-            if (!$normalizer instanceof NormalizerInterface) {
+            if (! $normalizer instanceof NormalizerInterface) {
                 throw new \Exception('Parameter of aggregrated normalizer must be an array of normalizers');
             }
         }

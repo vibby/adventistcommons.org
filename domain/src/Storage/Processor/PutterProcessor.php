@@ -3,9 +3,9 @@
 namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
-use AdventistCommons\Domain\Metadata\FieldMetadata;
 use AdventistCommons\Domain\Storage\Putter\Putter;
+use AdventistCommons\Domain\Metadata\FieldMetadata;
+use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -23,16 +23,16 @@ class PutterProcessor implements ProcessorInterface
     public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
     {
         $fieldsMetadata = $entityMetadata->getFieldsForProcessor(self::class, $action);
-        $entityData = [];
+        $entityData     = [];
         /**
          * @var string $fieldName
          * @var FieldMetadata $fieldMetadata
          */
         foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-            $formatter = $fieldMetadata->get('putter_formatter');
+            $formatter     = $fieldMetadata->get('putter_formatter');
             $getMethodName = $entityMetadata::propertyToGetter($fieldName);
-            $value = $entity->$getMethodName();
-            $entityData = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
+            $value         = $entity->$getMethodName();
+            $entityData    = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
         }
         $id = $this->putter->put($entity, $entityData);
         $entity->setId($id);

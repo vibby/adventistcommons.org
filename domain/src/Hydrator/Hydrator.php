@@ -3,11 +3,11 @@
 namespace AdventistCommons\Domain\Hydrator;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Hydrator\Normalizer\HydratorAwareInterface;
-use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Request\UploadedCollection;
+use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
+use AdventistCommons\Domain\Hydrator\Normalizer\HydratorAwareInterface;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -24,9 +24,9 @@ class Hydrator
         MetadataManager $metadataManager,
         EntityCache $entityCache
     ) {
-        $this->normalizer = $normalizer;
+        $this->normalizer      = $normalizer;
         $this->metadataManager = $metadataManager;
-        $this->entityCache = $entityCache;
+        $this->entityCache     = $entityCache;
     }
     
     public function hydrate(
@@ -35,9 +35,9 @@ class Hydrator
         UploadedCollection $uploadedCollection = null,
         $useCache = true
     ) {
-        $entity = self::getEntity($object);
+        $entity    = self::getEntity($object);
         $className = get_class($entity);
-        $metaData = $this->metadataManager->getForClass($className);
+        $metaData  = $this->metadataManager->getForClass($className);
         
         if ($useCache && isset($entityData['id']) && $this->entityCache->has($className, $entityData['id'])) {
             return $this->entityCache->get($className, $entityData['id']);
@@ -91,7 +91,7 @@ class Hydrator
                 continue;
             }
             $method = EntityMetadata::propertyToSetter($key);
-            if (!method_exists($entity, $method)) {
+            if (! method_exists($entity, $method)) {
                 throw new \Exception(sprintf(
                     'Method %s does not exists on class %s',
                     $method,

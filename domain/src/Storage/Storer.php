@@ -5,7 +5,6 @@ namespace AdventistCommons\Domain\Storage;
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Storage\Processor\ProcessorInterface;
-use AdventistCommons\Domain\Storage\Processor\StorerAwareInterface;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -13,7 +12,7 @@ use AdventistCommons\Domain\Storage\Processor\StorerAwareInterface;
  */
 class Storer
 {
-    const PREPROCESSOR_STORE = 'store_processor';
+    const PREPROCESSOR_STORE  = 'store_processor';
     const PREPROCESSOR_REMOVE = 'remove_processor';
     
     private $storeProcessor;
@@ -25,7 +24,7 @@ class Storer
         ProcessorInterface $removeProcessor,
         MetadataManager $metadataManager
     ) {
-        $this->storeProcessor = $storeProcessor;
+        $this->storeProcessor  = $storeProcessor;
         $this->removeProcessor = $removeProcessor;
         $this->metadataManager = $metadataManager;
     }
@@ -33,7 +32,7 @@ class Storer
     final public function store(Entity $entity): Entity
     {
         $metadata = $this->metadataManager->getForClass(get_class($entity));
-        $entity = $this->storeProcessor->process($entity, $metadata, self::PREPROCESSOR_STORE);
+        $entity   = $this->storeProcessor->process($entity, $metadata, self::PREPROCESSOR_STORE);
 
         return $entity;
     }
@@ -41,7 +40,7 @@ class Storer
     final public function remove(Entity $entity): Entity
     {
         $metadata = $this->metadataManager->getForClass(get_class($entity));
-        $entity = $this->removeProcessor->process($entity, $metadata, self::PREPROCESSOR_REMOVE);
+        $entity   = $this->removeProcessor->process($entity, $metadata, self::PREPROCESSOR_REMOVE);
 
         return $entity;
     }

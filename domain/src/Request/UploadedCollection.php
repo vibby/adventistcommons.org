@@ -31,7 +31,7 @@ class UploadedCollection implements \ArrayAccess, \Iterator
     public function offsetSet($offset, $uploaded)
     {
         /** Uploaded $uploaded */
-        if (!$uploaded instanceof Uploaded) {
+        if (! $uploaded instanceof Uploaded) {
             throw new \LogicException('Uploaded files list can only accept uploaded files.');
         }
         $this->files[$offset] = $uploaded;

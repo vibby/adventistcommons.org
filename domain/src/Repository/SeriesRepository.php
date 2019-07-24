@@ -17,12 +17,12 @@ class SeriesRepository
     public function __construct(SeriesFinderInterface $seriesFinder, Hydrator $hydrator)
     {
         $this->seriesFinder = $seriesFinder;
-        $this->hydrator = $hydrator;
+        $this->hydrator     = $hydrator;
     }
 
     public function findAll()
     {
-        $data = $this->seriesFinder->getSeriesStructureAll();
+        $data   = $this->seriesFinder->getSeriesStructureAll();
         $series = [];
         if ($data) {
             foreach ($data['series'] as $seriesData) {

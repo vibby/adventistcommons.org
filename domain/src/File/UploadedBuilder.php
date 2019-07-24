@@ -8,11 +8,11 @@ namespace AdventistCommons\Domain\File;
  */
 class UploadedBuilder
 {
-    const KEY_FOR_PATH = 'tmp_name';
+    const KEY_FOR_PATH      = 'tmp_name';
     const KEY_FOR_MIME_TYPE = 'type';
-    const KEY_FOR_SIZE = 'size';
-    const KEY_FOR_NAME = 'name';
-    const KEY_FOR_ERROR = 'error';
+    const KEY_FOR_SIZE      = 'size';
+    const KEY_FOR_NAME      = 'name';
+    const KEY_FOR_ERROR     = 'error';
 
     public static function build(array $entry)
     {

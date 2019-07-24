@@ -22,9 +22,9 @@ class Content extends Entity
             'fields' => [
                 'section' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => null,
-                    'class'    => Section::class,
-                    'multiple' => true,
+                    'store_processor'    => null,
+                    'class'              => Section::class,
+                    'multiple'           => true,
                 ],
             ],
         ];

@@ -3,10 +3,10 @@
 namespace AdventistCommons\Domain\Entity;
 
 use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\Hydrator\Normalizer;
 use AdventistCommons\Domain\Storage\Processor;
-use AdventistCommons\Domain\Validation\ProductValidator;
+use AdventistCommons\Domain\Hydrator\Normalizer;
 use AdventistCommons\Domain\Storage\Putter\Formatter;
+use AdventistCommons\Domain\Validation\ProductValidator;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -14,9 +14,9 @@ use AdventistCommons\Domain\Storage\Putter\Formatter;
  */
 class Product extends Entity
 {
-    const TYPES = ['book','booklet','magabook','tract'];
+    const TYPES     = ['book','booklet','magabook','tract'];
     const AUDIENCES = ['Christian','Muslim','Buddhist','Hindu','Sikh','Animist','Secular'];
-    const BINDINGS = ['Hardcover','Perfect Bound','Spiral Bound','Saddle Stitch','Folded'];
+    const BINDINGS  = ['Hardcover','Perfect Bound','Spiral Bound','Saddle Stitch','Folded'];
 
     private $name;
     private $description;
@@ -38,8 +38,8 @@ class Product extends Entity
     private $publisherWebsite;
     private $series;
     private $productAttachments = [];
-    private $projects = [];
-    private $sections = [];
+    private $projects           = [];
+    private $sections           = [];
     
     public static function __getMetaData(): array
     {
@@ -69,33 +69,33 @@ class Product extends Entity
                         Processor\UploadProcessor::class,
                     ],
                     'remove_processor' => Processor\FileRemoveProcessor::class,
-                    'root_path_group' => 'xliff',
+                    'root_path_group'  => 'xliff',
                 ],
                 'product_attachment' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => null,
-                    'class'    => ProductAttachment::class,
-                    'multiple' => true,
+                    'store_processor'    => null,
+                    'class'              => ProductAttachment::class,
+                    'multiple'           => true,
                 ],
                 'project' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => null,
-                    'class'    => Project::class,
-                    'multiple' => true,
+                    'store_processor'    => null,
+                    'class'              => Project::class,
+                    'multiple'           => true,
                 ],
                 'series' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => [
+                    'store_processor'    => [
                         Processor\ForeignCreateProcessor::class,
                         Processor\PutterProcessor::class,
                     ],
                     'putter_formatter' => Formatter\IdFormatter::class,
-                    'class'    => Series::class,
-                    'multiple' => false,
+                    'class'            => Series::class,
+                    'multiple'         => false,
                 ],
                 'section' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor' => [
+                    'store_processor'    => [
                         Processor\ForeignCreateProcessor::class,
                     ],
                     'class'    => Section::class,
@@ -389,9 +389,9 @@ class Product extends Entity
         foreach ($this->getProductAttachments() as $productAttachment) {
             /** @var Language $language */
             if ($language = $productAttachment->getLanguage()) {
-                if (!isset($relations[$language->getCode()])) {
+                if (! isset($relations[$language->getCode()])) {
                     $relations[$language->getCode()] = [
-                        'language' => $language,
+                        'language'           => $language,
                         'productAttachments' => [$productAttachment],
                     ];
                 } else {
@@ -401,10 +401,10 @@ class Product extends Entity
         }
         foreach ($this->getProjects() as $project) {
             /** @var Language $language */
-            if (($language = $project->getLanguage()) && !isset($relations[$language->getCode()])) {
+            if (($language = $project->getLanguage()) && ! isset($relations[$language->getCode()])) {
                 $relations[$language->getCode()] = [
                     'language' => $language,
-                    'project' => $project,
+                    'project'  => $project,
                 ];
             }
         }

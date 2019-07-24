@@ -4,7 +4,6 @@ namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
-use AdventistCommons\Domain\Storage\Storer;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -18,7 +17,7 @@ class AggregatedProcessor implements ProcessorInterface
     public function __construct(array $processors)
     {
         foreach ($processors as $processor) {
-            if (!$processor instanceof ProcessorInterface) {
+            if (! $processor instanceof ProcessorInterface) {
                 throw new \Exception('Parameter of aggregrated processor must be an array of processors');
             }
         }

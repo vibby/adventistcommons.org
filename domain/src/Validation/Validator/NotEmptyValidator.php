@@ -11,7 +11,7 @@ class NotEmptyValidator
         if (is_string($data)) {
             $data = trim($data);
         }
-        if (!$data) {
+        if (! $data) {
             return new ViolationError(sprintf('Field %s cannot be empty', $name));
         }
         

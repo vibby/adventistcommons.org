@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+echo "pre commit hook start"
+
+CURRENT_DIRECTORY=`pwd`
+GIT_HOOKS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+PROJECT_DIRECTORY="$GIT_HOOKS_DIR/../.."
+
+cd $PROJECT_DIRECTORY;
+PROJECT_PRE_COMMIT="application/bin/pre-commit"
+
+HAS_PROJECT_PRE_COMMIT=false
+
+if [ -x "$PROJECT_PRE_COMMIT" ]; then
+    HAS_PROJECT_PRE_COMMIT=true
+fi
+
+if $HAS_PROJECT_PRE_COMMIT; then
+    ${PROJECT_PRE_COMMIT}
+else
+    echo ""
+    echo "Cannot find pre-commit executable in application/bin/ path"
+    echo ""
+fi
+
+cd $CURRENT_DIRECTORY;
+echo "pre commit hook finish"
+

@@ -15,8 +15,8 @@ class ViolationError
     public function __construct($message = 'A validation violation occured', $entityName = null, $fieldName = null)
     {
         $this->entityName = $entityName;
-        $this->fieldName = $fieldName;
-        $this->message = $message;
+        $this->fieldName  = $fieldName;
+        $this->message    = $message;
     }
     
     public function getEntityName()

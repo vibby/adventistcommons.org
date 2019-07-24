@@ -2,9 +2,9 @@
 
 namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
-use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Hydrator\Hydrator;
 use AdventistCommons\Domain\Metadata\FieldMetadata;
+use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>

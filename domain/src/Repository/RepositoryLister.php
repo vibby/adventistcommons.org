@@ -2,9 +2,9 @@
 
 namespace AdventistCommons\Domain\Repository;
 
+use AdventistCommons\Domain\Entity\Series;
 use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Entity\ProductAttachment;
-use AdventistCommons\Domain\Entity\Series;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>

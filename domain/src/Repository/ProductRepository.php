@@ -17,13 +17,13 @@ class ProductRepository
     public function __construct(ProductFinderInterface $productFinder, Hydrator $hydrator)
     {
         $this->productFinder = $productFinder;
-        $this->hydrator = $hydrator;
+        $this->hydrator      = $hydrator;
     }
 
     public function findWithAttachmentsAndProjects($id)
     {
         $data = $this->productFinder->getProductStructureWithAttachmentsAndProjects($id);
-        if (!$data) {
+        if (! $data) {
             return null;
         }
         $product = $this->hydrator->hydrate(Product::class, reset($data['product']));
@@ -34,7 +34,7 @@ class ProductRepository
     public function find($id)
     {
         $data = $this->productFinder->getProductStructure($id);
-        if (!$data) {
+        if (! $data) {
             return null;
         }
         $product = $this->hydrator->hydrate(Product::class, reset($data['product']));
@@ -44,7 +44,7 @@ class ProductRepository
 
     public function findAll()
     {
-        $data = $this->productFinder->getProductStructureAll();
+        $data     = $this->productFinder->getProductStructureAll();
         $products = [];
         if ($data) {
             foreach ($data['product'] as $productData) {

@@ -3,15 +3,14 @@
 namespace AdventistCommons\Domain\Validation;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\File\Uploaded;
-use AdventistCommons\Domain\Validation\Validator;
+use AdventistCommons\Domain\Entity\Product;
 
 class ProductValidator extends EntityValidator
 {
     public static function validate(Entity $product): void
     {
-        $errors = [];
+        $errors   = [];
         $errors[] = Validator\InstanceOfValidator::validate($product, Product::class);
         self::throwExceptionIfError($errors);
         

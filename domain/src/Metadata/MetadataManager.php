@@ -12,8 +12,8 @@ class MetadataManager
     
     public function getForClass($className): EntityMetadata
     {
-        if (!isset($this->metadataByClassName[$className])) {
-            if (!method_exists($className, '__getMetaData')) {
+        if (! isset($this->metadataByClassName[$className])) {
+            if (! method_exists($className, '__getMetaData')) {
                 throw new \Exception(sprintf(
                     'Cannot get metadata on this object : %s. __getMetaData() method is missing',
                     $className

@@ -3,10 +3,10 @@
 namespace AdventistCommons\Domain\Entity;
 
 use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\Hydrator\Normalizer;
 use AdventistCommons\Domain\Storage\Processor;
-use AdventistCommons\Domain\Validation\ProductAttachmentValidator;
+use AdventistCommons\Domain\Hydrator\Normalizer;
 use AdventistCommons\Domain\Storage\Putter\Formatter;
+use AdventistCommons\Domain\Validation\ProductAttachmentValidator;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -15,9 +15,9 @@ use AdventistCommons\Domain\Storage\Putter\Formatter;
 class ProductAttachment extends Entity
 {
     const FILE_TYPES = [
-        "pdf_printing" => "PDF (Production)",
-        "pdf_personal" => "PDF (Personal)",
-        "indd"         => "InDesign",
+        'pdf_printing' => 'PDF (Production)',
+        'pdf_personal' => 'PDF (Personal)',
+        'indd'         => 'InDesign',
     ];
 
     private $language;
@@ -29,15 +29,15 @@ class ProductAttachment extends Entity
     {
         return [
             'validator_class' => ProductAttachmentValidator::class,
-            'fields' => [
+            'fields'          => [
                 'language' => [
                     'hydrate_normalizer' => [
                         Normalizer\ForeignNormalizer::class,
                         Normalizer\ForeignFromIdNormalizer::class,
                     ],
                     'putter_formatter' => Formatter\IdFormatter::class,
-                    'class'    => Language::class,
-                    'multiple' => false,
+                    'class'            => Language::class,
+                    'multiple'         => false,
                 ],
                 'product' => [
                     'hydrate_normalizer' => [
@@ -45,16 +45,16 @@ class ProductAttachment extends Entity
                         Normalizer\ForeignFromIdNormalizer::class,
                     ],
                     'putter_formatter' => Formatter\IdFormatter::class,
-                    'class'    => Product::class,
-                    'multiple' => false,
+                    'class'            => Product::class,
+                    'multiple'         => false,
                 ],
                 'file' => [
                     'hydrate_normalizer' => Normalizer\FileNormalizer::class,
-                    'store_processor' => Processor\UploadProcessor::class,
-                    'remove_processor' => Processor\FileRemoveProcessor::class,
-                    'root_path_group' => 'attachment',
+                    'store_processor'    => Processor\UploadProcessor::class,
+                    'remove_processor'   => Processor\FileRemoveProcessor::class,
+                    'root_path_group'    => 'attachment',
                 ],
-            ]
+            ],
         ];
     }
     

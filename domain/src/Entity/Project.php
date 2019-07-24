@@ -2,8 +2,8 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\Hydrator\Normalizer as Hydrate;
 use AdventistCommons\Domain\Storage\Normalizer as Storage;
+use AdventistCommons\Domain\Hydrator\Normalizer as Hydrate;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -21,15 +21,15 @@ class Project extends Entity
             'fields' => [
                 'language' => [
                     'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-                    'store_normalizer' => Storage\ForeignNormalizer::class,
-                    'class'    => Language::class,
-                    'multiple' => false,
+                    'store_normalizer'   => Storage\ForeignNormalizer::class,
+                    'class'              => Language::class,
+                    'multiple'           => false,
                 ],
                 'product' => [
                     'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-                    'store_normalizer' => Storage\ForeignNormalizer::class,
-                    'class'    => Product::class,
-                    'multiple' => false,
+                    'store_normalizer'   => Storage\ForeignNormalizer::class,
+                    'class'              => Product::class,
+                    'multiple'           => false,
                 ],
             ],
         ];

@@ -131,14 +131,12 @@ class Products extends CI_Controller {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
+		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $this->input->post())) {
 			return false;
 		}
-		$this->output->set_content_type("application/json");
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
 		$storeAction->do($product);
-		die;
 
 		$this->output->set_content_type("application/json");
 		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $product->getId() . "#advanced" ] ) );
@@ -148,7 +146,7 @@ class Products extends CI_Controller {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
+		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $this->input->post())) {
 			return false;
 		}
 		$this->output->set_content_type("application/json");
@@ -164,7 +162,10 @@ class Products extends CI_Controller {
 			show_404();
 		}
 
-		if (!$productAttachment = $this->submit_entity(\AdventistCommons\Domain\Entity\ProductAttachment::class, $this->input->post())) {
+		if (!$productAttachment = $this->submit_entity(
+			\AdventistCommons\Domain\Entity\ProductAttachment::class,
+			$this->input->post()
+		)) {
 			return false;
 		}
 		

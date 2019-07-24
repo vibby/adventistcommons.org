@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+CURRENT_DIRECTORY=`pwd`
+BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+PROJECT_DIRECTORY="$BIN_DIR/../.."
+
+cd $PROJECT_DIRECTORY;
+PHP_CS_FIXER="domain/bin/php-cs-fixer-on-commit"
+
+HAS_PHP_CS_FIXER=false
+
+if [ -x "$PHP_CS_FIXER" ]; then
+    HAS_PHP_CS_FIXER=true
+fi
+
+if $HAS_PHP_CS_FIXER; then
+    ${PHP_CS_FIXER}
+else
+    echo ""
+    echo "Cannot find php-cs-fixer-on-commit executable in domain/bin/ path"
+    echo ""
+fi
+
+cd $CURRENT_DIRECTORY;

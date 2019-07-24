@@ -8,7 +8,7 @@ class InArrayValidator
 {
     public static function validate(string $name, $data, array $list): ?ViolationError
     {
-        if (!in_array($data, $list)) {
+        if (! in_array($data, $list)) {
             return new ViolationError(sprintf('Field %s cannot take the value «%s»', $name, $data));
         }
         

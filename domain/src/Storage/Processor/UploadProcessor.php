@@ -2,11 +2,11 @@
 
 namespace AdventistCommons\Domain\Storage\Processor;
 
-use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\File\File;
-use AdventistCommons\Domain\File\FileSystem;
+use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\File\Uploaded;
+use AdventistCommons\Domain\File\FileSystem;
+use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -23,12 +23,12 @@ class UploadProcessor extends AbstractFieldBasedProcessor implements ProcessorIn
     
     protected function processOne(Entity $entity, $value, string $fieldName): Entity
     {
-        if (!$value instanceof File) {
+        if (! $value instanceof File) {
             throw new \Exception('An uploadable property must be a file');
         }
         if ($value instanceof Uploaded) {
             $definitiveFile = $this->fileSystem->makeUploadedDefinitive($value);
-            $setMethodName = EntityMetadata::propertyToSetter($fieldName);
+            $setMethodName  = EntityMetadata::propertyToSetter($fieldName);
             $entity->$setMethodName($definitiveFile);
         }
         

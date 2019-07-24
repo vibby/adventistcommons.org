@@ -2,10 +2,8 @@
 
 namespace AdventistCommons\Domain\Storage\Processor;
 
-use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
-use AdventistCommons\Domain\File\File;
 use Gregwar\Image\Image;
+use AdventistCommons\Domain\Entity\Entity;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>

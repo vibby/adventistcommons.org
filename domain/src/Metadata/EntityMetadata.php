@@ -3,10 +3,10 @@
 namespace AdventistCommons\Domain\Metadata;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer;
 use AdventistCommons\Domain\Validation\EntityValidator;
 use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
 use Kolyunya\StringProcessor\Format\SnakeCaseFormatter;
+use AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -25,7 +25,7 @@ class EntityMetadata
                 $fieldNames[] = SnakeCaseFormatter::run(substr($method->getName(), 3));
             }
         }
-        $fields = array_fill_keys($fieldNames, []);
+        $fields             = array_fill_keys($fieldNames, []);
         $metadata['fields'] = array_merge($fields, $metadata['fields'] ?? []);
         array_walk(
             $metadata['fields'],
@@ -34,7 +34,7 @@ class EntityMetadata
             }
         );
                 
-        $this->metadata = $metadata;
+        $this->metadata  = $metadata;
         $this->className = $className;
     }
     
@@ -52,10 +52,11 @@ class EntityMetadata
     {
         return $this->filterFields(
             function (FieldMetadata $metadata) use ($property, $value) {
-                if (!$metadata->has($property)) {
+                if (! $metadata->has($property)) {
                     return false;
                 }
                 $thisValue = $metadata->get($property);
+
                 return (
                     $thisValue === $value
                     ||
@@ -91,7 +92,7 @@ class EntityMetadata
     public function getValidator()
     {
         $className = $this->get('validator_class');
-        if (!is_subclass_of($className, EntityValidator::class)) {
+        if (! is_subclass_of($className, EntityValidator::class)) {
             throw new \Exception(sprintf(
                 'Class given as validator for entity %s is not an entity validator, %s given',
                 $this->getClassName(),
@@ -126,7 +127,7 @@ class EntityMetadata
     
     private function filterFields(\closure $closure)
     {
-        if (!($fields = $this->get('fields'))) {
+        if (! ($fields = $this->get('fields'))) {
             return [];
         }
         

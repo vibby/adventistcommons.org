@@ -5,7 +5,6 @@ namespace AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
-use AdventistCommons\Domain\Storage\Storer;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -22,7 +21,7 @@ class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements Proc
     public function __construct(PutterProcessor $putterProcessor, MetadataManager $metadataManager)
     {
         $this->putterProcessor = $putterProcessor;
-		$this->metadataManager = $metadataManager;
+        $this->metadataManager = $metadataManager;
     }
     
     protected function processOne(Entity $entity, $value, string $fieldName): Entity
@@ -31,7 +30,7 @@ class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements Proc
         if (is_array($value)) {
             $changed = [];
             foreach ($value as $index => $otherEntity) {
-                if (!$otherEntity instanceof Entity) {
+                if (! $otherEntity instanceof Entity) {
                     throw new \Exception('A foreign field value must be an entity or an array of entities');
                 }
                 $this->createForeign($entity, $otherEntity, $setMethodName);
@@ -48,12 +47,12 @@ class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements Proc
     
     private function createForeign(Entity &$parent, Entity $foreign, string $setMethodName)
     {
-        if (!$foreign->getId()) {
+        if (! $foreign->getId()) {
             $parent->$setMethodName($this->putterProcessor->process(
-            	$foreign,
-				$this->metadataManager->getForClass(get_class($foreign)),
-				$this->action
-			));
+                $foreign,
+                $this->metadataManager->getForClass(get_class($foreign)),
+                $this->action
+            ));
         }
     }
 }

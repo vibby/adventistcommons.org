@@ -15,12 +15,12 @@ class Uploaded extends File
     {
         parent::__construct('', $path);
         $this->mimeType = $mimeType;
-        $this->size = $size;
+        $this->size     = $size;
 
         $this->originalName = $name;
-        $this->statusCode = $errorCode;
+        $this->statusCode   = $errorCode;
         
-        $parts = pathinfo($name);
+        $parts           = pathinfo($name);
         $this->extension = $parts['extension'];
     }
 

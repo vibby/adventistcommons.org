@@ -2,7 +2,6 @@
 
 namespace AdventistCommons\Domain\Storage\Putter\Formatter;
 
-use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\FieldMetadata;
 
 interface FormatterInterface

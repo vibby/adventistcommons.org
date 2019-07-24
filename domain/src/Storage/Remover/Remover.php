@@ -3,8 +3,8 @@
 namespace AdventistCommons\Domain\Storage\Remover;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Entity\Series;
+use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
@@ -29,11 +29,11 @@ class Remover
     
     public function remove(Entity $entity): void
     {
-        if (!isset($this->removers[get_class($entity)])) {
+        if (! isset($this->removers[get_class($entity)])) {
             throw new \Exception(sprintf('Remover is not set for class %s', get_class($entity)));
         }
         
-        $remover = $this->removers[get_class($entity)];
+        $remover    = $this->removers[get_class($entity)];
         $methodName = sprintf('remove%s', EntityMetadata::extractShortClassName($entity));
 
         $remover->$methodName($entity->getId());

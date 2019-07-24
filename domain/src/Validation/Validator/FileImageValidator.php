@@ -9,7 +9,7 @@ class FileImageValidator
 {
     public static function validate(string $name, File $uploadedFile): ?ViolationError
     {
-        if (!$uploadedFile->isInGroup('image')) {
+        if (! $uploadedFile->isInGroup('image')) {
             return new ViolationError(sprintf(
                 'File field %s must be a valid image. Given mime type is %s',
                 $name,
