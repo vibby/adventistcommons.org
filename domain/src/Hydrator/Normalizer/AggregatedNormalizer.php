@@ -3,15 +3,16 @@
 namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
 use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Hydrator\HydratorAwareTrait;
+use AdventistCommons\Domain\Hydrator\HydratorAwareInterface;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterface, PreviousEntityAwareInterface
+class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterface
 {
-    use  HydratorAwareTrait;
-    use  PreviousEntityAwareTrait;
+    use HydratorAwareTrait;
     
     private $normalizers;
     
@@ -29,10 +30,7 @@ class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterfac
     {
         foreach ($this->normalizers as $normalizer) {
             if ($normalizer instanceof HydratorAwareInterface) {
-                $normalizer->setHydrator($this->hydrator);
-            }
-            if ($normalizer instanceof PreviousEntityAwareInterface) {
-                $normalizer->setPreviousEntity($this->previousEntity);
+                $normalizer->setHydrator($this->getHydrator());
             }
             $entityData = $normalizer->normalize($entityData, $metaData);
         }

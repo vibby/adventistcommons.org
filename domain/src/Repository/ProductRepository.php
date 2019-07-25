@@ -20,9 +20,9 @@ class ProductRepository
         $this->hydrator      = $hydrator;
     }
 
-    public function findWithAttachmentsAndProjects($id)
+    public function findWithAttachmentsAndProjects($entityId)
     {
-        $data = $this->productFinder->getProductStructureWithAttachmentsAndProjects($id);
+        $data = $this->productFinder->getProductStructureWithAttachmentsAndProjects($entityId);
         if (! $data) {
             return null;
         }
@@ -31,9 +31,9 @@ class ProductRepository
         return $product;
     }
 
-    public function find($id)
+    public function find($entityId)
     {
-        $data = $this->productFinder->getProductStructure($id);
+        $data = $this->productFinder->getProductStructure($entityId);
         if (! $data) {
             return null;
         }

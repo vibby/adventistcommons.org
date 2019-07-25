@@ -24,35 +24,40 @@ class ForeignCreateProcessor extends AbstractFieldBasedProcessor implements Proc
         $this->metadataManager = $metadataManager;
     }
     
-    protected function processOne(Entity $entity, $value, string $fieldName): Entity
+    protected function processOne(Entity $entity, $value, string $fieldName, EntityMetadata $metadata): Entity
     {
-        $setMethodName = EntityMetadata::propertyToSetter($fieldName);
+        if (! $value) {
+            return $entity;
+        }
+        $setMethodName = $metadata->propertyToSetter($fieldName);
+        $changed       = [];
         if (is_array($value)) {
-            $changed = [];
-            foreach ($value as $index => $otherEntity) {
+            foreach ($value as $otherEntity) {
                 if (! $otherEntity instanceof Entity) {
                     throw new \Exception('A foreign field value must be an entity or an array of entities');
                 }
-                $this->createForeign($entity, $otherEntity, $setMethodName);
+                $changed[] = $this->createForeign($otherEntity);
             }
-            $entity->$setMethodName($changed);
-        } elseif ($value instanceof Entity) {
-            $this->createForeign($entity, $value, $setMethodName);
-        } else {
+        }
+        if ($value instanceof Entity) {
+            $changed = $this->createForeign($value);
+        }
+        
+        if (! $changed) {
             throw new \Exception('A foreign field value must be an entity or an array of entities');
         }
+        
+        $entity->$setMethodName($changed);
         
         return $entity;
     }
     
-    private function createForeign(Entity &$parent, Entity $foreign, string $setMethodName)
+    private function createForeign(Entity $foreign)
     {
-        if (! $foreign->getId()) {
-            $parent->$setMethodName($this->putterProcessor->process(
-                $foreign,
-                $this->metadataManager->getForClass(get_class($foreign)),
-                $this->action
-            ));
-        }
+        return $this->putterProcessor->process(
+            $foreign,
+            $this->metadataManager->getForClass(get_class($foreign)),
+            $this->action
+        );
     }
 }

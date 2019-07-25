@@ -12,7 +12,6 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
 class AggregatedProcessor implements ProcessorInterface
 {
     private $processors;
-    private $storer;
     
     public function __construct(array $processors)
     {

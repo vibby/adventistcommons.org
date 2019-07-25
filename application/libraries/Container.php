@@ -172,7 +172,8 @@ class Container
 				return new \AdventistCommons\Domain\Action\SubmitEntity(
 					$this->get(\AdventistCommons\Domain\Hydrator\Hydrator::class),
 					$this->get(\AdventistCommons\Domain\Repository\RepositoryLister::class),
-					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
+					$this->get(\AdventistCommons\Domain\Validation\ValidatorCollection::class)
 				);
 			}
 		);
@@ -190,6 +191,78 @@ class Container
 				return new \AdventistCommons\Domain\Action\RemoveEntity(
 					$this->get(\AdventistCommons\Domain\Storage\Storer::class)
 				);
+			}
+		);
+		
+		/****************************
+		 * Validation
+		 ****************************/
+		$this->set(
+			\AdventistCommons\Domain\Validation\Validator\FileImageValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Validator\FileImageValidator(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Validation\Validator\InArrayValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Validator\InArrayValidator(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Validation\Validator\InstanceOfValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Validator\InstanceOfValidator(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Validation\Validator\NotEmptyValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Validator\NotEmptyValidator(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Validation\Validator\UploadedFileValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Validator\UploadedFileValidator(
+				);
+			}
+		);
+
+		/****************************
+		 * Entity Validation
+		 ****************************/
+		$this->set(
+			\AdventistCommons\Domain\Validation\Entity\ProductValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Entity\ProductValidator(
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Validation\Entity\ProductAttachmentValidator::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\Entity\ProductAttachmentValidator(
+				);
+			}
+		);
+
+		$this->set(
+			\AdventistCommons\Domain\Validation\ValidatorCollection::class,
+			function () {
+				return new \AdventistCommons\Domain\Validation\ValidatorCollection([
+					$this->get(\AdventistCommons\Domain\Validation\Validator\FileImageValidator::class),					
+					$this->get(\AdventistCommons\Domain\Validation\Validator\InArrayValidator::class),					
+					$this->get(\AdventistCommons\Domain\Validation\Validator\InstanceOfValidator::class),					
+					$this->get(\AdventistCommons\Domain\Validation\Validator\NotEmptyValidator::class),					
+					$this->get(\AdventistCommons\Domain\Validation\Validator\UploadedFileValidator::class),					
+					$this->get(\AdventistCommons\Domain\Validation\Entity\ProductValidator::class),
+					$this->get(\AdventistCommons\Domain\Validation\Entity\ProductAttachmentValidator::class),
+				]);
 			}
 		);
 		
@@ -282,18 +355,24 @@ class Container
 		$this->set(
 			\AdventistCommons\Domain\Storage\Putter\Putter::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Putter\Putter([
-					$this->get(Product_model::class),
-					$this->get(Project_model::class),
-				]);
+				return new \AdventistCommons\Domain\Storage\Putter\Putter(
+					[
+						$this->get(Product_model::class),
+						$this->get(Project_model::class),
+					],
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
 			}
 		);
 		$this->set(
 			\AdventistCommons\Domain\Storage\Remover\Remover::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Remover\Remover([
-					$this->get(Product_model::class),
-				]);
+				return new \AdventistCommons\Domain\Storage\Remover\Remover(
+					[
+						$this->get(Product_model::class),
+					],
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
 			}
 		);
 		

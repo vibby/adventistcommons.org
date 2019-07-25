@@ -6,11 +6,16 @@ use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Hydrator\Normalizer;
 use AdventistCommons\Domain\Storage\Putter\Formatter;
-use AdventistCommons\Domain\Validation\ProductValidator;
+use AdventistCommons\Domain\Validation\Entity\ProductValidator;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
  * @copyright 2019
+ *
+ * @SuppressWarnings(PHPMD.ExcessivePublicCount)
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Product extends Entity
 {
@@ -41,7 +46,7 @@ class Product extends Entity
     private $projects           = [];
     private $sections           = [];
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [
             // class used to validate the entity
@@ -389,6 +394,9 @@ class Product extends Entity
         return $this->sections;
     }
     
+    /**
+     * @SuppressWarnings(PHPMD.ElseExpression)
+     */
     public function getLanguagesRelations(): array
     {
         $relations = [];

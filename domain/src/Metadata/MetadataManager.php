@@ -13,16 +13,16 @@ class MetadataManager
     public function getForClass($className): EntityMetadata
     {
         if (! isset($this->metadataByClassName[$className])) {
-            if (! method_exists($className, '__getMetaData')) {
+            if (! method_exists($className, 'getEntityMetadata')) {
                 throw new \Exception(sprintf(
-                    'Cannot get metadata on this object : %s. __getMetaData() method is missing',
+                    'Cannot get metadata on this object : %s. getEntityMetadata() method is missing',
                     $className
                 ));
             }
             
             $this->metadataByClassName[$className] = new EntityMetadata(
                 $className,
-                $className::__getMetaData()
+                $className::getEntityMetadata()
             );
         }
         

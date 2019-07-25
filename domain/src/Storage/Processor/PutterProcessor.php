@@ -30,13 +30,12 @@ class PutterProcessor implements ProcessorInterface
          */
         foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
             $formatter     = $fieldMetadata->get('putter_formatter');
-            $getMethodName = $entityMetadata::propertyToGetter($fieldName);
+            $getMethodName = $entityMetadata->propertyToGetter($fieldName);
             $value         = $entity->$getMethodName();
             $entityData    = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
         }
-        dump($entity, $entityData);
-        $id = $this->putter->put($entity, $entityData);
-        $entity->setId($id);
+        $entityId = $this->putter->put($entity, $entityData);
+        $entity->setId($entityId);
         
         return $entity;
     }

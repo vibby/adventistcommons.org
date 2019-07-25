@@ -6,7 +6,8 @@
     },
     "require-dev": {
         "phpspec/phpspec": "^5.1",
-        "friendsofphp/php-cs-fixer": "^2.15"
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "phpmd/phpmd": "^2.6"
     },
     "autoload": {
         "psr-4": {

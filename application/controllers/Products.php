@@ -116,7 +116,7 @@ class Products extends CI_Controller {
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$is_new = ($product->getId() === null);
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
-		$product = $storeAction->do($product);
+		$product = $storeAction->act($product);
 		
 		if ($is_new) {
 			$this->output->set_output( json_encode( [ "redirect" => sprintf( "/products/%d", $product->getId() ) ] ) );
@@ -136,7 +136,7 @@ class Products extends CI_Controller {
 		}
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
-		$storeAction->do($product);
+		$storeAction->act($product);
 
 		$this->output->set_content_type("application/json");
 		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $product->getId() . "#advanced" ] ) );
@@ -152,7 +152,7 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
-		$storeAction->do($product);
+		$storeAction->act($product);
 		
 		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 	}
@@ -171,7 +171,7 @@ class Products extends CI_Controller {
 		
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
 		$storeAction = $this->container->get(\AdventistCommons\Domain\Action\StoreEntity::class);
-		$storeAction->do($productAttachment);
+		$storeAction->act($productAttachment);
 		
 		$this->output->set_content_type("application/json");
 		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $productAttachment->getProduct()->getId() ] ) );
@@ -185,7 +185,7 @@ class Products extends CI_Controller {
 		$product = $productRepo->find($product_id);
 		if( ! $product ) show_404();
 		$removeAction = $this->container->get(\AdventistCommons\Domain\Action\RemoveEntity::class);
-		$removeAction->do($product);
+		$removeAction->act($product);
 
 		redirect( "/products", "refresh" );
 	}
@@ -195,7 +195,7 @@ class Products extends CI_Controller {
 		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
 		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
 		try {
-			$product = $submitAction->do(
+			$product = $submitAction->act(
 				$entityClass,
 				build_entity_params_from_request($data),
 				build_uploaded_files_from_request($_FILES)

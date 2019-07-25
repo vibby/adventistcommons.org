@@ -1,8 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\Hydrator\Normalizer;
-
-use  AdventistCommons\Domain\Hydrator\Hydrator;
+namespace AdventistCommons\Domain\Hydrator;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -10,10 +8,16 @@ use  AdventistCommons\Domain\Hydrator\Hydrator;
  */
 trait HydratorAwareTrait
 {
+    /** @var Hydrator */
     private $hydrator;
 
     public function setHydrator(Hydrator $hydrator): void
     {
         $this->hydrator = $hydrator;
+    }
+    
+    protected function getHydrator()
+    {
+        return $this->hydrator;
     }
 }

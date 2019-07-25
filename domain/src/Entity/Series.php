@@ -10,7 +10,7 @@ class Series extends Entity
 {
     private $name;
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [];
     }

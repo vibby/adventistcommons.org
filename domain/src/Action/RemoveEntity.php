@@ -19,7 +19,7 @@ class RemoveEntity
         $this->storer = $storer;
     }
     
-    public function do(Entity $entity): Entity
+    public function act(Entity $entity): Entity
     {
         $entity = $this->storer->remove($entity);
         

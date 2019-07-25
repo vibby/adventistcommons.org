@@ -6,7 +6,7 @@ use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Entity\Content;
 use AdventistCommons\Domain\Entity\Section;
 use AdventistCommons\Domain\Hydrator\Hydrator;
-use AdventistCommons\Domain\Hydrator\Normalizer\HydratorAwareInterface;
+use AdventistCommons\Domain\Hydrator\HydratorAwareInterface;
 
 class XliffParser implements HydratorAwareInterface
 {
@@ -36,11 +36,12 @@ class XliffParser implements HydratorAwareInterface
     {
         $sections = [];
         foreach ($xml as $key => $region) {
-            if ($key === 'interior') {
-                $sections = array_merge($sections, $this->parseXliffParagraphContent($region));
-            } else {
-                $sections = array_merge($sections, $this->parseXliffTagContent($region, $key));
-            }
+            $sections = array_merge(
+                $sections,
+                $key === 'interior'
+                    ? $this->parseXliffParagraphContent($region)
+                    : $this->parseXliffTagContent($region, $key)
+            );
         }
         
         return $sections;
@@ -54,6 +55,7 @@ class XliffParser implements HydratorAwareInterface
                 'name'         => self::formatRegionName($regionName, self::PARAGRAPH_SECTION_NAMES),
                 'xliff_region' => $regionName,
             ];
+            /** @var Section $section */
             $section = $this->hydrator->hydrate(Section::class, $sectionData);
             
             $paragraphs = preg_split('/\R/u', $content);
@@ -77,6 +79,7 @@ class XliffParser implements HydratorAwareInterface
             'name'         => self::formatRegionName($regionName, self::TAG_SECTION_NAMES),
             'xliff_region' => $regionName,
         ];
+        /** @var Section $section */
         $section = $this->hydrator->hydrate(Section::class, $sectionData);
         
         foreach ($region as $tagName => $tagContent) {

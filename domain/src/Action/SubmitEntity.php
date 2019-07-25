@@ -8,6 +8,7 @@ use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Request\UploadedCollection;
 use AdventistCommons\Domain\Repository\RepositoryLister;
 use AdventistCommons\Domain\Request\ParameterCollection;
+use AdventistCommons\Domain\validation\ValidatorCollection;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -18,18 +19,21 @@ class SubmitEntity
     private $hydrator;
     private $repositoryLister;
     private $metadataManager;
+    private $validatorCollection;
     
     public function __construct(
         Hydrator $hydrator,
         RepositoryLister $repositoryLister,
-        MetadataManager $metadataManager
+        MetadataManager $metadataManager,
+        ValidatorCollection $validatorCollection
     ) {
-        $this->hydrator         = $hydrator;
-        $this->repositoryLister = $repositoryLister;
-        $this->metadataManager  = $metadataManager;
+        $this->hydrator             = $hydrator;
+        $this->repositoryLister     = $repositoryLister;
+        $this->metadataManager      = $metadataManager;
+        $this->validatorCollection  = $validatorCollection;
     }
     
-    public function do(
+    public function act(
         string $className,
         ParameterCollection $entityData,
         UploadedCollection $uploadedFiles = null
@@ -45,10 +49,12 @@ class SubmitEntity
             $uploadedFiles,
             false
         );
-        dump($entity);
-        die;
-        $validator = $this->metadataManager->getForClass($className)->getValidator();
-        $validator::validate($entity);
+        // dump($entity);
+        // die;
+        $validatorClass = $this->metadataManager->getForClass($className)->getValidator();
+        $validator      = $this->validatorCollection->get($validatorClass);
+        $validator->setValidatorCollection($this->validatorCollection);
+        $validator->validate($entity);
         
         return $entity;
     }

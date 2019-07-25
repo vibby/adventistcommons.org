@@ -11,18 +11,18 @@ use AdventistCommons\Domain\Entity\ProductAttachment;
  */
 class ProductAttachmentRepository
 {
-    private $productAttachmentFinder;
+    private $productAttachFinder;
     private $commonHydrator;
 
-    public function __construct(ProductAttachmentFinderInterface $productAttachmentFinder, Hydrator $commonHydrator)
+    public function __construct(ProductAttachmentFinderInterface $productAttachFinder, Hydrator $commonHydrator)
     {
-        $this->productAttachmentFinder = $productAttachmentFinder;
+        $this->productAttachFinder     = $productAttachFinder;
         $this->commonHydrator          = $commonHydrator;
     }
 
-    public function find($id)
+    public function find($entityId)
     {
-        $data = $this->productAttachmentFinder->getProductAttachmentStructure($id);
+        $data = $this->productAttachFinder->getProductAttachmentStructure($entityId);
         if (! $data) {
             return null;
         }

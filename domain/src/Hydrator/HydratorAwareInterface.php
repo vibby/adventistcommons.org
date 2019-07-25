@@ -1,8 +1,6 @@
 <?php
 
-namespace AdventistCommons\Domain\Hydrator\Normalizer;
-
-use AdventistCommons\Domain\Hydrator\Hydrator;
+namespace AdventistCommons\Domain\Hydrator;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>

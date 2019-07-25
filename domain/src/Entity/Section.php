@@ -16,7 +16,7 @@ class Section extends Entity
     private $product;
     private $contents = [];
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [
             'fields' => [

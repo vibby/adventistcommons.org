@@ -14,7 +14,7 @@ class Language extends Entity
     private $productAttachment;
     private $project;
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [];
     }

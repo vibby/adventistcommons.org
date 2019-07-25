@@ -7,7 +7,6 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Request\UploadedCollection;
 use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
-use AdventistCommons\Domain\Hydrator\Normalizer\HydratorAwareInterface;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -32,6 +31,9 @@ class Hydrator
         $this->parentSetter    = $parentSetter;
     }
     
+    /**
+     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
+     */
     public function hydrate(
         $object, // class name or entity itself
         iterable $entityData,
@@ -67,6 +69,7 @@ class Hydrator
     
     private static function getEntity($object): Entity
     {
+        $entity = null;
         if ($object instanceof Entity) {
             $entity = $object;
         } elseif (is_string($object) && is_subclass_of($object, Entity::class)) {
@@ -79,7 +82,9 @@ class Hydrator
                     $className
                 ));
             }
-        } else {
+        }
+        
+        if (! $entity) {
             throw new \Exception(sprintf(
                 'Do not know what to hydrate. You must provide the object or its class name. %s given',
                 $object
@@ -95,7 +100,7 @@ class Hydrator
             if (in_array($key, $metadata->getForeignIdNames())) {
                 continue;
             }
-            $method = EntityMetadata::propertyToSetter($key);
+            $method = $metadata->propertyToSetter($key);
             if (! method_exists($entity, $method)) {
                 throw new \Exception(sprintf(
                     'Method %s does not exists on class %s',

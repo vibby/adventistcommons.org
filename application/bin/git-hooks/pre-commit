@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 echo "pre commit hook start"
 
 CURRENT_DIRECTORY=`pwd`
@@ -22,6 +24,8 @@ else
     echo ""
     echo "Cannot find pre-commit executable in application/bin/ path"
     echo ""
+	cd $CURRENT_DIRECTORY;
+    exit 1
 fi
 
 cd $CURRENT_DIRECTORY;

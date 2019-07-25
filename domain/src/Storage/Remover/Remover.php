@@ -5,7 +5,7 @@ namespace AdventistCommons\Domain\Storage\Remover;
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Entity\Series;
 use AdventistCommons\Domain\Entity\Product;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Metadata\MetadataManager;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -14,9 +14,11 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
 class Remover
 {
     private $removers;
+    private $metadataManager;
     
-    public function __construct(array $removers)
+    public function __construct(array $removers, MetadataManager $metadataManager)
     {
+        $this->metadataManager = $metadataManager;
         foreach ($removers as $remover) {
             if ($remover instanceof ProductRemoverInterface) {
                 $this->removers[Product::class] = $remover;
@@ -34,8 +36,7 @@ class Remover
         }
         
         $remover    = $this->removers[get_class($entity)];
-        $methodName = sprintf('remove%s', EntityMetadata::extractShortClassName($entity));
-
+        $methodName = $this->metadataManager->getForClass(get_class($entity))->getRemoveMethodName();
         $remover->$methodName($entity->getId());
     }
 }

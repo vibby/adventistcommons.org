@@ -21,14 +21,14 @@ class UploadProcessor extends AbstractFieldBasedProcessor implements ProcessorIn
         $this->fileSystem = $fileSystem;
     }
     
-    protected function processOne(Entity $entity, $value, string $fieldName): Entity
+    protected function processOne(Entity $entity, $value, string $fieldName, EntityMetadata $metadata): Entity
     {
         if (! $value instanceof File) {
             throw new \Exception('An uploadable property must be a file');
         }
         if ($value instanceof Uploaded) {
             $definitiveFile = $this->fileSystem->makeUploadedDefinitive($value);
-            $setMethodName  = EntityMetadata::propertyToSetter($fieldName);
+            $setMethodName  = $metadata->propertyToSetter($fieldName);
             $entity->$setMethodName($definitiveFile);
         }
         

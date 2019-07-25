@@ -6,7 +6,7 @@ use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Hydrator\Normalizer;
 use AdventistCommons\Domain\Storage\Putter\Formatter;
-use AdventistCommons\Domain\Validation\ProductAttachmentValidator;
+use AdventistCommons\Domain\Validation\Entity\ProductAttachmentValidator;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -25,7 +25,7 @@ class ProductAttachment extends Entity
     private $file;
     private $fileType;
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [
             'validator_class' => ProductAttachmentValidator::class,

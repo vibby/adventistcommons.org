@@ -15,7 +15,7 @@ class Project extends Entity
     private $language;
     private $status;
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [
             'fields' => [

@@ -10,9 +10,9 @@ class FileSystem
 {
     private $rootPathByGroup;
     
-    public function __construct(array $rootPathByPropertyName)
+    public function __construct(array $rootPathByGroup)
     {
-        $this->rootPathByGroup = $rootPathByPropertyName;
+        $this->rootPathByGroup = $rootPathByGroup;
     }
     
     public function copy($source, $destination)

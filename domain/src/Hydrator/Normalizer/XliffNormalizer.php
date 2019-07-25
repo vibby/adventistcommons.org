@@ -3,10 +3,11 @@
 namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
 use AdventistCommons\Domain\File\Uploaded;
-use AdventistCommons\Domain\Hydrator\Hydrator;
 use AdventistCommons\Domain\Xliff\XliffParser;
 use AdventistCommons\Domain\Metadata\FieldMetadata;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Hydrator\HydratorAwareTrait;
+use AdventistCommons\Domain\Hydrator\HydratorAwareInterface;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -14,17 +15,13 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 class XliffNormalizer implements NormalizerInterface, HydratorAwareInterface
 {
+    use HydratorAwareTrait;
+    
     private $xliffParser;
-    private $hydrator;
     
     public function __construct(XliffParser $xliffParser)
     {
         $this->xliffParser = $xliffParser;
-    }
-    
-    public function setHydrator(Hydrator $hydrator): void
-    {
-        $this->hydrator = $hydrator;
     }
     
     public function normalize(iterable $entityData, EntityMetadata $entityMetadata): iterable
@@ -33,9 +30,9 @@ class XliffNormalizer implements NormalizerInterface, HydratorAwareInterface
          * @var string $fieldName
          * @var FieldMetadata $fieldMetadata
          */
-        foreach ($entityMetadata->getFieldsForHydratorNormalizer(self::class) as $fieldName => $fieldMetadata) {
+        foreach (array_keys($entityMetadata->getFieldsForHydratorNormalizer(self::class)) as $fieldName) {
             if (isset($entityData[$fieldName]) && ($entityData[$fieldName] instanceof Uploaded)) {
-                $this->xliffParser->setHydrator($this->hydrator);
+                $this->xliffParser->setHydrator($this->getHydrator());
                 $entityData['section'] = $this->xliffParser->parseFile($entityData[$fieldName]);
             }
         }

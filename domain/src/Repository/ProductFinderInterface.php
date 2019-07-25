@@ -13,14 +13,14 @@ interface ProductFinderInterface
      * @param int $product_id
      * @return array
      */
-    public function getProductStructureWithAttachmentsAndProjects(int $product_id): array;
+    public function getProductStructureWithAttachmentsAndProjects(int $productId): array;
 
     /**
      * Get structure data about the Product only
      * @param int $product_id
      * @return array
      */
-    public function getProductStructure(int $product_id): array;
+    public function getProductStructure(int $productId): array;
 
     /**
      * Get structure data about all Products

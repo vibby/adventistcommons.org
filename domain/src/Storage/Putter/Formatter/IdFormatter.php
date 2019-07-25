@@ -12,12 +12,10 @@ class IdFormatter implements FormatterInterface
         FieldMetadata $fieldMetadata,
         $value
     ): array {
-        $fieldName = $fieldMetadata->formatToId();
-        if ($value instanceof Entity) {
-            $entityData[$fieldName] = $value->getId();
-        } else {
-            $entityData[$fieldName] = null;
-        }
+        $fieldName              = $fieldMetadata->formatToId();
+        $entityData[$fieldName] = $value instanceof Entity
+            ? $value->getId()
+            : $entityData[$fieldName] = null;
         
         return $entityData;
     }

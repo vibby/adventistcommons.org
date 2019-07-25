@@ -17,7 +17,7 @@ class Content extends Entity
     private $xliffTag;
     private $isHidden;
     
-    public static function __getMetaData(): array
+    public static function getEntityMetadata(): array
     {
         return [
             'fields' => [

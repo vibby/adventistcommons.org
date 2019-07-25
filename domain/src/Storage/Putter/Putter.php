@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Storage\Putter;
 
 use AdventistCommons\Domain\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Metadata\MetadataManager;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -12,9 +12,11 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
 class Putter
 {
     private $putters;
+    private $metadataManager;
     
-    public function __construct(array $putters)
+    public function __construct(array $putters, MetadataManager $metadataManager)
     {
+        $this->metadataManager = $metadataManager;
         foreach ($putters as $putter) {
             if ($putter instanceof ProductPutterInterface) {
                 $this->putters[Entity\Product::class] = $putter;
@@ -41,7 +43,7 @@ class Putter
         }
         
         $putter     = $this->putters[get_class($entity)];
-        $methodName = sprintf('put%sAndGetId', EntityMetadata::extractShortClassName($entity));
+        $methodName = $this->metadataManager->getForClass(get_class($entity))->getPutMethodName();
 
         return $putter->$methodName($entityData);
     }

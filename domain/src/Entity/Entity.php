@@ -8,19 +8,19 @@ namespace AdventistCommons\Domain\Entity;
  */
 abstract class Entity
 {
-    protected $id;
+    protected $entityId;
 
     public function getId(): ?string
     {
-        return $this->id;
+        return $this->entityId;
     }
 
-    public function setId(int $id): self
+    public function setId(int $entityId): self
     {
-        $this->id = $id;
+        $this->entityId = $entityId;
 
         return $this;
     }
     
-    abstract public static function __getMetadata(): array;
+    abstract public static function getEntityMetadata(): array;
 }

@@ -17,16 +17,16 @@ abstract class AbstractFieldBasedProcessor
     {
         $this->action   = $action;
         $fieldsMetadata = $entityMetadata->getFieldsForProcessor(static::class, $action);
-        foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-            $getMethodName = $entityMetadata::propertyToGetter($fieldName);
+        foreach (array_keys($fieldsMetadata) as $fieldName) {
+            $getMethodName = $entityMetadata->propertyToGetter($fieldName);
             $value         = $entity->$getMethodName();
             if ($value) {
-                $entity = $this->processOne($entity, $value, $fieldName);
+                $entity = $this->processOne($entity, $value, $fieldName, $entityMetadata);
             }
         }
         
         return $entity;
     }
     
-    abstract protected function processOne(Entity $entity, $value, string $fieldName): Entity;
+    abstract protected function processOne(Entity $entity, $value, string $fieldName, EntityMetadata $metadata): Entity;
 }

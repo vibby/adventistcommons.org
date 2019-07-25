@@ -13,5 +13,5 @@ interface ProductAttachmentFinderInterface
      * @param int $product_id
      * @return array
      */
-    public function getProductAttachmentStructure(int $product_attachment_id): array;
+    public function getProductAttachmentStructure(int $productAttachmentId): array;
 }

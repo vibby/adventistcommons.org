@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
+set -e
+
+echo ${BASH_SOURCE[0]}
+
 CURRENT_DIRECTORY=`pwd`
 BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 PROJECT_DIRECTORY="$BIN_DIR/../.."
 
 cd $PROJECT_DIRECTORY;
-PHP_CS_FIXER="domain/bin/php-cs-fixer-on-commit"
 
+PHP_CS_FIXER="domain/bin/php-cs-fixer-on-commit"
 HAS_PHP_CS_FIXER=false
 
 if [ -x "$PHP_CS_FIXER" ]; then
@@ -20,6 +24,27 @@ else
     echo ""
     echo "Cannot find php-cs-fixer-on-commit executable in domain/bin/ path"
     echo ""
+	cd $CURRENT_DIRECTORY;
+    exit 1
 fi
+
+
+PHPMD="domain/bin/phpmd-on-commit"
+HAS_PHPMD=false
+
+if [ -x "$PHPMD" ]; then
+    HAS_PHPMD=true
+fi
+
+if $HAS_PHPMD; then
+    ${PHPMD}
+else
+    echo ""
+    echo "Cannot find phpmd-on-commit executable in domain/bin/ path"
+    echo ""
+	cd $CURRENT_DIRECTORY;
+    exit 1
+fi
+
 
 cd $CURRENT_DIRECTORY;

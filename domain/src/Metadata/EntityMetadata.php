@@ -3,9 +3,9 @@
 namespace AdventistCommons\Domain\Metadata;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Validation\EntityValidator;
 use Kolyunya\StringProcessor\Format\CamelCaseFormatter;
 use Kolyunya\StringProcessor\Format\SnakeCaseFormatter;
+use AdventistCommons\Domain\Validation\Entity\EntityValidator;
 use AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer;
 
 /**
@@ -22,7 +22,7 @@ class EntityMetadata
         $reflection = new \ReflectionClass($className);
         foreach ($reflection->getMethods() as $method) {
             if (substr($method->getName(), 0, 3) === 'set') {
-                $fieldNames[] = SnakeCaseFormatter::run(substr($method->getName(), 3));
+                $fieldNames[] = $this->snakeCase(substr($method->getName(), 3));
             }
         }
         $fields             = array_fill_keys($fieldNames, []);
@@ -103,24 +103,40 @@ class EntityMetadata
         return $className;
     }
     
-    public static function propertyToGetter(string $propertyName)
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function camelCase($string)
     {
-        return sprintf('get%s', ucfirst(CamelCaseFormatter::run($propertyName)));
+        return CamelCaseFormatter::run($string);
     }
     
-    public static function propertyToSetter(string $propertyName)
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     */
+    public static function snakeCase($string)
     {
-        return sprintf('set%s', ucfirst(CamelCaseFormatter::run($propertyName)));
+        return SnakeCaseFormatter::run($string);
     }
     
-    public static function propertyToAdder(string $propertyName)
+    public function propertyToGetter(string $propertyName)
     {
-        return sprintf('add%s', ucfirst(CamelCaseFormatter::run($propertyName)));
+        return sprintf('get%s', ucfirst($this->camelCase($propertyName)));
     }
     
-    public static function extractShortClassName(Entity $entity)
+    public function propertyToSetter(string $propertyName)
     {
-        $path = explode('\\', get_class($entity));
+        return sprintf('set%s', ucfirst($this->camelCase($propertyName)));
+    }
+    
+    public function propertyToAdder(string $propertyName)
+    {
+        return sprintf('add%s', ucfirst($this->camelCase($propertyName)));
+    }
+    
+    public function extractShortClassName(Entity $entity = null)
+    {
+        $path = explode('\\', $entity ? get_class($entity) : $this->className);
         
         return array_pop($path);
     }
@@ -137,5 +153,15 @@ class EntityMetadata
         }
         
         return array_filter($fields, $closure);
+    }
+    
+    public function getRemoveMethodName()
+    {
+        return sprintf('remove%s', $this->extractShortClassName());
+    }
+    
+    public function getPutMethodName()
+    {
+        return sprintf('put%sAndGetId', $this->extractShortClassName());
     }
 }
