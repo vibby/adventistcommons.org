@@ -2,9 +2,7 @@
 
 namespace AdventistCommons\Domain\Storage\Remover;
 
-use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Entity\Series;
-use AdventistCommons\Domain\Entity\Product;
+use AdventistCommons\Domain\Entity;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 
 /**
@@ -21,15 +19,21 @@ class Remover
         $this->metadataManager = $metadataManager;
         foreach ($removers as $remover) {
             if ($remover instanceof ProductRemoverInterface) {
-                $this->removers[Product::class] = $remover;
+                $this->removers[Entity\Product::class] = $remover;
             }
             if ($remover instanceof SeriesRemoverInterface) {
-                $this->removers[Series::class] = $remover;
+                $this->removers[Entity\Series::class] = $remover;
+            }
+            if ($remover instanceof SectionRemoverInterface) {
+                $this->removers[Entity\Section::class] = $remover;
+            }
+            if ($remover instanceof ContentRemoverInterface) {
+                $this->removers[Entity\Content::class] = $remover;
             }
         }
     }
     
-    public function remove(Entity $entity): void
+    public function remove(Entity\Entity $entity): void
     {
         if (! isset($this->removers[get_class($entity)])) {
             throw new \Exception(sprintf('Remover is not set for class %s', get_class($entity)));

@@ -8,6 +8,8 @@ use AdventistCommons\Domain\Metadata\MetadataManager;
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Putter
 {
@@ -27,8 +29,8 @@ class Putter
             if ($putter instanceof SeriesPutterInterface) {
                 $this->putters[Entity\Series::class] = $putter;
             }
-            if ($putter instanceof SeriesPutterInterface) {
-                $this->putters[Entity\Series::class] = $putter;
+            if ($putter instanceof ContentPutterInterface) {
+                $this->putters[Entity\Content::class] = $putter;
             }
             if ($putter instanceof SectionPutterInterface) {
                 $this->putters[Entity\Section::class] = $putter;

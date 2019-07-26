@@ -75,13 +75,14 @@ function ajax( url, data, $btn, $response_region, success_callback ) {
 			}
 		},
 		error: function() {
-			handleFormResponse( $response_region, "An error has occured" );
+			handleFormResponse( $response_region, "An error has occured during data call" );
 			$btn.text( btn_text ).prop( "disabled", false );
 		}
 	});
 }
 
 $( "form.auto-submit" ).submit( function(e) {
+    e.preventDefault();
 	$form = $(this);
 	$btn = $form.find( "button[type='submit']" );
 	e.preventDefault();

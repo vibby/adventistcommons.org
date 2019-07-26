@@ -1,15 +1,17 @@
 <?php
 
-namespace AdventistCommons\Domain\Xliff;
+namespace AdventistCommons\Domain\Hydrator\Xliff;
 
 use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Entity\Content;
 use AdventistCommons\Domain\Entity\Section;
-use AdventistCommons\Domain\Hydrator\Hydrator;
+use AdventistCommons\Domain\Hydrator\HydratorAwareTrait;
 use AdventistCommons\Domain\Hydrator\HydratorAwareInterface;
 
 class XliffParser implements HydratorAwareInterface
 {
+    use HydratorAwareTrait;
+    
     const PARAGRAPH_SECTION_NAMES = [
         'maincontent' => 'Main content',
         'main'        => 'Main content',
@@ -18,14 +20,6 @@ class XliffParser implements HydratorAwareInterface
         'cover'     => 'Front cover',
         'backcover' => 'Back cover',
     ];
-    
-    /** @var Hydrator */
-    private $hydrator;
-    
-    public function setHydrator(Hydrator $hydrator): void
-    {
-        $this->hydrator = $hydrator;
-    }
     
     public function parseFile(File $file)
     {
@@ -56,7 +50,7 @@ class XliffParser implements HydratorAwareInterface
                 'xliff_region' => $regionName,
             ];
             /** @var Section $section */
-            $section = $this->hydrator->hydrate(Section::class, $sectionData);
+            $section = $this->getHydrator()->hydrate(Section::class, $sectionData);
             
             $paragraphs = preg_split('/\R/u', $content);
             ;
@@ -65,7 +59,7 @@ class XliffParser implements HydratorAwareInterface
                     'xliff_content'   => $p,
                     'is_hidden'       => empty($p),
                 ];
-                $section->addContent($this->hydrator->hydrate(Content::class, $contentData));
+                $section->addContent($this->getHydrator()->hydrate(Content::class, $contentData));
             }
             $sections[] = $section;
         }
@@ -80,14 +74,14 @@ class XliffParser implements HydratorAwareInterface
             'xliff_region' => $regionName,
         ];
         /** @var Section $section */
-        $section = $this->hydrator->hydrate(Section::class, $sectionData);
+        $section = $this->getHydrator()->hydrate(Section::class, $sectionData);
         
         foreach ($region as $tagName => $tagContent) {
             $contentData = [
                 'content'   => $tagContent,
                 'xliff_tag' => $tagName,
             ];
-            $section->addContent($this->hydrator->hydrate(Content::class, $contentData));
+            $section->addContent($this->getHydrator()->hydrate(Content::class, $contentData));
         }
         
         return [$section];

@@ -1,10 +1,10 @@
 <?php
 
-namespace AdventistCommons\Domain\Storage\Putter\Formatter;
+namespace AdventistCommons\Domain\Storage\Putter\Serializer;
 
 use AdventistCommons\Domain\Metadata\FieldMetadata;
 
-interface FormatterInterface
+interface SerializerInterface
 {
     public static function addDataFormatted(
         array $entityData,

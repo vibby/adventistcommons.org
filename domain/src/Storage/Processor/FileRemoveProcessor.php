@@ -3,8 +3,9 @@
 namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
+use AdventistCommons\Domain\Storage\Storer;
 use AdventistCommons\Domain\File\FileSystem;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Metadata\MetadataManager;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -14,18 +15,26 @@ class FileRemoveProcessor extends AbstractFieldBasedProcessor implements Process
 {
     protected $fileSystem;
     
-    public function __construct(FileSystem $fileSystem)
+    public function __construct(MetadataManager $metadataManager, FileSystem $fileSystem)
     {
+        parent::__construct($metadataManager);
         $this->fileSystem = $fileSystem;
     }
     
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function processOne(Entity $entity, $value, string $fieldName, EntityMetadata $metadata): Entity
+    protected function processOne(Entity $entity, $value, string $fieldName): Entity
     {
-        $this->fileSystem->remove($value);
+        if ($this->action == Storer::PREPROCESSOR_REMOVE) {
+            $this->fileSystem->remove($value);
+        }
         
         return $entity;
+    }
+    
+    public function getPriority(): int
+    {
+        return 70;
     }
 }

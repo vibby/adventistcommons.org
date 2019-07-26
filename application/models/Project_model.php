@@ -4,7 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Project_model extends CI_Model
 	implements
 	\AdventistCommons\Domain\Storage\Putter\SectionPutterInterface,
-	\AdventistCommons\Domain\Storage\Putter\ContentPutterInterface
+	\AdventistCommons\Domain\Storage\Remover\SectionRemoverInterface,
+	\AdventistCommons\Domain\Storage\Putter\ContentPutterInterface,
+	\AdventistCommons\Domain\Storage\Remover\ContentRemoverInterface
 {
 	
 	function __construct()
@@ -157,7 +159,8 @@ class Project_model extends CI_Model
 	}
 	
 	private function _getTotalStringCountsByProduct() {
-		$strings = $this->db->select( "product_id, COUNT(id) as count" )
+		$strings = $this->db->select( "product_id, COUNT(product_content.id) as count" )
+			->join( "product_sections", "product_sections.id = product_content.section_id" )
 			->group_by( "product_id" )
 			->from( "product_content" )
 			->get()
@@ -375,5 +378,17 @@ class Project_model extends CI_Model
 		}
 		
 		return $field_names;
+	}
+		
+	public function removeSection(int $id): void
+	{		
+		$this->db->where( "id", $id )
+			->delete( "sections" );
+	}
+		
+	public function removeContent(int $id): void
+	{		
+		$this->db->where( "id", $id )
+			->delete( "contents" );
 	}
 }

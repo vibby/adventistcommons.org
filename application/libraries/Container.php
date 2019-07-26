@@ -51,9 +51,9 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Xliff\XliffParser::class,
+			\AdventistCommons\Domain\Hydrator\Xliff\XliffParser::class,
 			function () {
-				return new \AdventistCommons\Domain\Xliff\XliffParser();
+				return new \AdventistCommons\Domain\Hydrator\Xliff\XliffParser();
 			}
 		);
 
@@ -102,21 +102,12 @@ class Container
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Hydrator\ParentSetter::class,
-			function () {
-				return new \AdventistCommons\Domain\Hydrator\ParentSetter(
-					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
-				);
-			}
-		);
-		$this->set(
 			\AdventistCommons\Domain\Hydrator\Hydrator::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Hydrator(
 					$this->get(\AdventistCommons\Domain\Hydrator\Normalizer\AggregatedNormalizer::class),
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
-					$this->get(\AdventistCommons\Domain\Hydrator\EntityCache::class),
-					$this->get(\AdventistCommons\Domain\Hydrator\ParentSetter::class)
+					$this->get(\AdventistCommons\Domain\Hydrator\EntityCache::class)
 				);
 			}
 		);
@@ -273,6 +264,7 @@ class Container
 			\AdventistCommons\Domain\Storage\Processor\UploadProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\UploadProcessor(
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
@@ -281,6 +273,7 @@ class Container
 			\AdventistCommons\Domain\Storage\Processor\ImageProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\ImageProcessor(
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
@@ -289,15 +282,23 @@ class Container
 			\AdventistCommons\Domain\Storage\Processor\FileRemoveProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\FileRemoveProcessor(
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
 					$this->get(\AdventistCommons\Domain\File\FileSystem::class)
 				);
 			}
 		);
 		$this->set(
-			\AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor::class,
+			\AdventistCommons\Domain\Storage\Processor\ForeignCreatorAfterPutterProcessor::class,
 			function () {
-				return new \AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor(
-					$this->get(\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class),
+				return new \AdventistCommons\Domain\Storage\Processor\ForeignCreatorAfterPutterProcessor(
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Processor\ForeignCreatorBeforePutterProcessor::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Processor\ForeignCreatorBeforePutterProcessor(
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
 				);
 			}
@@ -306,6 +307,8 @@ class Container
 			\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\PutterProcessor(
+					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class),
+					$this->get(\AdventistCommons\Domain\Storage\Putter\Serializer\EntitySerializer::class),
 					$this->get(\AdventistCommons\Domain\Storage\Putter\Putter::class)
 				);
 			}
@@ -319,23 +322,15 @@ class Container
 			}
 		);
 		$this->set(
-			'storeProcessor',
+			\AdventistCommons\Domain\Storage\Processor\AggregatedProcessor::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Processor\AggregatedProcessor(
 					[
 						$this->get(\AdventistCommons\Domain\Storage\Processor\UploadProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\ImageProcessor::class),
-						$this->get(\AdventistCommons\Domain\Storage\Processor\ForeignCreateProcessor::class),
+						$this->get(\AdventistCommons\Domain\Storage\Processor\ForeignCreatorBeforePutterProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\PutterProcessor::class),
-					]
-				);
-			}
-		);
-		$this->set(
-			'removeProcessor',
-			function () {
-				return new \AdventistCommons\Domain\Storage\Processor\AggregatedProcessor(
-					[
+						$this->get(\AdventistCommons\Domain\Storage\Processor\ForeignCreatorAfterPutterProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\FileRemoveProcessor::class),
 						$this->get(\AdventistCommons\Domain\Storage\Processor\RemoverProcessor::class),
 					]
@@ -346,8 +341,14 @@ class Container
 			\AdventistCommons\Domain\Storage\Storer::class,
 			function () {
 				return new \AdventistCommons\Domain\Storage\Storer(
-					$this->get('storeProcessor'),
-					$this->get('removeProcessor'),
+					$this->get(\AdventistCommons\Domain\Storage\Processor\AggregatedProcessor::class)
+				);
+			}
+		);
+		$this->set(
+			\AdventistCommons\Domain\Storage\Putter\Serializer\EntitySerializer::class,
+			function () {
+				return new \AdventistCommons\Domain\Storage\Putter\Serializer\EntitySerializer(
 					$this->get(\AdventistCommons\Domain\Metadata\MetadataManager::class)
 				);
 			}

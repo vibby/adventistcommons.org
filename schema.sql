@@ -321,16 +321,13 @@ CREATE TABLE `product_attachments` (
 
 CREATE TABLE `product_content` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) unsigned NOT NULL,
   `content` text,
   `section_id` int(11) unsigned NOT NULL,
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0',
   `xliff_tag` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `product_id` (`product_id`),
   KEY `section_id` (`section_id`),
-  CONSTRAINT `product_content_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `product_content_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `product_sections` (`id`) ON DELETE CASCADE
+  CONSTRAINT `product_content_ibfk_1` FOREIGN KEY (`section_id`) REFERENCES `product_sections` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

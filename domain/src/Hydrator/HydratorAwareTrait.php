@@ -16,7 +16,7 @@ trait HydratorAwareTrait
         $this->hydrator = $hydrator;
     }
     
-    protected function getHydrator()
+    public function getHydrator(): Hydrator
     {
         return $this->hydrator;
     }

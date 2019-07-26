@@ -1,11 +1,11 @@
 <?php
 
-namespace AdventistCommons\Domain\Storage\Putter\Formatter;
+namespace AdventistCommons\Domain\Storage\Putter\Serializer;
 
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\FieldMetadata;
 
-class IdFormatter implements FormatterInterface
+class IdSerializer implements SerializerInterface
 {
     public static function addDataFormatted(
         array $entityData,

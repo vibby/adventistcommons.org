@@ -3,9 +3,10 @@
 namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
+use AdventistCommons\Domain\Storage\Storer;
 use AdventistCommons\Domain\Storage\Putter\Putter;
-use AdventistCommons\Domain\Metadata\FieldMetadata;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Metadata\MetadataManager;
+use AdventistCommons\Domain\Storage\Putter\Serializer\EntitySerializer;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -13,30 +14,37 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 class PutterProcessor implements ProcessorInterface
 {
+    /** @var MetadataManager */
+    private $metadataManager;
+
+    /** @var Putter $putter */
     private $putter;
     
-    public function __construct(Putter $putter)
+    /** @var EntitySerializer */
+    private $entitySerializer;
+    
+    public function __construct(MetadataManager $metadataManager, EntitySerializer $entitySerializer, Putter $putter)
     {
-        $this->putter = $putter;
+        $this->metadataManager  = $metadataManager;
+        $this->entitySerializer = $entitySerializer;
+        $this->putter           = $putter;
     }
     
-    public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
+    public function process(Entity $entity, string $action): Entity
     {
-        $fieldsMetadata = $entityMetadata->getFieldsForProcessor(self::class, $action);
-        $entityData     = [];
-        /**
-         * @var string $fieldName
-         * @var FieldMetadata $fieldMetadata
-         */
-        foreach ($fieldsMetadata as $fieldName => $fieldMetadata) {
-            $formatter     = $fieldMetadata->get('putter_formatter');
-            $getMethodName = $entityMetadata->propertyToGetter($fieldName);
-            $value         = $entity->$getMethodName();
-            $entityData    = $formatter::addDataFormatted($entityData, $fieldMetadata, $value);
+        if ($action == Storer::PREPROCESSOR_STORE) {
+            $entityMetadata = $this->metadataManager->getForClass(get_class($entity));
+            $fieldsMetadata = $entityMetadata->getFieldsForProcessor(PutterProcessor::class, $action);
+            $entityData     = $this->entitySerializer->serialize($entity, $fieldsMetadata);
+            $entityId       = $this->putter->put($entity, $entityData);
+            $entity->setId($entityId);
         }
-        $entityId = $this->putter->put($entity, $entityData);
-        $entity->setId($entityId);
         
         return $entity;
+    }
+    
+    public function getPriority(): int
+    {
+        return 50;
     }
 }

@@ -5,7 +5,7 @@ namespace AdventistCommons\Domain\Entity;
 use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Hydrator\Normalizer;
-use AdventistCommons\Domain\Storage\Putter\Formatter;
+use AdventistCommons\Domain\Storage\Putter\Serializer;
 use AdventistCommons\Domain\Validation\Entity\ProductAttachmentValidator;
 
 /**
@@ -35,18 +35,18 @@ class ProductAttachment extends Entity
                         Normalizer\ForeignNormalizer::class,
                         Normalizer\ForeignFromIdNormalizer::class,
                     ],
-                    'putter_formatter' => Formatter\IdFormatter::class,
-                    'class'            => Language::class,
-                    'multiple'         => false,
+                    'putter_serializer' => Serializer\IdSerializer::class,
+                    'class'             => Language::class,
+                    'multiple'          => false,
                 ],
                 'product' => [
                     'hydrate_normalizer' => [
                         Normalizer\ForeignNormalizer::class,
                         Normalizer\ForeignFromIdNormalizer::class,
                     ],
-                    'putter_formatter' => Formatter\IdFormatter::class,
-                    'class'            => Product::class,
-                    'multiple'         => false,
+                    'putter_serializer' => Serializer\IdSerializer::class,
+                    'class'             => Product::class,
+                    'multiple'          => false,
                 ],
                 'file' => [
                     'hydrate_normalizer' => Normalizer\FileNormalizer::class,

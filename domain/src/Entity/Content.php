@@ -2,7 +2,9 @@
 
 namespace AdventistCommons\Domain\Entity;
 
+use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Hydrator\Normalizer;
+use AdventistCommons\Domain\Storage\Putter\Serializer;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -23,7 +25,8 @@ class Content extends Entity
             'fields' => [
                 'section' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
-                    'store_processor'    => null,
+                    'store_processor'    => Processor\PutterProcessor::class,
+                    'putter_serializer'  => Serializer\IdSerializer::class,
                     'class'              => Section::class,
                 ],
             ],
@@ -82,7 +85,7 @@ class Content extends Entity
         return $this;
     }
     
-    public function isHidden(): ?bool
+    public function getIsHidden(): ?bool
     {
         return $this->isHidden;
     }

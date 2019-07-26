@@ -11,8 +11,6 @@ class Language extends Entity
     private $name;
     private $code;
     private $googleCode;
-    private $productAttachment;
-    private $project;
     
     public static function getEntityMetadata(): array
     {
@@ -53,29 +51,5 @@ class Language extends Entity
         $this->googleCode = $googleCode;
         
         return $this;
-    }
-    
-    public function setProductAttachment(ProductAttachment $productAttachment): self
-    {
-        $this->productAttachment = $productAttachment;
-
-        return $this;
-    }
-
-    public function getProductAttachment(): ?ProductAttachment
-    {
-        return $this->productAttachment;
-    }
-
-    public function setProject(Project $project): self
-    {
-        $this->project = $project;
-
-        return $this;
-    }
-
-    public function getProject(): ?Project
-    {
-        return $this->project;
     }
 }

@@ -5,7 +5,7 @@ namespace AdventistCommons\Domain\Entity;
 use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Hydrator\Normalizer;
-use AdventistCommons\Domain\Storage\Putter\Formatter;
+use AdventistCommons\Domain\Storage\Putter\Serializer;
 use AdventistCommons\Domain\Validation\Entity\ProductValidator;
 
 /**
@@ -53,9 +53,6 @@ class Product extends Entity
             'validator_class' => ProductValidator::class,
             // define meta for every field
             'fields' => [
-                'id' => [
-                    'hydrate_normalizer' => Normalizer\CheckSameNormalizer::class,
-                ],
                 'cover_image' => [
                     // how to process data when the entity is hydrated (from database, form or any other input)
                     'hydrate_normalizer' => Normalizer\FileNormalizer::class,
@@ -73,7 +70,6 @@ class Product extends Entity
                     'hydrate_normalizer' => [
                         Normalizer\FileNormalizer::class,
                         Normalizer\XliffNormalizer::class,
-                        Processor\PutterProcessor::class,
                     ],
                     'store_processor' => [
                         Processor\UploadProcessor::class,
@@ -96,17 +92,17 @@ class Product extends Entity
                 'series' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
                     'store_processor'    => [
-                        Processor\ForeignCreateProcessor::class,
+                        Processor\ForeignCreatorBeforePutterProcessor::class,
                         Processor\PutterProcessor::class,
                     ],
-                    'putter_formatter' => Formatter\IdFormatter::class,
-                    'class'            => Series::class,
-                    'multiple'         => false,
+                    'putter_serializer' => Serializer\IdSerializer::class,
+                    'class'             => Series::class,
+                    'multiple'          => false,
                 ],
                 'section' => [
                     'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
                     'store_processor'    => [
-                        Processor\ForeignCreateProcessor::class,
+                        Processor\ForeignCreatorAfterPutterProcessor::class,
                     ],
                     'class'    => Section::class,
                     'reverse'  => 'product',
@@ -351,11 +347,22 @@ class Product extends Entity
 
     public function addProductAttachment(ProductAttachment $productAttachment)
     {
+        if (! $productAttachment->getProduct()) {
+            $productAttachment->setProduct($this);
+        }
         $this->productAttachments[] = $productAttachment;
     }
     
     public function setProductAttachment(array $productAttachments)
     {
+        foreach ($productAttachments as $productAttachment) {
+            if (! $productAttachment instanceof ProductAttachment) {
+                throw new \Exception('Product attachments must be an array of the object «ProductAttachments»');
+            }
+            if (! $productAttachment->getProduct()) {
+                $productAttachment->setProduct($this);
+            }
+        }
         $this->productAttachments = $productAttachments;
     }
 
@@ -381,11 +388,22 @@ class Product extends Entity
     
     public function addSection(Section $section)
     {
+        if (! $section->getProduct()) {
+            $section->setProduct($this);
+        }
         $this->sections[] = $section;
     }
     
     public function setSection(array $sections)
     {
+        foreach ($sections as $section) {
+            if (! $section instanceof Section) {
+                throw new \Exception('Sections must be an array of the object «Section»');
+            }
+            if (! $section->getProduct()) {
+                $section->setProduct($this);
+            }
+        }
         $this->sections = $sections;
     }
     

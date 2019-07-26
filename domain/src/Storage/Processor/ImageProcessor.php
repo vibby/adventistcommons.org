@@ -4,7 +4,6 @@ namespace AdventistCommons\Domain\Storage\Processor;
 
 use Gregwar\Image\Image;
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -15,7 +14,7 @@ class ImageProcessor extends AbstractFieldBasedProcessor implements ProcessorInt
     /**
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    protected function processOne(Entity $entity, $value, string $fieldName, EntityMetadata $metadata): Entity
+    protected function processOne(Entity $entity, $value, string $fieldName): Entity
     {
         Image::open($value->getAbsolutePath())
             ->useFallback(false)
@@ -23,5 +22,10 @@ class ImageProcessor extends AbstractFieldBasedProcessor implements ProcessorInt
             ->save($value->getAbsolutePath());
         
         return $entity;
+    }
+    
+    public function getPriority(): int
+    {
+        return 20;
     }
 }

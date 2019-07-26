@@ -3,10 +3,12 @@
 namespace AdventistCommons\Domain\Validation\Entity;
 
 use AdventistCommons\Domain\Entity\Entity;
+use AdventistCommons\Domain\Validation\ValidatorInterface;
 use AdventistCommons\Domain\Validation\ValidatorCollection;
 use AdventistCommons\Domain\Validation\Violation\ViolationException;
+use AdventistCommons\Domain\Validation\ValidatorCollectionAwareInterface;
 
-abstract class EntityValidator
+abstract class EntityValidator implements ValidatorInterface, ValidatorCollectionAwareInterface
 {
     /** @var ValidatorCollection */
     protected $validatorCollection;
@@ -19,7 +21,7 @@ abstract class EntityValidator
     public function getValidator($validatorClassName)
     {
         if (! $this->validatorCollection) {
-            throw new Exception('Validator collection must be set to entity validator.');
+            throw new \Exception('Validator collection must be set to entity validator.');
         }
 
         return $this->validatorCollection->get($validatorClassName);

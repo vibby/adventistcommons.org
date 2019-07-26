@@ -2,9 +2,10 @@
 
 namespace AdventistCommons\Domain\Validation\Validator;
 
+use AdventistCommons\Domain\Validation\ValidatorInterface;
 use AdventistCommons\Domain\Validation\Violation\ViolationError;
 
-class InArrayValidator
+class InArrayValidator implements ValidatorInterface
 {
     public static function validate(string $name, $data, array $list): ?ViolationError
     {

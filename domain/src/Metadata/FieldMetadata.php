@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Metadata;
 
 use AdventistCommons\Domain\Storage\Processor;
-use AdventistCommons\Domain\Storage\Putter\Formatter;
+use AdventistCommons\Domain\Storage\Putter\Serializer;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -12,19 +12,21 @@ use AdventistCommons\Domain\Storage\Putter\Formatter;
 class FieldMetadata
 {
     const DEFAULTS = [
-        'hydrate_normalizer' => null,
-        'store_processor'    => Processor\PutterProcessor::class,
-        'putter_formatter'   => Formatter\DefaultFormatter::class,
-        'multiple'           => false,
+        'hydrate_normalizer'  => null,
+        'store_processor'     => Processor\PutterProcessor::class,
+        'putter_serializer'   => Serializer\DefaultSerializer::class,
+        'multiple'            => false,
     ];
     
     private $metadata;
     private $fieldName;
+    private $entityMetadata;
     
-    public function __construct(string $fieldName, array $metadata)
+    public function __construct(string $fieldName, array $metadata, EntityMetadata $entityMetadata)
     {
-        $this->fieldName = $fieldName;
-        $this->metadata  = array_merge(self::DEFAULTS, $metadata);
+        $this->fieldName      = $fieldName;
+        $this->metadata       = array_merge(self::DEFAULTS, $metadata);
+        $this->entityMetadata = $entityMetadata;
     }
     
     public function get($dataName)
@@ -40,6 +42,11 @@ class FieldMetadata
     public function getFieldName()
     {
         return $this->fieldName;
+    }
+    
+    public function getEntityMetadata()
+    {
+        return $this->entityMetadata;
     }
     
     public function formatToId()

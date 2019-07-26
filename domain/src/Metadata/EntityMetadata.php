@@ -30,7 +30,7 @@ class EntityMetadata
         array_walk(
             $metadata['fields'],
             function (&$data, $fieldName) {
-                $data = new FieldMetadata($fieldName, $data);
+                $data = new FieldMetadata($fieldName, $data, $this);
             }
         );
                 
@@ -153,6 +153,11 @@ class EntityMetadata
         }
         
         return array_filter($fields, $closure);
+    }
+    
+    public function getSetMethodName()
+    {
+        return sprintf('set%s', $this->extractShortClassName());
     }
     
     public function getRemoveMethodName()

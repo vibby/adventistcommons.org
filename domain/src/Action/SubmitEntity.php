@@ -9,6 +9,7 @@ use AdventistCommons\Domain\Request\UploadedCollection;
 use AdventistCommons\Domain\Repository\RepositoryLister;
 use AdventistCommons\Domain\Request\ParameterCollection;
 use AdventistCommons\Domain\validation\ValidatorCollection;
+use AdventistCommons\Domain\Validation\Entity\EntityValidator;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -38,10 +39,10 @@ class SubmitEntity
         ParameterCollection $entityData,
         UploadedCollection $uploadedFiles = null
     ): Entity {
-        $entity     = null;
-        $repository = $this->repositoryLister->getForClassName($className);
+        $entity = null;
         if (isset($entityData['id']) && $entityData['id']) {
-            $entity = $repository->find($entityData['id']);
+            $repository = $this->repositoryLister->getForClassName($className);
+            $entity     = $repository->find($entityData['id']);
         }
         $entity = $this->hydrator->hydrate(
             $entity ?? $className,
@@ -49,11 +50,9 @@ class SubmitEntity
             $uploadedFiles,
             false
         );
-        // dump($entity);
-        // die;
         $validatorClass = $this->metadataManager->getForClass($className)->getValidator();
+        /** @var EntityValidator $validator */
         $validator      = $this->validatorCollection->get($validatorClass);
-        $validator->setValidatorCollection($this->validatorCollection);
         $validator->validate($entity);
         
         return $entity;

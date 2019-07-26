@@ -3,7 +3,6 @@
 namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
  * @author    Vincent Beauvivre <vibea@smile.fr>
@@ -11,5 +10,7 @@ use AdventistCommons\Domain\Metadata\EntityMetadata;
  */
 interface ProcessorInterface
 {
-    public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity;
+    public function process(Entity $entity, string $action): Entity;
+    
+    public function getPriority(): int;
 }

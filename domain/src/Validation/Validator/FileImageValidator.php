@@ -3,9 +3,10 @@
 namespace AdventistCommons\Domain\Validation\Validator;
 
 use AdventistCommons\Domain\File\File;
+use AdventistCommons\Domain\Validation\ValidatorInterface;
 use AdventistCommons\Domain\Validation\Violation\ViolationError;
 
-class FileImageValidator
+class FileImageValidator implements ValidatorInterface
 {
     public static function validate(string $name, File $uploadedFile): ?ViolationError
     {

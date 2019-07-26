@@ -9,4 +9,6 @@ namespace AdventistCommons\Domain\Hydrator;
 interface HydratorAwareInterface
 {
     public function setHydrator(Hydrator $hydrator): void;
+    
+    public function getHydrator(): Hydrator;
 }

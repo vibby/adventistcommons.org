@@ -2,9 +2,10 @@
 
 namespace AdventistCommons\Domain\Validation\Validator;
 
+use AdventistCommons\Domain\Validation\ValidatorInterface;
 use AdventistCommons\Domain\Validation\Violation\ViolationError;
 
-class InstanceOfValidator
+class InstanceOfValidator implements ValidatorInterface
 {
     public static function validate($object, $className): ?ViolationError
     {

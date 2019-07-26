@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Storage\Processor;
 
 use AdventistCommons\Domain\Entity\Entity;
-use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Storage\Storer;
 use AdventistCommons\Domain\Storage\Remover\Remover;
 
 /**
@@ -19,10 +19,17 @@ class RemoverProcessor implements ProcessorInterface
         $this->remover = $remover;
     }
     
-    public function process(Entity $entity, EntityMetadata $entityMetadata, string $action): Entity
+    public function process(Entity $entity, string $action): Entity
     {
-        $this->remover->remove($entity);
+        if ($action == Storer::PREPROCESSOR_REMOVE) {
+            $this->remover->remove($entity);
+        }
         
         return $entity;
+    }
+    
+    public function getPriority(): int
+    {
+        return 80;
     }
 }
