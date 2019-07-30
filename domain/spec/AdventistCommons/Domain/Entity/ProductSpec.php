@@ -24,6 +24,7 @@ class ProductSpec extends ObjectBehavior
 		$lang1->getCode()->willReturn('en');
 		$lang2->getCode()->willReturn('fr');
 		$attachment1->getLanguage()->willReturn($lang1);
+		$attachment1->getProduct()->willReturn($this);
 		$this->addProductAttachment($attachment1);
 		$project1->getLanguage()->willReturn($lang2);
 		$this->addProject($project1);
@@ -65,6 +66,7 @@ class ProductSpec extends ObjectBehavior
 	) {
 		$lang1->getCode()->willReturn('en');
 		$attachment1->getLanguage()->willReturn($lang1);
+		$attachment1->getProduct()->willReturn($this);
 		$this->addProductAttachment($attachment1);
 		$project1->getLanguage()->willReturn($lang1);
 		$this->addProject($project1);

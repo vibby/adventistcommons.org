@@ -20,7 +20,7 @@ if [ -x "$PHPMD" ]; then
 fi
 
 if $HAS_PHPMD; then
-    git --git-dir ../.git --work-tree .. diff --name-only --diff-filter=ACMR HEAD | grep -e 'domain/.*\.php$' | cut -c 12- | while read line; do
+    git --git-dir ../.git --work-tree .. diff --name-only --diff-filter=ACMR HEAD | grep -e 'domain/src.*\.php$' | cut -c 12- | while read line; do
     	echo ${line};
         ${PHPMD} src/${line} xml cleancode,codesize,controversial,design,naming,unusedcode;
     done

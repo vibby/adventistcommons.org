@@ -61,7 +61,7 @@ class Hydrator
             throw new \Exception('Argument 1 must be an array or must implement the ToArray interface');
         }
         $array2     = $uploadedCollection ? $uploadedCollection->toArray() : [];
-        $entityData = $this->normalizer->normalize(array_merge($array1, $array2), $metaData, $entity);
+        $entityData = $this->normalizer->normalize(array_merge($array1, $array2), $metaData);
         
         $entity = self::hydrateProperties($entity, $entityData, $metaData);
         

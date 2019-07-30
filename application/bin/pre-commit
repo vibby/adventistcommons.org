@@ -47,4 +47,24 @@ else
 fi
 
 
+
+PHPSPEC="domain/bin/phpspec-on-commit"
+HAS_PHPSPEC=false
+
+if [ -x "$PHPSPEC" ]; then
+    HAS_PHPSPEC=true
+fi
+
+if $HAS_PHPSPEC; then
+    ${PHPSPEC}
+else
+    echo ""
+    echo "Cannot find phpspec-on-commit executable in domain/bin/ path"
+    echo ""
+    cd $CURRENT_DIRECTORY;
+    exit 1
+fi
+
+
+
 cd $CURRENT_DIRECTORY;
