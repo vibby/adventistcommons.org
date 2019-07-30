@@ -10,7 +10,8 @@ interface ProductAttachmentFinderInterface
 {
     /**
      * Get structure data about the Product only
-     * @param int $product_id
+     *
+     * @param int $productAttachmentId
      * @return array
      */
     public function getProductAttachmentStructure(int $productAttachmentId): array;

@@ -6,11 +6,12 @@ namespace AdventistCommons\Domain\Request;
  * @author    Vincent Beauvivre <vibea@smile.fr>
  * @copyright 2019
  */
-abstract class AbstractCollection implements \ArrayAccess, \Iterator
+abstract class AbstractCollection implements \ArrayAccess, \Iterator, ToArrayInterface
 {
     use ToArrayTrait;
     
-    protected $items = [];
+    private $items = [];
+    private $position;
     
     public function __construct()
     {

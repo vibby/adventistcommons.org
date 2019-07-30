@@ -20,6 +20,7 @@ class EntityMetadata
     public function __construct(string $className, array $metadata)
     {
         $reflection = new \ReflectionClass($className);
+        $fieldNames = [];
         foreach ($reflection->getMethods() as $method) {
             if (substr($method->getName(), 0, 3) === 'set') {
                 $fieldNames[] = $this->snakeCase(substr($method->getName(), 3));
@@ -104,17 +105,23 @@ class EntityMetadata
     }
     
     /**
+     * @param string $string
+     * @return string
+     *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function camelCase($string)
+    public static function camelCase(string $string): string
     {
         return CamelCaseFormatter::run($string);
     }
     
     /**
+     * @param string $string
+     * @return string
+     *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
-    public static function snakeCase($string)
+    public static function snakeCase(string $string): string
     {
         return SnakeCaseFormatter::run($string);
     }

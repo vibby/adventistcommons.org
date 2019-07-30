@@ -85,7 +85,7 @@ class Container
 			\AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer::class,
 			function () {
 				return new \AdventistCommons\Domain\Hydrator\Normalizer\XliffNormalizer(
-					$this->get(\AdventistCommons\Domain\Xliff\XliffParser::class)
+					$this->get(\AdventistCommons\Domain\Hydrator\Xliff\XliffParser::class)
 				);
 			}
 		);

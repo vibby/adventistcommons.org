@@ -22,6 +22,11 @@ class FileRemoveProcessor extends AbstractFieldBasedProcessor implements Process
     }
     
     /**
+     * @param Entity $entity
+     * @param $value
+     * @param string $fieldName
+     * @return Entity
+     *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function processOne(Entity $entity, $value, string $fieldName): Entity

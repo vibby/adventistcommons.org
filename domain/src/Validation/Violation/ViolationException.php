@@ -10,7 +10,7 @@ class ViolationException extends \LogicException
 {
     private $errors;
     
-    public function __construct(array $errors, $message = 'Validation violation(s) occured', $code = 0, Throwable $previous = null)
+    public function __construct(array $errors, $message = 'Validation violation(s) occurred', $code = 0, Throwable $previous = null)
     {
         $this->errors = $errors;
         

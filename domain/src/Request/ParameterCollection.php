@@ -8,11 +8,15 @@ namespace AdventistCommons\Domain\Request;
  */
 class ParameterCollection extends AbstractCollection
 {
+    /**
+     * @param $item
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     */
     protected function validate($item): void
     {
-        $item;
     }
-
+    
     public static function buildFromRequestsParams(array $params): self
     {
         foreach ($params as $key => $value) {

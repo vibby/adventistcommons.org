@@ -20,7 +20,7 @@ class AggregatedNormalizer implements NormalizerInterface, HydratorAwareInterfac
     {
         foreach ($normalizers as $normalizer) {
             if (! $normalizer instanceof NormalizerInterface) {
-                throw new \Exception('Parameter of aggregrated normalizer must be an array of normalizers');
+                throw new \Exception('Parameter of aggregated normalizer must be an array of normalizers');
             }
         }
         $this->normalizers = $normalizers;

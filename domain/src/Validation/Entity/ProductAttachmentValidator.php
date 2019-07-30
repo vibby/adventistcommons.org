@@ -11,7 +11,7 @@ class ProductAttachmentValidator extends EntityValidator
     public function validate(Entity $productAttachment): void
     {
         $errors   = [];
-        $errors[] = $this->getValidator(Validator\NotEmptyValidator::class)->validate($productAttachment, ProductAttachment::class);
+        $errors[] = $this->getValidator(Validator\InstanceOfValidator::class)->validate($productAttachment, ProductAttachment::class);
         self::throwExceptionIfError($errors);
         
         /** @var ProductAttachment $productAttachment */

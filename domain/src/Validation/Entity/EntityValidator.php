@@ -18,7 +18,7 @@ abstract class EntityValidator implements ValidatorInterface, ValidatorCollectio
         $this->validatorCollection = $validatorCollection;
     }
     
-    public function getValidator($validatorClassName)
+    public function getValidator($validatorClassName): ValidatorInterface
     {
         if (! $this->validatorCollection) {
             throw new \Exception('Validator collection must be set to entity validator.');

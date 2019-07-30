@@ -20,6 +20,9 @@ class UploadedCollection extends AbstractCollection
     }
     
     /**
+     * @param array $files
+     * @return UploadedCollection
+     *
      * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public static function buildFromRequestsFiles(array $files): self

@@ -59,7 +59,9 @@ class XliffParser implements HydratorAwareInterface
                     'xliff_content'   => $p,
                     'is_hidden'       => empty($p),
                 ];
-                $section->addContent($this->getHydrator()->hydrate(Content::class, $contentData));
+                $content = $this->getHydrator()->hydrate(Content::class, $contentData);
+                /** @var Content $content */
+                $section->addContent($content);
             }
             $sections[] = $section;
         }
@@ -81,7 +83,9 @@ class XliffParser implements HydratorAwareInterface
                 'content'   => $tagContent,
                 'xliff_tag' => $tagName,
             ];
-            $section->addContent($this->getHydrator()->hydrate(Content::class, $contentData));
+            /** @var Content $content */
+            $content = $this->getHydrator()->hydrate(Content::class, $contentData);
+            $section->addContent($content);
         }
         
         return [$section];

@@ -27,7 +27,7 @@ class UploadProcessor extends AbstractFieldBasedProcessor implements ProcessorIn
     {
         $entityMetadata = $this->metadataManager->getForClass(get_class($entity));
         if (! $value instanceof File) {
-            throw new \Exception('An uploadable property must be a file');
+            throw new \Exception('An uploaded property must be a file');
         }
         if ($value instanceof Uploaded) {
             $definitiveFile = $this->fileSystem->makeUploadedDefinitive($value);

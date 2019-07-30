@@ -12,7 +12,7 @@ class ViolationError
     private $fieldName;
     private $message;
     
-    public function __construct($message = 'A validation violation occured', $entityName = null, $fieldName = null)
+    public function __construct($message = 'A validation violation occurred', $entityName = null, $fieldName = null)
     {
         $this->entityName = $entityName;
         $this->fieldName  = $fieldName;

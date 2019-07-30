@@ -38,4 +38,9 @@ class FileSystem
         
         return $this->rootPathByGroup[$key];
     }
+    
+    public function remove(File $file)
+    {
+        unlink($file->getAbsolutePath());
+    }
 }

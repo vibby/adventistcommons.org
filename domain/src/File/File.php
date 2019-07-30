@@ -20,6 +20,7 @@ class File
     protected $mimeType;
     protected $size;
     protected $extension;
+    private $base;
     private $info;
     
     public function __construct($base, $path)

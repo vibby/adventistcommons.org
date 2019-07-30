@@ -5,6 +5,7 @@ namespace AdventistCommons\Domain\Hydrator;
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
+use AdventistCommons\Domain\Request\ToArrayInterface;
 use AdventistCommons\Domain\Request\UploadedCollection;
 use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
 
@@ -29,6 +30,13 @@ class Hydrator
     }
     
     /**
+     * @param $object
+     * @param iterable $entityData
+     * @param UploadedCollection|null $uploadedCollection
+     * @param bool $useCache
+     * @return Entity|null
+     * @throws \Exception
+     *
      * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function hydrate(
@@ -36,7 +44,7 @@ class Hydrator
         iterable $entityData,
         UploadedCollection $uploadedCollection = null,
         $useCache = true
-    ) {
+    ): ?Entity {
         $entity    = self::getEntity($object);
         $className = get_class($entity);
         $metaData  = $this->metadataManager->getForClass($className);
@@ -48,11 +56,12 @@ class Hydrator
         if ($this->normalizer instanceof HydratorAwareInterface) {
             $this->normalizer->setHydrator($this);
         }
-        $entityData = array_merge(
-            is_array($entityData) ? $entityData : $entityData->toArray(),
-            $uploadedCollection ? $uploadedCollection->toArray() : []
-        );
-        $entityData = $this->normalizer->normalize($entityData, $metaData, $entity);
+        $array1 = $entityData instanceof ToArrayInterface ? $entityData->toArray() : $entityData;
+        if (! is_array($array1)) {
+            throw new \Exception('Argument 1 must be an array or must implement the ToArray interface');
+        }
+        $array2     = $uploadedCollection ? $uploadedCollection->toArray() : [];
+        $entityData = $this->normalizer->normalize(array_merge($array1, $array2), $metaData, $entity);
         
         $entity = self::hydrateProperties($entity, $entityData, $metaData);
         
@@ -90,7 +99,7 @@ class Hydrator
         return $entity;
     }
     
-    private static function hydrateProperties(Entity $entity, Iterable $data, EntityMetadata $metadata)
+    private static function hydrateProperties(Entity $entity, Iterable $data, EntityMetadata $metadata): Entity
     {
         foreach ($data as $key => $value) {
             if (in_array($key, $metadata->getForeignIdNames())) {

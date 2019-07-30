@@ -2,8 +2,9 @@
 
 namespace AdventistCommons\Domain\Entity;
 
-use AdventistCommons\Domain\Storage\Normalizer as Storage;
-use AdventistCommons\Domain\Hydrator\Normalizer as Hydrate;
+use AdventistCommons\Domain\Storage\Processor;
+use AdventistCommons\Domain\Hydrator\Normalizer;
+use AdventistCommons\Domain\Storage\Putter\Serializer;
 
 /**
  * @author    vibby <vincent@beauvivre.fr>
@@ -20,14 +21,16 @@ class Project extends Entity
         return [
             'fields' => [
                 'language' => [
-                    'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-                    'store_normalizer'   => Storage\ForeignNormalizer::class,
+                    'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
+                    'store_processor'    => Processor\PutterProcessor::class,
+                    'putter_serializer'  => Serializer\IdSerializer::class,
                     'class'              => Language::class,
                     'multiple'           => false,
                 ],
                 'product' => [
-                    'hydrate_normalizer' => Hydrate\ForeignNormalizer::class,
-                    'store_normalizer'   => Storage\ForeignNormalizer::class,
+                    'hydrate_normalizer' => Normalizer\ForeignNormalizer::class,
+                    'store_processor'    => Processor\PutterProcessor::class,
+                    'putter_serializer'  => Serializer\IdSerializer::class,
                     'class'              => Product::class,
                     'multiple'           => false,
                 ],

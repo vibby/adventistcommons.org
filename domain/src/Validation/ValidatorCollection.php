@@ -21,7 +21,7 @@ class ValidatorCollection
     public function get($validatorClass)
     {
         if (! isset($this->validators[$validatorClass])) {
-            throw new \Exception(sprintf('Validator class %s is not regisrted', $validatorClass));
+            throw new \Exception(sprintf('Validator class %s is not registered', $validatorClass));
         }
         
         $validator = $this->validators[$validatorClass];

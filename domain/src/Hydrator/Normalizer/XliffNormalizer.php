@@ -3,9 +3,9 @@
 namespace AdventistCommons\Domain\Hydrator\Normalizer;
 
 use AdventistCommons\Domain\File\Uploaded;
-use AdventistCommons\Domain\Xliff\XliffParser;
 use AdventistCommons\Domain\Metadata\FieldMetadata;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
+use AdventistCommons\Domain\Hydrator\Xliff\XliffParser;
 use AdventistCommons\Domain\Hydrator\HydratorAwareTrait;
 use AdventistCommons\Domain\Hydrator\HydratorAwareInterface;
 
