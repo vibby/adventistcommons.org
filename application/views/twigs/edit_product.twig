@@ -84,7 +84,7 @@
 											<div class="col">
 												<div class="custom-control custom-radio">
 													<input type="radio" id="type-{{ type }}" name="type" class="custom-control-input" value="{{ type }}" {{ (product.type == type ) ? "checked" : "" }} />
-													<label class="custom-control-label" for="type-{{ type}}">{{ product.type|capitalize }}</label>
+													<label class="custom-control-label" for="type-{{ type}} ">{{ type|capitalize }}</label>
 												</div>
 											</div>
 										{% endfor %}

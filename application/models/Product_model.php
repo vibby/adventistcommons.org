@@ -85,7 +85,7 @@ class Product_model extends CI_Model
 			->result_array();
 		
 		return array_map( function( $content ) use( $project_id, $user_id ) {
-			$revisions = $this->db->select( "*" )
+			$revisions = $this->db->select( "*, product_content_revisions.id" )
 				->from( "product_content_revisions" )
 				->where( "content_id", $content["id"] )
 				->where( "project_id", $project_id )
