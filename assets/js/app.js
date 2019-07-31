@@ -84,6 +84,7 @@ function ajax( url, data, $btn, $response_region, success_callback ) {
 $( "form.auto-submit" ).submit( function(e) {
 	$form = $(this);
 	$btn = $form.find( "button[type='submit']" );
+	e.preventDefault();
 	$response_target = $form;
 	if( $form.find( ".modal-body" ).length > 0 ) {
 		$response_target = $form.find( ".modal-body" );
