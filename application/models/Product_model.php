@@ -36,11 +36,21 @@ class Product_model extends CI_Model
 	}
 	
 	public function getProduct( $product_id ) {
-		return $this->db->select( "*" )
+		$productArray = $this->db->select( "*" )
 			->from( "products" )
 			->where( "id", $product_id )
 			->get()
 			->row_array();
+			
+		$baseAudience = $productArray['audience'];
+		// May the field in database is a serialized array, may not. So hide error if not
+		@$productArray[ "audience" ] = unserialize( $productArray[ "audience" ] );
+		// define it as array element if not
+		if ( !$productArray[ "audience" ] && $baseAudience ) {
+			$productArray[ "audience" ] = [ $baseAudience ];
+		}
+			
+		return $productArray;
 	}
 	
 	public function getAttachments( $product_id ) {
