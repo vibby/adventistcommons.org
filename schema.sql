@@ -379,6 +379,7 @@ CREATE TABLE `user_languages` (
   `user_id` int(11) unsigned NOT NULL,
   `language_id` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_users_languages` (`user_id`,`language_id`),
   KEY `user_id` (`user_id`),
   KEY `language_id` (`language_id`),
   CONSTRAINT `user_languages_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),

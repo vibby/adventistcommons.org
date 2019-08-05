@@ -27,7 +27,7 @@
 									<img alt="Image" src="https://www.gravatar.com/avatar/{{ edit_user.image }}?s=144&d=mp" class="avatar avatar-lg" />
 									<div class="media-body ml-3">
 										<strong>Profile picture</strong><br>
-										<small>To change your profile picture, visit <a href="https://en.gravatar.com/">Gravatar.com</a></small>
+										<small>To change profile picture, visit <a href="https://en.gravatar.com/">Gravatar.com</a></small>
 									</div>
 								</div>
 								<!--end of avatar-->
@@ -47,23 +47,56 @@
 									<div class="form-group row align-items-center">
 										<label class="col-3">Email</label>
 										<div class="col">
-											<input type="email" placeholder="Enter your email address" name="email" value="{{ edit_user.email }}" class="form-control" required />
+											<input type="email" placeholder="Enter email address" name="email" value="{{ edit_user.email }}" class="form-control" required />
 										</div>
 									</div>
 									<div class="form-group row align-items-center">
 										<label class="col-3">Location</label>
 										<div class="col">
-											<input type="text" placeholder="Enter your location" name="location" value="{{ edit_user.location }}" class="form-control" />
+											<input type="text" placeholder="Enter location" name="location" value="{{ edit_user.location }}" class="form-control" />
 										</div>
 									</div>
 									<div class="form-group row">
 										<label class="col-3">Bio</label>
 										<div class="col">
 											<textarea type="text" placeholder="Tell us a little about yourself" name="bio" class="form-control" rows="4">{{ edit_user.bio }}</textarea>
-											<small>This will be displayed on your public profile</small>
+											<small>This will be displayed on public profile</small>
 										</div>
 									</div>
-	                                <input type="hidden" name="id" value="{{ edit_user.id }}">
+									<div class="form-group row">
+										<label class="col-3">Mother language</label>
+										<div class="col">
+											<select class="language-select" name="mother_language_id" data-selected-id="{{ edit_user.mother_language_id }}" data-placeholder="Select a language...">
+												<option value="">None</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3">Fluent languages</label>
+										<div class="col">
+											<select class="language-select" multiple name="languages[]" data-selected-ids="{{ edit_user.languages|join("|") }}" data-placeholder="Select languages...">
+												<option value="">None</option>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3"></label>
+										<div class="col form-check">
+											<input class="form-check-input" type="checkbox" value="1" name="pro_translator" id="pro_translator" {% if edit_user.pro_translator %}checked="checked"{% endif %}>
+											<label class="form-check-label" for="pro_translator">I'm a professional translator</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-3">Other skills</label>
+										<div class="col">
+											<select class="skills-select" multiple name="skills[]" data-placeholder="Select skills...">
+												{% for skill in skills %}
+													<option {% if skill in edit_user.skills %}selected{% endif %}>{{ skill }}</option>
+												{% endfor %}
+											</select>
+										</div>
+									</div>
+									<input type="hidden" name="id" value="{{ edit_user.id }}">
 									<div class="row justify-content-end">
 										<button type="submit" class="btn btn-primary mr-2">Save</button>
 									</div>
@@ -75,7 +108,7 @@
 										<div class="form-group row align-items-center">
 											<label class="col-3">Current Password</label>
 											<div class="col">
-												<input type="password" placeholder="Enter your current password" name="current_password" class="form-control" />
+												<input type="password" placeholder="Enter current password" name="current_password" class="form-control" />
 											</div>
 										</div>
 									{% endif %}
@@ -89,10 +122,10 @@
 									<div class="form-group row align-items-center">
 										<label class="col-3">Confirm Password</label>
 										<div class="col">
-											<input type="password" placeholder="Confirm your new password" name="confirm_password" class="form-control" />
+											<input type="password" placeholder="Confirm new password" name="confirm_password" class="form-control" />
 										</div>
 									</div>
-	                                <input type="hidden" name="id" value="{{ edit_user.id }}">
+									<input type="hidden" name="id" value="{{ edit_user.id }}">
 									<div class="row justify-content-end">
 										<button type="submit" class="btn btn-primary mr-2">Change Password</button>
 									</div>
