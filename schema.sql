@@ -363,9 +363,10 @@ CREATE TABLE `project_content_approval` (
 
 CREATE TABLE `project_members` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) unsigned NOT NULL,
+  `user_id` int(11) unsigned NULL,
   `project_id` int(11) unsigned NOT NULL,
   `type` enum('translator','reviewer', 'manager') DEFAULT NULL,
+  `invite_email` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   KEY `project_id` (`project_id`),

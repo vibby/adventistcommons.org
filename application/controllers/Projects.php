@@ -109,7 +109,6 @@ class Projects extends CI_Controller {
 	public function add_member() {
 		$this->output->set_content_type( "application/json" );
 		$this->form_validation->set_rules( "type", "Member type", "required" );
-		$this->form_validation->set_rules( "user_id", "User ID", "required" );
 		$this->form_validation->set_rules( "project_id", "Project ID", "required" );
 		
 		if( $this->form_validation->run() === false ) {
@@ -123,7 +122,24 @@ class Projects extends CI_Controller {
 			show_404();
 		}
 		
-		$id = $this->project_model->addMember( $data["user_id"], $data["project_id"], $data["type"] );
+		$is_invite = isset( $data["invite_email"] );
+		
+		if( $is_invite ) {
+			$insert_data = [
+				"invite_email" => $data["invite_email"],
+				"project_id" => $data["project_id"],
+				"type" => $data["type"],
+			];
+
+			$this->db->where( "invite_email", $data["invite_email"] )
+				->where( "project_id", $data["project_id"] )
+				->delete( "project_members" );
+
+			$this->db->insert( "project_members", $insert_data );
+			$id = $this->db->insert_id();
+		} else {
+			$id = $this->project_model->addMember( $data["user_id"], $data["project_id"], $data["type"] );
+		}
 		
 		$user = $this->ion_auth->user()->row( $data["user_id"] );
 		
@@ -142,9 +158,9 @@ class Projects extends CI_Controller {
 			"type" => $data["type"],
 		];
 		
-		$this->twig->addGlobal( "heading", "You've been added to a new project!" );
+		$this->twig->addGlobal( "heading", "You've been invited to a new project!" );
 		$this->twig->addGlobal( "base_url", base_url() );
-		$content = $this->twig->render("twigs/email/added_contributor", $template_data );
+		$content = $this->twig->render( $is_invite ? "twigs/email/invited_contributor" : "twigs/email/added_contributor", $template_data );
 		$this->email->from( "info@adventistcommons.org", "Adventist Commons" );
 		$this->email->to( $user->email );
 		$this->email->message( $content );
