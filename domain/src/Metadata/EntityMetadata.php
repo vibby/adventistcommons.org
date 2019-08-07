@@ -9,7 +9,7 @@ use AdventistCommons\Domain\Validation\Entity\EntityValidator;
 use AdventistCommons\Domain\Hydrator\Normalizer\ForeignNormalizer;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class EntityMetadata

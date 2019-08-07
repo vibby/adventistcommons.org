@@ -9,7 +9,7 @@ use AdventistCommons\Domain\Hydrator\HydratorAwareTrait;
 use AdventistCommons\Domain\Hydrator\HydratorAwareInterface;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface

@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Hydrator;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class EntityCache

@@ -9,7 +9,7 @@ use AdventistCommons\Domain\File\FileSystem;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class UploadProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface

@@ -7,7 +7,7 @@ use AdventistCommons\Domain\File\File;
 use AdventistCommons\Domain\Entity\Entity;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class ImageProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface

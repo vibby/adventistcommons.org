@@ -5,7 +5,7 @@ namespace AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Entity\Entity;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 interface ProcessorInterface

@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Storage\Putter;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 interface ProductAttachmentPutterInterface

@@ -6,7 +6,7 @@ use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Storage\Processor\ProcessorInterface;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class Storer

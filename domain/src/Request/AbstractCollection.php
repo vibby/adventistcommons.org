@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Request;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 abstract class AbstractCollection implements \ArrayAccess, \Iterator, ToArrayInterface

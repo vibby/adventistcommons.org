@@ -6,7 +6,7 @@ use AdventistCommons\Domain\Storage\Processor;
 use AdventistCommons\Domain\Storage\Putter\Serializer;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class FieldMetadata

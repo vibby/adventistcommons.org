@@ -6,7 +6,7 @@ use AdventistCommons\Domain\File\Uploaded;
 use AdventistCommons\Domain\File\UploadedBuilder;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class UploadedCollection extends AbstractCollection

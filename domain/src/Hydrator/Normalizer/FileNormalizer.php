@@ -8,7 +8,7 @@ use AdventistCommons\Domain\Metadata\FieldMetadata;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class FileNormalizer implements NormalizerInterface

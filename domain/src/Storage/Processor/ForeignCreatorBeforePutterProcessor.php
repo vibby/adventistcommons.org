@@ -7,7 +7,7 @@ use AdventistCommons\Domain\Storage\StorerAwareTrait;
 use AdventistCommons\Domain\Storage\StorerAwareInterface;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class ForeignCreatorBeforePutterProcessor extends AbstractFieldBasedProcessor implements ProcessorInterface, StorerAwareInterface

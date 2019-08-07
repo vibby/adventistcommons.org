@@ -10,7 +10,7 @@ use AdventistCommons\Domain\Request\UploadedCollection;
 use AdventistCommons\Domain\Hydrator\Normalizer\NormalizerInterface;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class Hydrator

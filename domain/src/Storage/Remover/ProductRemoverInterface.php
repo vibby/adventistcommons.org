@@ -3,7 +3,7 @@
 namespace AdventistCommons\Domain\Storage\Remover;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 interface ProductRemoverInterface

@@ -7,7 +7,7 @@ use AdventistCommons\Domain\Storage\Storer;
 use AdventistCommons\Domain\Storage\Remover\Remover;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class RemoverProcessor implements ProcessorInterface

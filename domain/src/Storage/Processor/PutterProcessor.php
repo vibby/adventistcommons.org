@@ -9,7 +9,7 @@ use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Storage\Putter\Serializer\EntitySerializer;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class PutterProcessor implements ProcessorInterface

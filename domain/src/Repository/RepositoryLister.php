@@ -7,7 +7,7 @@ use AdventistCommons\Domain\Entity\Product;
 use AdventistCommons\Domain\Entity\ProductAttachment;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class RepositoryLister

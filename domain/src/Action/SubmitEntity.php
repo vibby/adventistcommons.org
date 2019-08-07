@@ -12,7 +12,7 @@ use AdventistCommons\Domain\validation\ValidatorCollection;
 use AdventistCommons\Domain\Validation\Entity\EntityValidator;
 
 /**
- * @author    Vincent Beauvivre <vibea@smile.fr>
+ * @author    Vincent Beauvivre <vincent@beauvivre.fr>
  * @copyright 2019
  */
 class SubmitEntity
