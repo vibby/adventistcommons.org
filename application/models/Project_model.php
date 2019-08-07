@@ -84,11 +84,14 @@ class Project_model extends CI_Model
 		return $project;
 	}
 	
-	public function getMembers( $project_id ) {
-		return $this->db->select( "*" )
+	public function getMembers( $project_id, $show_invited ) {
+		$query = $this->db->select( "*" )
 			->from( "project_members" )
-			->where( "project_id", $project_id )
-			->join( "users", "project_members.user_id = users.id" )
+			->where( "project_id", $project_id );
+		if( ! $show_invited ) {
+			$query->where( "invite_email", null );
+		}
+		return $query->join( "users", "project_members.user_id = users.id", "left" )
 			->get()
 			->result_array();
 	}

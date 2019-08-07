@@ -47,18 +47,18 @@ class Projects extends CI_Controller {
 		$project = $this->project_model->getProject( $project_id );
 		$product = $this->product_model->getProduct( $project["product_id"] );
 		$title = "{$product['name']} ({$project['language_name']})";
-		
+		$can_manage_members = $this->_can_manage_members( $project["id"] );
 		$members = array_map( function( $member ) {
-			$member["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ) ) ) . "?s=72&d=mp";
+			$member["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $member["email"] ?? $member["invite_email"] ) ) ) . "?s=72&d=mp";
 			return $member;
-		}, $this->project_model->getMembers( $project["id"] ) );
+		}, $this->project_model->getMembers( $project["id"], $can_manage_members ) );
 		
 		$data = [
 			"project" => $project,
 			"product" => $product,
 			"members" => $members,
 			"sections" => $this->project_model->getSections( $project["id"] ),
-			"can_manage_members" => $this->_can_manage_members( $project["id"] ),
+			"can_manage_members" => $can_manage_members,
 		];
 		$this->twig->addGlobal( "title", $title );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
