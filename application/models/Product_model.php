@@ -26,11 +26,11 @@ class Product_model extends CI_Model
 		
 		return array_map( function( $product ) {
 			$product["languages"] = $this->db->select( "DISTINCT( language_id )" )
-			->from( "product_attachments" )
-			->where( "product_id", $product["id"] )
-			->group_by( "language_id" )
-			->get()
-			->num_rows();
+				->from( "product_attachments" )
+				->where( "product_id", $product["id"] )
+				->group_by( "language_id" )
+				->get()
+				->num_rows();
 			return $product;
 		}, $products );
 	}
@@ -43,9 +43,7 @@ class Product_model extends CI_Model
 			->row_array();
 			
 		$baseAudience = $productArray['audience'];
-		// May the field in database is a serialized array, may not. So hide error if not
 		@$productArray[ "audience" ] = unserialize( $productArray[ "audience" ] );
-		// define it as array element if not
 		if ( !$productArray[ "audience" ] && $baseAudience ) {
 			$productArray[ "audience" ] = [ $baseAudience ];
 		}
