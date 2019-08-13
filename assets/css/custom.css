@@ -105,3 +105,10 @@ dl.inline dt:before{
 .list-letter {
 	list-style: lower-alpha;
 }
+.ready_to_bring_banner{
+	padding-top: 25px;
+    padding-bottom: 25px;
+}
+.small_partner_icon{
+	width:160px;
+}
