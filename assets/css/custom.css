@@ -105,3 +105,6 @@ dl.inline dt:before{
 .list-letter {
 	list-style: lower-alpha;
 }
+.footer_logo_church{
+	max-width:200px;
+}
