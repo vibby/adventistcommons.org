@@ -105,3 +105,6 @@ dl.inline dt:before{
 .list-letter {
 	list-style: lower-alpha;
 }
+.partner-icon {
+	max-width: 160px;
+}
