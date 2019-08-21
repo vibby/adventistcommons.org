@@ -6,6 +6,10 @@ a {
 	display: none;
 }
 
+.text-rtl {
+	direction: rtl;
+}
+
 .custom-file-label::after {
 	height: auto;
 }
