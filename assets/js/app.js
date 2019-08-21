@@ -215,7 +215,7 @@ $( ".request-revision" ).click( function() {
 
 $( ".user-search .search" ).keyup( function() {
 	$widget = $(this).parents( ".user-search" );
-	var query = $(this).val().trim();
+	var query = encodeURIComponent( $(this).val().trim() );
 	var is_admin = $(this)[0].hasAttribute( "data-is-admin" );
 	var project_id = $(this).attr( "data-project-id" );
 	if( query.length == 0 ) {
@@ -224,7 +224,9 @@ $( ".user-search .search" ).keyup( function() {
 	$.getJSON( "/user/search/" + project_id + "/" + query, function( users ) {
 		$widget.find( ".user-list" ).empty();
 		$.each( users, function( key, user ) {
-			html = '<div class="custom-control custom-checkbox"><span class="d-flex align-items-center"><img src="' + user.avatar + '" class="avatar mr-2" /><span class="h6 mb-0" data-filter-by="text">' + user.first_name + ' ' + user.last_name + '</span><div class="dropdown ml-auto"><button class="btn btn-primary btn-sm text-light dropdown-toggle" type="button" data-toggle="dropdown">Add</button><div class="dropdown-menu"><a class="dropdown-item select-member" data-id="' + user.id + '" data-type="translator">Translator</a><a class="dropdown-item select-member" data-id="' + user.id + '" data-type="reviewer">Reviewer</a><a class="dropdown-item select-member ' + ( is_admin ? "" : "hidden" ) + '" data-id="' + user.id + '" data-type="manager">Manager</a></div></div></span></div>';
+			btn_text = user.invite_only ? "Invite" : "Add";
+			extra_attribute = user.invite_only ? 'data-invite-email="' + user.email + '"' : "";
+			html = '<div class="custom-control custom-checkbox"><span class="d-flex align-items-center"><img src="' + user.avatar + '" class="avatar mr-2" /><span class="h6 mb-0" data-filter-by="text">' + user.heading + '</span><div class="dropdown ml-auto"><button class="btn btn-primary btn-sm text-light dropdown-toggle" type="button" data-toggle="dropdown">' + btn_text + '</button><div class="dropdown-menu"><a class="dropdown-item select-member" ' + extra_attribute + ' data-id="' + user.id + '" data-type="translator">Translator</a><a class="dropdown-item select-member" data-id="' + user.id + '" data-type="reviewer" ' + extra_attribute + '>Reviewer</a><a class="dropdown-item select-member ' + ( is_admin ? "" : "hidden" ) + '" data-id="' + user.id + '" data-type="manager" ' + extra_attribute + '>Manager</a></div></div></span></div>';
 			$widget.find( ".user-list" ).append( html );
 		});
 	});
@@ -238,6 +240,7 @@ $( document ).on( "click", ".select-member", function() {
 	var data = {
 		"type": $(this).data( "type" ),
 		"user_id": $(this).data( "id" ),
+		"invite_email": $(this).data( "invite-email" ),
 		"project_id": $(this).parents( ".modal" ).data( "project-id" ),
 	}
 	$.post( "/projects/add_member", data, function( response ) {

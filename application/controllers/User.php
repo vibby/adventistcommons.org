@@ -103,6 +103,7 @@ class User extends CI_Controller
 		if( ! $this->project_model->isManager( $this->ion_auth->user()->row()->id, $project_id ) && ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
+		
 		$users = $this->db->select( "*" )
 			->from( "users" )
 			->like( "concat(first_name, ' ', last_name)", $query )
@@ -110,7 +111,17 @@ class User extends CI_Controller
 			->limit( 10 )
 			->get()
 			->result_array();
+		if( ! $users && filter_var( $query, FILTER_VALIDATE_EMAIL ) ) {
+			$users[] = [
+				"heading" => $query,
+				"email" => $query,
+				"invite_only" => true,
+			];
+		}
 		$users = array_map( function( $user ) {
+			if( ! isset( $user["invite_only"] ) ) {
+				$user["heading"] = $user["first_name"] . " " . $user["last_name"];
+			}
 			$user["avatar"] = "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $user["email"] ) ) ) . "?s=72&d=mp";
 			return $user;
 		}, $users );
@@ -394,13 +405,28 @@ class User extends CI_Controller
 		{
 			if ($this->ion_auth->login($identity, $password))
 			{
-				redirect('/user/register_profile', 'refresh');
+				$user = $this->ion_auth->user()->row();
+				
+				$invites = $this->db->select( "*" )
+					->from( "project_members" )
+					->where( "invite_email", $user->email )
+					->get()
+					->result_array();
+				
+				foreach( $invites as $invite ) {
+					$invite_data = [
+						"user_id" => $user->id,
+						"invite_email" => null,
+						"type" => $invite["type"],
+					];
+					$this->db->where( "id", $invite["id"] );
+					$this->db->update( "project_members", $invite_data );
+				}
+				redirect( "/user/register_profile", "refresh" );
 			}
 		}
 		else
 		{
-			// display the create user form
-			// set the flash data error message if there is one
 			$this->data['message'] = (validation_errors() ? validation_errors() : ($this->ion_auth->errors() ? $this->ion_auth->errors() : $this->session->flashdata('message')));
 			$this->data["post"] = $this->input->post();
 			$this->twig->addGlobal("title", "Register");
