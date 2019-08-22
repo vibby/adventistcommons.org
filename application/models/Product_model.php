@@ -26,21 +26,29 @@ class Product_model extends CI_Model
 		
 		return array_map( function( $product ) {
 			$product["languages"] = $this->db->select( "DISTINCT( language_id )" )
-			->from( "product_attachments" )
-			->where( "product_id", $product["id"] )
-			->group_by( "language_id" )
-			->get()
-			->num_rows();
+				->from( "product_attachments" )
+				->where( "product_id", $product["id"] )
+				->group_by( "language_id" )
+				->get()
+				->num_rows();
 			return $product;
 		}, $products );
 	}
 	
 	public function getProduct( $product_id ) {
-		return $this->db->select( "*" )
+		$productArray = $this->db->select( "*" )
 			->from( "products" )
 			->where( "id", $product_id )
 			->get()
 			->row_array();
+			
+		$baseAudience = $productArray['audience'];
+		@$productArray[ "audience" ] = unserialize( $productArray[ "audience" ] );
+		if ( !$productArray[ "audience" ] && $baseAudience ) {
+			$productArray[ "audience" ] = [ $baseAudience ];
+		}
+			
+		return $productArray;
 	}
 	
 	public function getAttachments( $product_id ) {

@@ -93,7 +93,7 @@
 										<a class="media media-member">
 											<img class="avatar avatar-lg" src="{{ member.avatar }}"/>
 											<div class="media-body">
-												<h6 class="mb-0" data-filter-by="text">{{ member.first_name ~ " " ~ member.last_name }}</h6>
+												<h6 class="mb-0" data-filter-by="text">{{ member.invite_email ?? member.first_name ~ " " ~ member.last_name }}{% if member.invite_email %}<span class="badge badge-secondary">invited</span>{% endif %}</h6>
 												<span data-filter-by="text" class="text-body">{{ member.type|capitalize }}</span>
 											</div>
 										</a>

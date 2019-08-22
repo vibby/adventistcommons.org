@@ -6,6 +6,10 @@ a {
 	display: none;
 }
 
+.text-rtl {
+	direction: rtl;
+}
+
 .custom-file-label::after {
 	height: auto;
 }
@@ -104,4 +108,12 @@ dl.inline dt:before{
 }
 .list-letter {
 	list-style: lower-alpha;
+}
+
+.footer-logo {
+	max-width: 200px;
+}
+
+.partner-icon {
+	max-width: 160px;
 }

@@ -128,7 +128,6 @@ class Products extends CI_Controller {
 		$this->output->set_content_type("application/json");
 		
 		$this->form_validation->set_rules( "name", "Title", "required" );
-		$this->form_validation->set_rules( "audience", "Audience", "required" );
 		$this->form_validation->set_rules( "page_count", "Page count", "required|numeric" );
 		$this->form_validation->set_rules( "type", "Product type", "required" );
 		
@@ -166,11 +165,12 @@ class Products extends CI_Controller {
 			$data["series_id"] = $this->db->insert_id();
 		}
 		
+		$data['audience'] = serialize($data['audience'] ?? []);
 		if( $is_new ) {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
 			
-			if( $xliff_file ) {
+			if( isset($xliff_file) ) {
 				$this->_parseXliff( $xliff_file["file_name"], $id );
 			}
 			
