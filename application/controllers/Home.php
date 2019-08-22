@@ -29,7 +29,10 @@ class Home extends CI_Controller {
 		$this->twig->addGlobal( "title", "Certified Adventist Resources, Culturally Relevant" );
 		$this->twig->addGlobal( "is_home", true );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
-		$this->twig->display( "twigs/home" );
+		$data = [
+			"message" => $this->session->flashdata('message'),
+		];
+		$this->twig->display( "twigs/home", $data );
 	}
 	
 	public function feedback()

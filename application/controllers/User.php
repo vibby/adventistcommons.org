@@ -443,7 +443,7 @@ class User extends CI_Controller
 
 		$data = [
 			"edit_user" => $this->user,
-			"skills" => array_merge( $this->skills, (array) $userSkills ),
+			"skills" => array_merge( $this->skills, is_array($this->user->skills) ? $this->user->skills : [] ),
 		];
 
 		$this->twig->addGlobal( "title", "Almost done" );
@@ -500,6 +500,7 @@ class User extends CI_Controller
 		$this->form_validation->set_rules( "email", "Email", "required|valid_email" );
 		$this->form_validation->set_rules( "first_name", "First name", "required" );
 		$this->form_validation->set_rules( "last_name", "Last name", "required" );
+		$this->form_validation->set_rules( "mother_language_id", "Mother language", "required" );
 
 		if( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
@@ -589,7 +590,7 @@ class User extends CI_Controller
 		$this->db->where( "id", $this->ion_auth->user()->row()->id );
 		$this->db->update( "users", $data );
 		$this->ion_auth->logout();
-		
+		$this->session->set_flashdata( "message", "Your account has been successfully deleted" );
 		$this->output->set_output( json_encode( [ "redirect" => "/" ] ) );
 	}
 
