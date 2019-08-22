@@ -210,7 +210,7 @@ CREATE TABLE `users` (
   `ip_address` varchar(45) NOT NULL,
   `username` varchar(100) DEFAULT NULL,
   `password` varchar(255) NOT NULL,
-  `email` varchar(254) NOT NULL,
+  `email` varchar(254) DEFAULT NULL,
   `activation_selector` varchar(255) DEFAULT NULL,
   `activation_code` varchar(255) DEFAULT NULL,
   `forgotten_password_selector` varchar(255) DEFAULT NULL,

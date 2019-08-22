@@ -3,6 +3,9 @@
 {% block content %}
 	
 	<div class="container">
+		{% if message %}
+			<div class="alert alert-warning mt-3 text-center">{{ message }}</div>
+		{% endif %}
 		<div class="row justify-content-center">
 			<div class="col-xl-10 col-lg-11 text-center">
 				<h1 class="mt-4">How It Works</h1>

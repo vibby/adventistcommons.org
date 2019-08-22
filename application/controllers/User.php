@@ -81,6 +81,7 @@ class User extends CI_Controller
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
+			"is_admin_edit" => true,
 		];
 
 		$this->breadcrumbs[] = [
@@ -442,7 +443,7 @@ class User extends CI_Controller
 
 		$data = [
 			"edit_user" => $this->user,
-			"skills" => array_merge($this->skills, is_array($this->user->skills) ? $this->user->skills : []),
+			"skills" => array_merge( $this->skills, is_array($this->user->skills) ? $this->user->skills : [] ),
 		];
 
 		$this->twig->addGlobal( "title", "Almost done" );
@@ -499,6 +500,7 @@ class User extends CI_Controller
 		$this->form_validation->set_rules( "email", "Email", "required|valid_email" );
 		$this->form_validation->set_rules( "first_name", "First name", "required" );
 		$this->form_validation->set_rules( "last_name", "Last name", "required" );
+		$this->form_validation->set_rules( "mother_language_id", "Mother language", "required" );
 
 		if( $this->form_validation->run() === false ) {
 			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
@@ -560,6 +562,36 @@ class User extends CI_Controller
 			$id = $this->db->insert_id();
 			$this->output->set_output( json_encode( [ "success" => "Permissions updated successfully" ] ) );
 		}
+	}
+	
+	public function delete() {
+		if( ! $this->ion_auth->logged_in() ) {
+			show_404();
+		}
+		
+		$this->output->set_content_type( "application/json" );
+		$data = [
+			"first_name" => "Inactive",
+			"last_name" => "user",
+			"ip_address" => null,
+			"username" => null,
+			"password" => null,
+			"email" => null,
+			"last_login" => null,
+			"active" => false,
+			"location" => null,
+			"bio" => null,
+			"mother_language_id" => null,
+			"skills" => null,
+			"product_notify" => null,
+			"pro_translator" => null,
+		];
+		
+		$this->db->where( "id", $this->ion_auth->user()->row()->id );
+		$this->db->update( "users", $data );
+		$this->ion_auth->logout();
+		$this->session->set_flashdata( "message", "Your account has been successfully deleted" );
+		$this->output->set_output( json_encode( [ "redirect" => "/" ] ) );
 	}
 
 	public function _get_csrf_nonce()
