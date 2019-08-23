@@ -148,14 +148,15 @@ class Products extends CI_Controller {
 			$data["cover_image"] = $cover_image["file_name"];
 		}
 		
-		$xliff_file = null;
-		if( $is_new && $_FILES["xliff_file"]["name"] ) {
-			$xliff_file = $this->_uploadXliff();
-			if( ! $xliff_file ) {
+		$idml_file = null;
+		if( $is_new && $_FILES["idml_file"]["name"] ) {
+			$idml_file = $this->_uploadIdml();
+			if( ! $idml_file ) {
+				die($this->upload->display_errors());
 				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
 				return false;
 			}
-			$data["xliff_file"] = $xliff_file["file_name"];
+			$data["idml_file"] = $idml_file["file_name"];
 		}
 		
 		if( $data["series_id"] == "" ) {
@@ -170,8 +171,8 @@ class Products extends CI_Controller {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
 			
-			if( isset($xliff_file) ) {
-				$this->_parseXliff( $xliff_file["file_name"], $id );
+			if( isset( $idml_file ) ) {
+				//$this->_parseIdml( $idml_file["file_name"], $id );
 			}
 			
 			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
@@ -186,21 +187,21 @@ class Products extends CI_Controller {
 		}
 	}
 	
-	public function save_xliff() {
+	public function save_idml() {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
 		
 		$this->output->set_content_type("application/json");
 		
-		$xliff_file = $this->_uploadXliff();
-		if( ! $xliff_file ) {
+		$idml_file = $this->_uploadIdml();
+		if( ! $idml_file ) {
 			$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
 			return false;
 		}
 		
 		$data = $this->input->post();
-		$data["xliff_file"] = $xliff_file["file_name"];
+		$data["idml_file"] = $idml_file["file_name"];
 		$this->db->where( "id", $data["id"] );
 		$this->db->update( "products", $data );
 		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] . "#advanced" ] ) );
@@ -295,15 +296,15 @@ class Products extends CI_Controller {
 		return $this->upload->data();
 	}
 	
-	private function _uploadXliff() {
+	private function _uploadIdml() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
-		$config["allowed_types"] = "xml";
+		$config["allowed_types"] = "idml";
 		$config["max_size"] = 50000;
 		$config["encrypt_name"] = true;
 
 		$this->upload->initialize( $config );
 
-		if ( ! $this->upload->do_upload( "xliff_file" ) ) {
+		if ( ! $this->upload->do_upload( "idml_file" ) ) {
 			return false;
 		}
 		
@@ -311,18 +312,18 @@ class Products extends CI_Controller {
 		return $this->upload->data();
 	}
 	
-	private function _parseXliff( $file, $product_id ) {
+	private function _parseIdml( $file, $product_id ) {
 		$xml = simplexml_load_file( $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file );
 		foreach( $xml as $key => $region ) {
 			if( $key == "interior" ) {
-				$this->_parseXliffParagraphContent( $region, $product_id );
+				$this->_parseIdmlParagraphContent( $region, $product_id );
 			} else {
-				$this->_parseXliffTagContent( $region, $key, $product_id );
+				$this->_parseIdmlTagContent( $region, $key, $product_id );
 			}
 		}
 	}
 	
-	private function _parseXliffParagraphContent( $region, $product_id ) {
+	private function _parseIdmlParagraphContent( $region, $product_id ) {
 		$section_names = [
 			"maincontent" => "Main content",
 			"main" => "Main content",
@@ -331,7 +332,7 @@ class Products extends CI_Controller {
 			$section_data = [
 				"product_id" => $product_id,
 				"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
-				"xliff_region" => $region_name,
+				"idml_region" => $region_name,
 			];
 			$this->db->insert( "product_sections", $section_data );
 			$section_id = $this->db->insert_id();
@@ -349,7 +350,7 @@ class Products extends CI_Controller {
 		}
 	}
 	
-	private function _parseXliffTagContent( $region, $region_name, $product_id ) {
+	private function _parseIdmlTagContent( $region, $region_name, $product_id ) {
 		$section_names = [
 			"cover" => "Front cover",
 			"backcover" => "Back cover",
@@ -357,7 +358,7 @@ class Products extends CI_Controller {
 		$section_data = [
 			"product_id" => $product_id,
 			"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
-			"xliff_region" => $region_name,
+			"idml_region" => $region_name,
 		];
 		$this->db->insert( "product_sections", $section_data );
 		$section_id = $this->db->insert_id();
@@ -366,7 +367,7 @@ class Products extends CI_Controller {
 				"product_id" => $product_id,
 				"content" => $tag,
 				"section_id" => $section_id,
-				"xliff_tag" => $tag_key,
+				"idml_tag" => $tag_key,
 			];
 			$this->db->insert( "product_content", $content_data );
 		}

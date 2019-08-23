@@ -180,5 +180,6 @@ return array(
 	'odt'	=>	'application/vnd.oasis.opendocument.text',
 	'odm'	=>	'application/vnd.oasis.opendocument.text-master',
 	'ott'	=>	'application/vnd.oasis.opendocument.text-template',
-	'oth'	=>	'application/vnd.oasis.opendocument.text-web'
+	'oth'	=>	'application/vnd.oasis.opendocument.text-web',
+	'idml'  =>  array( 'application/vnd.adobe.indesign-idml-package', 'application/octet-stream', 'application/x-indesign', 'application/x-adobe-indesign', 'application/zip' ),
 );
