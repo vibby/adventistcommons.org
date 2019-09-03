@@ -6,7 +6,7 @@ We&#39;re here to help you fulfil your dream. ✨
 
 Adventist Commons, an initiative of the Middle East and North Africa Union, is like the &quot;creative commons&quot; of Adventist mission resources for the unreached people groups of the 10/40 window and the world. You would be surprised to know that in many of the world&#39;s major language groups, there isn&#39;t a single Adventist tract or booklet. Or, in places where a few outreach materials have been translated, they are inappropriate for the religious context because they only answer the questions that Western Christians ask.
 
-You see, your talents are needed. No, let&#39;s rephrase that – your talents are _desperately_ needed. This is the mission opportunity you&#39;ve been waiting for! By collaborating with Adventist Commons, you can play an integral part in getting our distinctive Adventist message into the hands of unreached people, right from the comfort of your own home. Do you have skills in writing, translating, editing, proofreading, graphic design, or web development? 🖥📝🎨😀 Click [here to contribute to Adventist Commons!](#contribute)
+You see, your talents are needed. No, let&#39;s rephrase that – your talents are _desperately_ needed. This is the mission opportunity you&#39;ve been waiting for! By collaborating with Adventist Commons, you can play an integral part in getting our distinctive Adventist message into the hands of unreached people, right from the comfort of your own home. Do you have skills in writing, translating, editing, proofreading, graphic design, or web development? 🖥📝🎨😀 Learn [here how you can contribute to Adventist Commons!](#contribute)
 
 [AdventistCommons.org](https://www.adventistcommons.org)
 
@@ -101,7 +101,7 @@ Graphic Designers:
 Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with PHP and MySQL installed.
 
 - Clone the repository to the public directory of your localhost environment
-- I recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository. If you are using the default "localhost" server address, update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) to `http://localhost`.
+- We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository. If you are using the default "localhost" server address, update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) to `http://localhost`.
 - Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
 - Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) in your favorite MySQL client.
 - Update [these lines](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/database.php#L78-L81) with your database credentials.
@@ -112,7 +112,7 @@ Follow the steps below to setup AdventistCommons on your local development envir
 
 All resources on AdventistCommons.org are licensed under the [Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/) (CC BY-ND 4.0).
 
-The CC BY-ND 4.0 license gives you permission to download, print, distribute, and sell our products without obtaining permission from AdventistCommons.org. You may not use our products to create derivative works our products. If you remix, transform, or build upon the material, you are legally prohibited to distribute and sell the modified material.
+The CC BY-ND 4.0 license gives you permission to download, print, distribute, and sell our products without obtaining permission from AdventistCommons.org. You may not use our products to create derivative works of our products. If you remix, transform, or build upon the material, you are legally prohibited to distribute and sell the modified material.
 
 The code included in this repository is copyright protected. It may not be reproduced, distributed, or used to create derivative works.
 
@@ -138,7 +138,7 @@ The code included in this repository is copyright protected. It may not be repro
 **Products**
 
 - How can I download print files?
-  - Go to adventistcommons.org and select the product you would like to download. If it already exists in your language, you will see a button to download the print file directly. If the translation does not exist or is still in progress, you will see a prompt to contribute to its completion. You will not be able to download print files until the translation is complete.
+  - Go to [AdventistCommons.org](http://adventistcommons.org/) and select the product you would like to download. If it already exists in your language, you will see a button to download the print file directly. If the translation does not exist or is still in progress, you will see a prompt to contribute to its completion. You will not be able to download print files until the translation is complete.
 - The translation for a certain product is complete but the print file does not appear. Why is that?
   - After a translation is completed, it takes us several days to make sure that the final layout is perfectly adjusted for your language. Please check back after a few days.
 - What format of files are offered for download?
@@ -167,9 +167,9 @@ The code included in this repository is copyright protected. It may not be repro
 **Donations**
 
 - How can I donate?
-  - Please donate through [AdventistCommons.org](http://www.adventistcommons.org).
+  - Please donate through our [Patreon account](http://patreon.com/adventistcommons). If you would like to donate through Paypal, check, or wire transfer, please contact us through our [feedback form](https://adventistcommons.org/feedback.
 - How are my donations used?
-  - If you donate towards a specific project on [AdventistCommons.org](http://www.adventistcommons.org), your donations will be strictly used for this purpose only. If you give a general donation, it may be used for the development of tracts, booklets, or other resources available on the website.
+  - If you donate towards a specific project on [AdventistCommons.org](http://www.adventistcommons.org), your donations will be strictly used for this purpose only. If you give a general donation, it will be used for the development of tracts, booklets, or other resources available on the website. We also use donations to maintain our website and develop new features.
 - Are donations tax-deductible?
   - All donations are processed through the Middle East and North Africa Union. Donations are tax deductable if sent to the Middle East and North Africa Union through the General Conference. Funds should be marked for "MENA Publishing – Adventist Commons".
 
@@ -180,4 +180,4 @@ The code included in this repository is copyright protected. It may not be repro
 
 ## Donate
 
-[AdventistCommons.org](http://www.adventistcommons.org) depends on generous donors for the development of Adventist resources that can be shared freely throughout the world. Your donation is highly appreciated and will make valuable Adventist resources accessible around the world. Please donate through [AdventistCommons.org](http://www.adventistcommons.org).
+[AdventistCommons.org](http://www.adventistcommons.org) depends on generous donors for the development of Adventist resources that can be shared freely throughout the world. Your donation is highly appreciated and will make valuable Adventist resources accessible around the world. Please donate through our [Patreon account](http://patreon.com/adventistcommons).
