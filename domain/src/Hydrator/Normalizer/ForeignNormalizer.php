@@ -29,14 +29,14 @@ class ForeignNormalizer implements NormalizerInterface, HydratorAwareInterface
                 $entityData[$fieldName] = $fieldMetadata->get('multiple')
                     ? array_map(
                         function ($data) use ($fieldMetadata, $hydrator) {
-                            return $hydrator->hydrate(
+                            return $hydrator->hydrateCached(
                                 $fieldMetadata->get('class'),
                                 $data
                             );
                         },
                         $entityData[$fieldName]
                     )
-                    : $hydrator->hydrate(
+                    : $hydrator->hydrateCached(
                         $fieldMetadata->get('class'),
                         $entityData[$fieldName][0]
                     );

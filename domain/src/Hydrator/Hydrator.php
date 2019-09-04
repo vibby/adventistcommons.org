@@ -3,6 +3,7 @@
 namespace AdventistCommons\Domain\Hydrator;
 
 use AdventistCommons\Domain\Entity\Entity;
+use AdventistCommons\Domain\Metadata\ActionMetadata;
 use AdventistCommons\Domain\Metadata\EntityMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Request\ToArrayInterface;
@@ -30,27 +31,24 @@ class Hydrator
     }
     
     /**
-     * @param $object
+     * @param string|Entity $object class name or entity itself
      * @param iterable $entityData
      * @param UploadedCollection|null $uploadedCollection
-     * @param bool $useCache
+     * @param ActionMetadata $actionMetadata
      * @return Entity|null
      * @throws \Exception
-     *
-     * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
      */
     public function hydrate(
-        $object, // class name or entity itself
+        $object,
         iterable $entityData,
         UploadedCollection $uploadedCollection = null,
-        $useCache = true
+        ActionMetadata $actionMetadata = null
     ): ?Entity {
         $entity    = self::getEntity($object);
         $className = get_class($entity);
         $metaData  = $this->metadataManager->getForClass($className);
-        
-        if ($useCache && isset($entityData['id']) && $this->entityCache->has($className, $entityData['id'])) {
-            return $this->entityCache->get($className, $entityData['id']);
+        if ($actionMetadata) {
+            $metaData->mergeWithActionMetadata($actionMetadata);
         }
         
         if ($this->normalizer instanceof HydratorAwareInterface) {
@@ -64,11 +62,35 @@ class Hydrator
         $entityData = $this->normalizer->normalize(array_merge($array1, $array2), $metaData);
         
         $entity = self::hydrateProperties($entity, $entityData, $metaData);
-        
+
+        return $entity;
+    }
+    
+    /**
+     * @param $object
+     * @param iterable $entityData
+     * @param UploadedCollection|null $uploadedCollection
+     * @param ActionMetadata|null $actionMetadata
+     * @return Entity|null
+     */
+    public function hydrateCached(
+        $object, // class name or entity itself
+        iterable $entityData,
+        UploadedCollection $uploadedCollection = null,
+        ActionMetadata $actionMetadata = null
+    ): ?Entity {
+        $entity    = self::getEntity($object);
+        $className = get_class($entity);
+        if (isset($entityData['id']) && $this->entityCache->has($className, $entityData['id'])) {
+            return $this->entityCache->get($className, $entityData['id']);
+        }
+    
+        $entity = $this->hydrate($entity, $entityData, $uploadedCollection, $actionMetadata);
+    
         if (isset($entityData['id'])) {
             $this->entityCache->set($className, $entityData['id'], $entity);
         }
-
+    
         return $entity;
     }
     

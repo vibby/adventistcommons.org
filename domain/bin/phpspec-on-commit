@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "phpspec starts"
+
+CURRENT_DIRECTORY=`pwd`
+BIN_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+DOMAIN_DIRECTORY="$BIN_DIR/.."
+
+
+cd $DOMAIN_DIRECTORY;
+PHPSPEC="vendor/bin/phpspec"
+
+HAS_PHPSPEC=false
+
+if [ -x "$PHPSPEC" ]; then
+    HAS_PHPSPEC=true
+fi
+
+if $HAS_PHPSPEC; then
+    ${PHPSPEC} run
+else
+    echo ""
+    echo "Please install php-cs-fixer dependence"
+    echo "  cd domain && composer install"
+    echo ""
+	cd $CURRENT_DIRECTORY;
+    exit 1
+fi
+
+cd $CURRENT_DIRECTORY;
+
+echo "phpspec ends"

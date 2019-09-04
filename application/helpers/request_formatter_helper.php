@@ -12,4 +12,9 @@ if ( ! function_exists('build_uploaded_files_from_request'))
 	{
 		return \AdventistCommons\Domain\Request\ParameterCollection::buildFromRequestsparams($params);
 	}
+	
+	function build_action_metadata(array $params): \AdventistCommons\Domain\Metadata\ActionMetadata
+	{
+		return \AdventistCommons\Domain\Metadata\ActionMetadata::buildFromArray($params);
+	}
 }

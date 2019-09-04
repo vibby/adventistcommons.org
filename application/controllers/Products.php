@@ -110,7 +110,12 @@ class Products extends CI_Controller {
 		if( isset($data["series_id"]) ) {
 			unset($data["series_id"]);
 		}
-		if (!$product = $this->submit_entity(\AdventistCommons\Domain\Entity\Product::class, $data)) {
+		if (!$product = $this->submit_entity(
+			[
+				'class' => \AdventistCommons\Domain\Entity\Product::class,
+			],
+			$data
+		)) {
 			return false;
 		}
 		/** @var \AdventistCommons\Domain\Action\StoreEntity $storeAction */
@@ -190,13 +195,17 @@ class Products extends CI_Controller {
 		redirect( "/products", "refresh" );
 	}
 	
-	private function submit_entity(string $entityClass, array $data) {
+	private function submit_entity($actionMetadata, array $data) {
 		
-		/** @var \AdventistCommons\Domain\Action\SubmitEntity $buildAction */
+		if (!is_array($actionMetadata)) {
+			$actionMetadata = ['class' => $actionMetadata];
+		}
+		
+		/** @var \AdventistCommons\Domain\Action\SubmitEntity $submitAction */
 		$submitAction = $this->container->get(\AdventistCommons\Domain\Action\SubmitEntity::class);
 		try {
 			$product = $submitAction->act(
-				$entityClass,
+				build_action_metadata($actionMetadata),
 				build_entity_params_from_request($data),
 				build_uploaded_files_from_request($_FILES)
 			);

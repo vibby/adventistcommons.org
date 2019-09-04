@@ -4,6 +4,7 @@ namespace AdventistCommons\Domain\Action;
 
 use AdventistCommons\Domain\Entity\Entity;
 use AdventistCommons\Domain\Hydrator\Hydrator;
+use AdventistCommons\Domain\Metadata\ActionMetadata;
 use AdventistCommons\Domain\Metadata\MetadataManager;
 use AdventistCommons\Domain\Request\UploadedCollection;
 use AdventistCommons\Domain\Repository\RepositoryLister;
@@ -35,11 +36,12 @@ class SubmitEntity
     }
     
     public function act(
-        string $className,
+        ActionMetadata $actionMetadata,
         ParameterCollection $entityData,
         UploadedCollection $uploadedFiles = null
     ): Entity {
-        $entity = null;
+        $entity    = null;
+        $className = $actionMetadata->getClass();
         if (isset($entityData['id']) && $entityData['id']) {
             $repository = $this->repositoryLister->getForClassName($className);
             $entity     = $repository->find($entityData['id']);
@@ -48,7 +50,7 @@ class SubmitEntity
             $entity ?? $className,
             $entityData,
             $uploadedFiles,
-            false
+            $actionMetadata
         );
         $validatorClass = $this->metadataManager->getForClass($className)->getValidator();
         /** @var EntityValidator $validator */

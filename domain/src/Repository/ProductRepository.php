@@ -48,7 +48,7 @@ class ProductRepository
         $products = [];
         if ($data) {
             foreach ($data['product'] as $productData) {
-                $products[] = $this->hydrator->hydrate(Product::class, $productData);
+                $products[] = $this->hydrator->hydrateCached(Product::class, $productData);
             }
         }
 

@@ -39,6 +39,11 @@ class EntityMetadata
         $this->className = $className;
     }
     
+    public function mergeWithActionMetadata(ActionMetadata $actionMetadata): void
+    {
+        $this->metadata['fields'] = array_merge($this->get('fields'), $actionMetadata->get('fields'));
+    }
+    
     public function getFieldsForHydratorNormalizer($normalizerName)
     {
         return $this->getFieldsWithProperty('hydrate_normalizer', $normalizerName);
