@@ -156,7 +156,7 @@ class Products extends CI_Controller {
 				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
 				return false;
 			}
-			$data["idml_file"] = $idml_file["file_name"];
+			$data["idml_file"] = $idml_file["raw_name"];
 		}
 		
 		if( $data["series_id"] == "" ) {
@@ -307,9 +307,24 @@ class Products extends CI_Controller {
 		if ( ! $this->upload->do_upload( "idml_file" ) ) {
 			return false;
 		}
-		
 		$file = $this->upload->data();
+		$this->_unzipIdml( $file["file_name"], $file["raw_name"] );
+		
 		return $this->upload->data();
+	}
+	
+	private function _unzipIdml( $file_name, $raw_name ) {
+		$this->load->library( "zip" );
+		$unzip_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/extracted/" . $raw_name;
+		$zip = new ZipArchive();
+		if( $zip->open( $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file_name ) ) {
+			if( ! $zip->extractTo( $unzip_path ) ) {
+				throw new Error( "Unable to extract file" );
+			}
+			$zip->close();
+		} else {
+			throw new Error( "Unable to open file" );
+		}
 	}
 	
 	private function _parseIdml( $file, $product_id ) {
