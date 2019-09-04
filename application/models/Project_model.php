@@ -75,7 +75,7 @@ class Project_model extends CI_Model
 	}
 	
 	public function getProject( $project_id ) {
-		$project = $this->db->select( "projects.*, languages.name as language_name, languages.google_code as google_code" )
+		$project = $this->db->select( "projects.*, languages.name as language_name, languages.google_code as google_code, languages.rtl as text_rtl" )
 			->from( "projects" )
 			->join( "languages", "projects.language_id = languages.id" )
 			->where( "projects.id", $project_id )
@@ -89,11 +89,14 @@ class Project_model extends CI_Model
 		return $project;
 	}
 	
-	public function getMembers( $project_id ) {
-		return $this->db->select( "*" )
+	public function getMembers( $project_id, $show_invited ) {
+		$query = $this->db->select( "*" )
 			->from( "project_members" )
-			->where( "project_id", $project_id )
-			->join( "users", "project_members.user_id = users.id" )
+			->where( "project_id", $project_id );
+		if( ! $show_invited ) {
+			$query->where( "invite_email", null );
+		}
+		return $query->join( "users", "project_members.user_id = users.id", "left" )
 			->get()
 			->result_array();
 	}

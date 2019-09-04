@@ -29,7 +29,7 @@
 										</div>
 									{% endfor %}
 									<div class="form-group">
-										<textarea class="form-control" {{ ( not can_commit or p.total_approvals > 0 and not can_always_commit ) ? "disabled": '' }}  rows="{{ p.textarea_height }}">{{ p.latest_revision }}</textarea>
+										<textarea class="form-control {% if project.text_rtl %} text-rtl{% endif %}" {{ ( not can_commit or p.total_approvals > 0 and not can_always_commit ) ? "disabled": '' }}  rows="{{ p.textarea_height }}">{{ p.latest_revision }}</textarea>
 									</div>
 									<nav class="clearfix">
 										<div class="form-group float-left">
