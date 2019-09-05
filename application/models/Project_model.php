@@ -177,10 +177,11 @@ class Project_model extends CI_Model
 	}
 	
 	private function _getTotalStringCountsBySection( $product_id ) {
-		$strings = $this->db->select( "section_id, COUNT(id) as count" )
+		$strings = $this->db->select( "section_id, COUNT(product_content.id) as count" )
 			->where( "product_id", $product_id )
 			->group_by( "section_id" )
 			->from( "product_content" )
+			->join( "product_sections", "product_sections.id = product_content.section_id" )
 			->get()
 			->result_array();
 		
@@ -195,6 +196,7 @@ class Project_model extends CI_Model
 		return $this->db->select( "id" )
 			->where( "product_id", $product_id )
 			->from( "product_content" )
+			->join( "product_sections", "product_sections.id = product_content.section_id" )
 			->count_all_results();
 	}
 	
