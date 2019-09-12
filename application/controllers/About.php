@@ -19,4 +19,10 @@ class About extends CI_Controller {
 	{
 		$this->twig->display( "twigs/content/privacy_policy" );
 	}
+	
+	public function faq()
+	{
+		$this->twig->display( "twigs/content/faq" );
+	}
+
 }
