@@ -108,6 +108,21 @@ Follow the steps below to setup AdventistCommons on your local development envir
 - Update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) with the alias you used to access the Adventist Commons install (eg. "localhost" or "adventistcommons.local").
 - Let us know if you have any issues with these steps.
 
+### Mac OS
+Instructions:
+- Clone the repository.
+- Create a database and import `schema.sql` file.
+- Setup `application/config/config.php` with your variables.
+- Setup `applications/config/database.php` with your variables.
+- Install dependencies 
+	- `$ composer require google/cloud-translate`
+	- `$ composer require kenjis/codeigniter-ss-twig`
+	- `php vendor /kenjis/codeigniter-ss-twig/install.php`
+- Edit `config.php` and change 
+	- ~~`$config['composer_autoload'] = TRUE;`~~
+	- `$config['composer_autoload'] = 'vendor/autoload.php';`
+- Run your web application
+
 ## License
 
 All resources on AdventistCommons.org are licensed under the [Creative Commons Attribution-NoDerivatives 4.0 International License](http://creativecommons.org/licenses/by-nd/4.0/) (CC BY-ND 4.0).
