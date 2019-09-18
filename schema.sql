@@ -298,6 +298,7 @@ CREATE TABLE `product_sections` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int(11) unsigned NOT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `order` int(11) NOT NULL DEFAULT '0',
   `xliff_region` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),

@@ -136,3 +136,13 @@ $autoload['model'] = array();
 
 # Load the template library when the spark is loaded
 $autoload['libraries'] = array();
+/*
+| -------------------------------------------------------------------
+|  Auto-load Eloquent ORM folder
+| -------------------------------------------------------------------
+ */
+spl_autoload_register(function ($class) {
+    if (file_exists(APPPATH . 'eloquent/' . $class . '.php')) {
+        include APPPATH . 'eloquent/' . $class . '.php';
+    }
+});      

@@ -10,6 +10,14 @@ class Products extends CI_Controller {
 		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
 		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
+
+		$this->data = new stdClass();
+		$this->load->helper('url');
+		require_once 'application/libraries/IDMLfile.class.php';
+		require_once 'application/libraries/IDMLcontentColletion.class.php';
+		require_once 'application/libraries/IDMLtagCollection.class.php';
+		require_once 'application/libraries/IDMLlib.php';
+		require_once 'application/utils/IDMLextend.php';
 		$user = $this->ion_auth->user()->row();
 		if( $user ) {
 			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
@@ -170,12 +178,48 @@ class Products extends CI_Controller {
 		if( $is_new ) {
 			$this->db->insert( "products", $data );
 			$id = $this->db->insert_id();
+
+			//var_dump($data["idml_file"] );
+
+			$param = array("uploads/".$data['idml_file'].".idml");
+		
+			$file = new IDMLfile($param);
+
+			$idml = new IDMLlib($file);
+			
+			$idmlExtend = new IDMLextend();
+
+
+			$this->data->all_contents = $idml->getMyContent('Story');
+			
+
+			$this-> data->body = $idmlExtend-> getBody($this->data->all_contents);
+
+			$this-> data->back = $idmlExtend-> getBack($this->data->all_contents);
+
+			$this-> data->cover = $idmlExtend-> getCover($this->data->all_contents);
+
+			$this-> data->sections = $idmlExtend-> getSections($this->data->all_contents);
+
+			$sections = $this-> data->sections;
+
+			var_dump($sections);
+
+			foreach ($sections as $content) {
+
+				$section = ProductSection::create(array('product_id' => $id,
+														'name' => $content));
+
+			}
+
+
+			
 			
 			if( isset( $idml_file ) ) {
 				//$this->_parseIdml( $idml_file["file_name"], $id );
 			}
 			
-			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+			//$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
 		} else {
 			$this->db->where( "id", $data["id"] );
 			$this->db->update( "products", $data );
@@ -262,7 +306,7 @@ class Products extends CI_Controller {
 	
 	private function _uploadCoverImage() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
-		$config["allowed_types"] = "jpg|jpeg|png";
+		$config["allowed_types"] = "*";
 		$config["max_size"] = 10000;
 		$config["encrypt_name"] = true;
 
