@@ -134,22 +134,6 @@ class IDMLextend
 						$text = array();
 
 						foreach ($loop_element[$i] as $k => $v) {
-						 /*	
-						 if($k == "CharacterStyleRange"){
-							
-							foreach ($v as $kk => $vv) {
-	
-								 if($kk == "Content" && trim($vv) != ''){
-	
-									array_push($text, trim($vv));
-								 }
-	
-								 if($kk == "Br"){
-									array_push($text, "\r\n");
-								 }
-	
-							}
-						 }*/
 
 						 foreach ($v as $kk => $vv) {
 									if($kk == "Content" && trim($vv) != ''){
@@ -164,20 +148,6 @@ class IDMLextend
 									}
 							}
 						}
-						/*
-					
-						if(join($text) != '' ){
-
-							$data = array(
-								'product_id' =>  $product_id,
-								'section_id' =>  $product->id,
-								'content' => join($text)
-							);
-							
-							$this-> createProductContent($data);
-							//array_push($paragraphs,join($text));
-	
-						}*/
 
 					}
 					
@@ -185,11 +155,6 @@ class IDMLextend
 	
 				
 			}
-	
-
-
-
-			echo $position;
 		}
 
   }
