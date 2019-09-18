@@ -199,27 +199,14 @@ class Products extends CI_Controller {
 
 			$this-> data->cover = $idmlExtend-> getCover($this->data->all_contents);
 
-			$this-> data->sections = $idmlExtend-> getSections($this->data->all_contents);
-
-			$sections = $this-> data->sections;
-
-			var_dump($sections);
-
-			foreach ($sections as $content) {
-
-				$section = ProductSection::create(array('product_id' => $id,
-														'name' => $content));
-
-			}
-
-
-			
-			
+			$this-> data->sections = $idmlExtend-> getSections($this->data->all_contents, $id);
+			$this-> data->sections = $idmlExtend-> getProductContent($this->data->all_contents, $id);
+					
 			if( isset( $idml_file ) ) {
 				//$this->_parseIdml( $idml_file["file_name"], $id );
 			}
 			
-			//$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
 		} else {
 			$this->db->where( "id", $data["id"] );
 			$this->db->update( "products", $data );
