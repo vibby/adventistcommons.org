@@ -100,9 +100,11 @@ Graphic Designers:
 
 Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with PHP and MySQL installed.
 
+### Windows
+Instructions:
 - Clone the repository to the public directory of your localhost environment.
 - We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository.
-  If you are using the default "localhost" server address, update $config['base_url'] (line 26) in the file \application\config\config.example.php to http://localhost and save the new file as config.php.
+- If you are using the default "localhost" server address, update $config['base_url'] (line 26) in the file \application\config\config.example.php to http://localhost and save the new file as config.php.
 - Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
 - Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) (file schema.sql)in your favorite MySQL client.
 - Update 'hostname','username','password','database' (lines 78-81) in the file \application\config\database.example.php with your database credentials and save the new file as database.php.
@@ -112,7 +114,7 @@ Follow the steps below to setup AdventistCommons on your local development envir
 
 ### Mac OS
 Instructions:
-- Clone the repository.
+- Clone the repository to the public directory of your localhost environment.
 - Create a database and import `schema.sql` file.
 - Setup `application/config/config.php` with your variables.
 - Setup `applications/config/database.php` with your variables.
