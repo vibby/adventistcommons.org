@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ $config['index_page'] = '';
 |
 | WARNING: If you set this to 'PATH_INFO', URIs will always be URL-decoded!
 */
-$config['uri_protocol']	= 'REQUEST_URI';
+$config['uri_protocol']    = 'REQUEST_URI';
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +76,7 @@ $config['url_suffix'] = '';
 | than english.
 |
 */
-$config['language']	= 'english';
+$config['language']    = 'english';
 
 /*
 |--------------------------------------------------------------------------
@@ -98,9 +98,10 @@ $config['charset'] = 'UTF-8';
 |
 | If you would like to use the 'hooks' feature you must enable it by
 | setting this variable to TRUE (boolean).  See the user guide for details.
+| Enable Hooks for use Sentry, Eloquent ORM
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -400,11 +401,11 @@ $config['sess_regenerate_destroy'] = FALSE;
 |       'cookie_httponly') will also affect sessions.
 |
 */
-$config['cookie_prefix']	= '';
-$config['cookie_domain']	= '';
-$config['cookie_path']		= '/';
-$config['cookie_secure']	= FALSE;
-$config['cookie_httponly'] 	= FALSE;
+$config['cookie_prefix']    = '';
+$config['cookie_domain']    = '';
+$config['cookie_path']        = '/';
+$config['cookie_secure']    = FALSE;
+$config['cookie_httponly']     = FALSE;
 
 /*
 |--------------------------------------------------------------------------
