@@ -1,6 +1,9 @@
 <?php
 ini_set('memory_limit', '-1');
 
+use AdventistCommons\Eloquent\ProductContent;
+use AdventistCommons\Eloquent\ProductSection;
+
 class IDMLextend
 {
 	public $structure = array();

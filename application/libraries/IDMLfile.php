@@ -1,5 +1,4 @@
 <?php
-ini_set('memory_limit', '-1');
 
 class IDMLfile
 {
@@ -26,7 +25,6 @@ class IDMLfile
   public function getContentFile($file, $xml = false)
   {
     $content = '';
-    //var_dump($this->structure);
     if(isset($this->structure[$file]))
     {
       if($xml)
@@ -42,8 +40,6 @@ class IDMLfile
 
     return simplexml_load_string($this->structure[$file]);
   }
-
-
 
   public function getAllFilesContent()
   {
@@ -73,17 +69,10 @@ class IDMLfile
       if($this->checkMimeType($location))
       {
         $this->resource = zip_open($location);
-
-        
-
         while ($zip_entry = zip_read($this->resource))
         {
-          //var_dump(strip_tags( zip_entry_read($zip_entry,134217728 )));  
           $this->structure[zip_entry_name($zip_entry)] = zip_entry_read($zip_entry,134217728);
         }
-        // echo "<pre>";
-        // print_r($this->structure['Stories/Story_u1ab.xml']);
-        // echo "</pre>";
       }
     }else{
       throw new Exception('File not found');
@@ -117,12 +106,8 @@ class IDMLfile
    */
   private function getMimeType($location)
   {
-    //exit();
     $finfo = new finfo(FILEINFO_MIME);
     $type = $finfo->file($location);
-
-    //var_dump($type);
-
     return $type;
   }
 

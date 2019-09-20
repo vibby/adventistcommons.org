@@ -17,7 +17,6 @@ class Home extends CI_Controller {
 		$this->load->library( [ "ion_auth", "twig" ] );
 		$this->load->model( "product_model" );
 
-
 		$user = $this->ion_auth->user()->row();
 		if( $user ) {
 			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );

@@ -26,13 +26,7 @@ class IDMLlib
   {
     $arr = array();
     $stories = $this->file->getContentFile('Stories/Story_u1ab.xml');
-
-     //var_dump($stories);
-
     $collection = new IDMLcontentCollection($this->file, $stories);
-
-    //var_dump($collection->getContentByTagName($name));
-
     return $collection->getContentByTagName($name);
 
   }
@@ -43,28 +37,12 @@ class IDMLlib
     foreach ($this->file->structure as $key => $value) {
         if(strpos($key, 'Story_') != false){
           $stories = $this->file->getContentFile($key);
-
-           //var_dump($stories);
-
           $collection = new IDMLcontentCollection($this->file, $stories);
-
-          //var_dump($collection->getContentByTagName($name));
-
           $arr[] = $collection->getMyContent($name);
         }
     }
     
     return $arr;
-  }
-
-  /**
-   * get content by tag
-   * @param IDMLtagCollection $tag
-   * @param bool $html
-   */
-  public function getContentByTag(IDMLtagCollection $tag, $html = true)
-  {
-
   }
 
   /**
