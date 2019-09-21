@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /*
 | -------------------------------------------------------------------
@@ -140,9 +140,10 @@ $autoload['libraries'] = array();
 | -------------------------------------------------------------------
 |  Auto-load Eloquent ORM folder
 | -------------------------------------------------------------------
+ */
+
 spl_autoload_register(function ($class) {
     if (file_exists(APPPATH . 'eloquent/' . $class . '.php')) {
         include APPPATH . 'eloquent/' . $class . '.php';
     }
-});      
- */
+});
