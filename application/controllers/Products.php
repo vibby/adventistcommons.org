@@ -5,14 +5,22 @@ class Products extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
-		$this->load->helper( "url" );
-		$this->load->model( "product_model" );
+		$this->load->library(["ion_auth", "form_validation", "upload", "twig"]);
+		$this->load->helper("url");
+		$this->load->model("product_model");
+
+		$this->data = new stdClass();
+		$this->load->helper('url');
+		require_once 'application/libraries/IDMLfile.class.php';
+		require_once 'application/libraries/IDMLcontentColletion.class.php';
+		require_once 'application/libraries/IDMLtagCollection.class.php';
+		require_once 'application/libraries/IDMLlib.php';
+		require_once 'application/libraries/IDMLextend.php';
 		$user = $this->ion_auth->user()->row();
-		if( $user ) {
-			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
+		if ($user) {
+			$user->image = md5(strtolower(trim($this->ion_auth->user()->row()->email)));
 			$user->is_admin = $this->ion_auth->is_admin();
-			$this->twig->addGlobal( "user",  $user );
+			$this->twig->addGlobal("user",  $user);
 		}
 	}
 	
@@ -118,92 +126,106 @@ class Products extends CI_Controller {
 		$this->twig->display( "twigs/edit_product", $data );
 	}
 	
-	public function save() {
-		if( ! $this->ion_auth->is_admin() ) {
+	public function save()
+	{
+		if (!$this->ion_auth->is_admin()) {
 			show_404();
 		}
-		
+
 		$this->output->set_content_type("application/json");
-		
-		$this->form_validation->set_rules( "name", "Title", "required" );
-		$this->form_validation->set_rules( "page_count", "Page count", "required|numeric" );
-		$this->form_validation->set_rules( "type", "Product type", "required" );
-		
-		if( $this->form_validation->run() === false ) {
-			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
+
+		$this->form_validation->set_rules("name", "Title", "required");
+		$this->form_validation->set_rules("page_count", "Page count", "required|numeric");
+		$this->form_validation->set_rules("type", "Product type", "required");
+
+		if ($this->form_validation->run() === false) {
+			$this->output->set_output(json_encode(["error" => validation_errors()]));
 			return false;
 		}
 		$data = $this->input->post();
-		
-		$is_new = ! array_key_exists( "id", $data );
-		
-		if( ( array_key_exists( "id", $data ) && $_FILES["cover_image"]["name"] ) || $is_new ) {
+
+		$is_new = !array_key_exists("id", $data);
+
+		if ((array_key_exists("id", $data) && $_FILES["cover_image"]["name"]) || $is_new) {
 			$cover_image = $this->_uploadCoverImage();
-			if( ! $cover_image ) {
-				$this->output->set_output( json_encode( [ "error" => $this->imageUploadError ?? "Error uploading cover image" ] ) );
+			if (!$cover_image) {
+				$this->output->set_output(json_encode(["error" => $this->imageUploadError ?? "Error uploading cover image"]));
 				return false;
 			}
 			$data["cover_image"] = $cover_image["file_name"];
 		}
-		
+
 		$idml_file = null;
-		if( $is_new && $_FILES["idml_file"]["name"] ) {
+		if ($is_new && $_FILES["idml_file"]["name"]) {
 			$idml_file = $this->_uploadIdml();
-			if( ! $idml_file ) {
+			if (!$idml_file) {
 				die($this->upload->display_errors());
-				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
+				$this->output->set_output(json_encode(["error" => "Error uploading translation file"]));
 				return false;
 			}
 			$data["idml_file"] = $idml_file["raw_name"];
 		}
-		
-		if( $data["series_id"] == "" ) {
+
+		if ($data["series_id"] == "") {
 			$data["series_id"] = null;
-		} elseif( ! is_numeric( $data["series_id"] ) ) {
-			$this->db->insert( "series", [ "name" => $data["series_id"] ] );
+		} elseif (!is_numeric($data["series_id"])) {
+			$this->db->insert("series", ["name" => $data["series_id"]]);
 			$data["series_id"] = $this->db->insert_id();
 		}
-		
+
 		$data['audience'] = serialize($data['audience'] ?? []);
-		if( $is_new ) {
-			$this->db->insert( "products", $data );
+		if ($is_new) {
+			$this->db->insert("products", $data);
+
 			$id = $this->db->insert_id();
-			
-			if( isset( $idml_file ) ) {
-				//$this->_parseIdml( $idml_file["file_name"], $id );
-			}
-			
-			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+
+			$param = array("uploads/" . $data['idml_file'] . ".idml");
+
+			$file = new IDMLfile($param);
+
+			$idml = new IDMLlib($file);
+
+			$idmlExtend = new IDMLextend();
+
+			$this->data->all_contents = $idml->getMyContent('Story');
+
+			$this->data->sections = $idmlExtend->getSections($this->data->all_contents, $id);
+
+			$this->data->sections = $idmlExtend->getProductContent($this->data->all_contents, $id);
+
+			$this->output->set_output(json_encode(["redirect" => "/products/$id"]));
 		} else {
-			$this->db->where( "id", $data["id"] );
-			$this->db->update( "products", $data );
-			if( $_FILES["cover_image"]["name"] ) {
-				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
+			$this->db->where("id", $data["id"]);
+			$this->db->update("products", $data);
+			if ($_FILES["cover_image"]["name"]) {
+				$this->output->set_output(json_encode(["redirect" => "/products/edit/" . $data["id"]]));
 			} else {
-				$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
+				$this->output->set_output(json_encode(["success" => "Product info updated"]));
 			}
 		}
 	}
-	
-	public function save_idml() {
-		if( ! $this->ion_auth->is_admin() ) {
+
+	public function save_idml()
+	{
+		if (!$this->ion_auth->is_admin()) {
 			show_404();
 		}
-		
+
 		$this->output->set_content_type("application/json");
-		
+
 		$idml_file = $this->_uploadIdml();
-		if( ! $idml_file ) {
-			$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
+		if (!$idml_file) {
+			$this->output->set_output(json_encode(["error" => "Error uploading translation file"]));
 			return false;
 		}
-		
+
 		$data = $this->input->post();
 		$data["idml_file"] = $idml_file["file_name"];
-		$this->db->where( "id", $data["id"] );
-		$this->db->update( "products", $data );
-		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] . "#advanced" ] ) );
+		$this->db->where("id", $data["id"]);
+		$this->db->update("products", $data);
+		$this->output->set_output(json_encode(["redirect" => "/products/edit/" . $data["id"] . "#advanced"]));
 	}
+
 	
 	public function save_specs() {
 		if( ! $this->ion_auth->is_admin() ) {
@@ -258,21 +280,25 @@ class Products extends CI_Controller {
 		redirect( "/products", "refresh" );
 	}
 	
-	private function _uploadCoverImage() {
+	
+	private function _uploadCoverImage()
+	{
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
-		$config["allowed_types"] = "jpg|jpeg|png";
+		$config["allowed_types"] = "*";
 		$config["max_size"] = 10000;
 		$config["encrypt_name"] = true;
-		$this->load->library( "upload", $config );
-		$this->upload->initialize( $config );
-		if ( ! $this->upload->do_upload( "cover_image" ) ) {
-                       $this->imageUploadError = 'Cannot write uploaded cover image file';
+
+		$this->load->library("upload", $config);
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload("cover_image")) {
+			$this->imageUploadError = 'Cannot write uploaded cover image file';
 			return false;
 		}
 		$image = $this->upload->data();
 		$source_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $image["file_name"];
 		$target_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/";
-		
+
 		$config_manip = [
 			"image_library" => "gd2",
 			"source_image" => $source_path,
@@ -281,105 +307,51 @@ class Products extends CI_Controller {
 			"height" => 768,
 			"quality" => "70%",
 		];
-		$this->load->library( "image_lib", $config_manip );
-		if( ! $this->image_lib->resize() ) {
+
+		$this->load->library("image_lib", $config_manip);
+		if (!$this->image_lib->resize()) {
 			$this->imageUploadError = 'Cannot resize uploaded cover image file. May image library GD2 is missing';
 			return false;
 		}
 		$this->image_lib->clear();
+
 		return $this->upload->data();
 	}
-	
-	private function _uploadIdml() {
+
+	private function _uploadIdml()
+	{
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "idml";
 		$config["max_size"] = 50000;
 		$config["encrypt_name"] = true;
-		$this->upload->initialize( $config );
-		if ( ! $this->upload->do_upload( "idml_file" ) ) {
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload("idml_file")) {
 			return false;
 		}
 		$file = $this->upload->data();
-		$this->_unzipIdml( $file["file_name"], $file["raw_name"] );
-		
+		$this->_unzipIdml($file["file_name"], $file["raw_name"]);
+
 		return $this->upload->data();
 	}
-	
-	private function _unzipIdml( $file_name, $raw_name ) {
-		$this->load->library( "zip" );
+
+	private function _unzipIdml($file_name, $raw_name)
+	{
+		$this->load->library("zip");
 		$unzip_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/extracted/" . $raw_name;
 		$zip = new ZipArchive();
-		if( $zip->open( $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file_name ) ) {
-			if( ! $zip->extractTo( $unzip_path ) ) {
-				throw new Error( "Unable to extract file" );
+		if ($zip->open($_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file_name)) {
+			if (!$zip->extractTo($unzip_path)) {
+				throw new Error("Unable to extract file");
 			}
 			$zip->close();
 		} else {
-			throw new Error( "Unable to open file" );
+			throw new Error("Unable to open file");
 		}
 	}
 	
-	private function _parseIdml( $file, $product_id ) {
-		$xml = simplexml_load_file( $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file );
-		foreach( $xml as $key => $region ) {
-			if( $key == "interior" ) {
-				$this->_parseIdmlParagraphContent( $region, $product_id );
-			} else {
-				$this->_parseIdmlTagContent( $region, $key, $product_id );
-			}
-		}
-	}
-	
-	private function _parseIdmlParagraphContent( $region, $product_id ) {
-		$section_names = [
-			"maincontent" => "Main content",
-			"main" => "Main content",
-		];
-		foreach( $region as $region_name => $content ) {
-			$section_data = [
-				"product_id" => $product_id,
-				"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
-				"idml_region" => $region_name,
-			];
-			$this->db->insert( "product_sections", $section_data );
-			$section_id = $this->db->insert_id();
-			$paragraphs = preg_split("/\R/u", $content);;
-			
-			foreach( $paragraphs as $p ) {
-				$content_data = [
-					"product_id" => $product_id,
-					"content" => $p,
-					"section_id" => $section_id,
-					"is_hidden" => empty( $p ),
-				];
-				$this->db->insert( "product_content", $content_data );
-			}
-		}
-	}
-	
-	private function _parseIdmlTagContent( $region, $region_name, $product_id ) {
-		$section_names = [
-			"cover" => "Front cover",
-			"backcover" => "Back cover",
-		];
-		$section_data = [
-			"product_id" => $product_id,
-			"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
-			"idml_region" => $region_name,
-		];
-		$this->db->insert( "product_sections", $section_data );
-		$section_id = $this->db->insert_id();
-		foreach( $region as $tag_key => $tag ) {
-			$content_data = [
-				"product_id" => $product_id,
-				"content" => $tag,
-				"section_id" => $section_id,
-				"idml_tag" => $tag_key,
-			];
-			$this->db->insert( "product_content", $content_data );
-		}
-	}
-		
+
 	private function _uploadAttachment() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "pdf";
