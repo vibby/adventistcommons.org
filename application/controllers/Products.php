@@ -1,6 +1,13 @@
 <?php
 defined("BASEPATH") OR exit("No direct script access allowed");
+
+use AdventistCommons\Import\IDMLfile;
+use AdventistCommons\Import\IDMLlib;
+use AdventistCommons\Import\IDMLextend;
+
 class Products extends CI_Controller {
+	
+	
 	public function __construct()
 	{
 		parent::__construct();
@@ -11,11 +18,7 @@ class Products extends CI_Controller {
 
 		$this->data = new stdClass();
 		$this->load->helper('url');
-		require_once 'application/libraries/IDMLfile.class.php';
-		require_once 'application/libraries/IDMLcontentColletion.class.php';
-		require_once 'application/libraries/IDMLtagCollection.class.php';
-		require_once 'application/libraries/IDMLlib.php';
-		require_once 'application/libraries/IDMLextend.php';
+
 		$user = $this->ion_auth->user()->row();
 		if ($user) {
 			$user->image = md5(strtolower(trim($this->ion_auth->user()->row()->email)));
