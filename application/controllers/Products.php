@@ -1,9 +1,6 @@
 <?php
-defined("BASEPATH") or exit("No direct script access allowed");
-
-class Products extends CI_Controller
-{
-
+defined("BASEPATH") OR exit("No direct script access allowed");
+class Products extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
@@ -26,7 +23,7 @@ class Products extends CI_Controller
 			$this->twig->addGlobal("user",  $user);
 		}
 	}
-
+	
 	public $audience = [
 		"Christian",
 		"Muslim",
@@ -36,14 +33,14 @@ class Products extends CI_Controller
 		"Animist",
 		"Secular",
 	];
-
+	
 	public $product_types = [
 		"book",
 		"magabook",
 		"booklet",
 		"tract",
 	];
-
+	
 	public $product_binding = [
 		"Hardcover",
 		"Perfect Bound",
@@ -51,15 +48,15 @@ class Products extends CI_Controller
 		"Saddle Stitch",
 		"Folded",
 	];
-
+	
 	public $breadcrumbs = [
 		[
 			"label" => "Products",
 			"url" => "/products",
 		],
 	];
-
-	public function index($product_id = null)
+	
+	public function index( $product_id = null )
 	{
 		$data = [
 			"products" => $this->product_model->getProducts(),
@@ -68,26 +65,25 @@ class Products extends CI_Controller
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
 		];
-		$this->breadcrumbs[] = ["label" => "All Products"];
-		$this->twig->addGlobal("title", "Products");
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/products", $data);
+		$this->breadcrumbs[] = [ "label" => "All Products"  ];
+		$this->twig->addGlobal( "title", "Products" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/products", $data );
 	}
-
-	public function detail($product_id)
-	{
-		$this->load->model("project_model");
-		$product = $this->product_model->getProduct($product_id);
-		if (!$product) show_404();
-		$attachments = $this->product_model->getAttachments($product_id);
+	
+	public function detail( $product_id ) {
+		$this->load->model( "project_model" );
+		$product = $this->product_model->getProduct( $product_id );
+		if( ! $product ) show_404();
+		$attachments = $this->product_model->getAttachments( $product_id );
 		$languages = [];
-		foreach ($attachments as $attachment) {
+		foreach( $attachments as $attachment ) {
 			$languages[$attachment["language_id"]]["language_name"] = $attachment["name"];
 			$languages[$attachment["language_id"]]["attachments"][] = $attachment;
 		}
-		$projects = $this->project_model->getProjectsByProductId($product_id);
-		foreach ($projects as $project) {
-			if (!array_key_exists($project["language_id"], $languages)) {
+		$projects = $this->project_model->getProjectsByProductId( $product_id );
+		foreach( $projects as $project ) {
+			if( ! array_key_exists( $project["language_id"], $languages ) ) {
 				$languages[$project["language_id"]]["language_name"] = $project["language_name"];
 				$languages[$project["language_id"]]["project"] = $project;
 			}
@@ -97,21 +93,20 @@ class Products extends CI_Controller
 			"languages" => $languages,
 			"file_types" => $this->product_model->file_types,
 		];
-		$this->breadcrumbs[] = ["label" => $product["name"]];
-		$this->twig->addGlobal("title", $product["name"]);
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/product", $data);
+		$this->breadcrumbs[] = [ "label" => $product["name"]  ];
+		$this->twig->addGlobal( "title", $product["name"] );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/product", $data );
 	}
-
-	public function edit($product_id)
-	{
-		if (!$this->ion_auth->is_admin()) {
+	
+	public function edit( $product_id ) {
+		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-
-		$product = $this->product_model->getProduct($product_id);
-		if (!$product) show_404();
-
+		
+		$product = $this->product_model->getProduct( $product_id );
+		if( ! $product ) show_404();
+		
 		$data = [
 			"product" => $product,
 			"audience_options" => $this->audience,
@@ -126,11 +121,11 @@ class Products extends CI_Controller
 		$this->breadcrumbs[] = [
 			"label" => "Edit",
 		];
-		$this->twig->addGlobal("title", "Edit Product");
-		$this->twig->addGlobal("breadcrumbs", $this->breadcrumbs);
-		$this->twig->display("twigs/edit_product", $data);
+		$this->twig->addGlobal( "title", "Edit Product" );
+		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
+		$this->twig->display( "twigs/edit_product", $data );
 	}
-
+	
 	public function save()
 	{
 		if (!$this->ion_auth->is_admin()) {
@@ -198,10 +193,6 @@ class Products extends CI_Controller
 
 			$this->data->sections = $idmlExtend->getProductContent($this->data->all_contents, $id);
 
-			if (isset($idml_file)) {
-				//$this->_parseIdml( $idml_file["file_name"], $id );
-			}
-
 			$this->output->set_output(json_encode(["redirect" => "/products/$id"]));
 		} else {
 			$this->db->where("id", $data["id"]);
@@ -235,62 +226,61 @@ class Products extends CI_Controller
 		$this->output->set_output(json_encode(["redirect" => "/products/edit/" . $data["id"] . "#advanced"]));
 	}
 
-	public function save_specs()
-	{
-		if (!$this->ion_auth->is_admin()) {
+	
+	public function save_specs() {
+		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-
+		
 		$this->output->set_content_type("application/json");
 		$data = $this->input->post();
-		$this->db->where("id", $data["id"]);
-		$this->db->update("products", $data);
-		$this->output->set_output(json_encode(["success" => "Product info updated"]));
+		$this->db->where( "id", $data["id"] );
+		$this->db->update( "products", $data );
+		$this->output->set_output( json_encode( [ "success" => "Product info updated" ] ) );
 	}
-
-	public function add_file()
-	{
-		if (!$this->ion_auth->is_admin()) {
+	
+	public function add_file() {
+		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-
+		
 		$this->output->set_content_type("application/json");
-
-		$this->form_validation->set_rules("language_id", "Language", "required");
-		$this->form_validation->set_rules("product_id", "Product ID", "required");
-		$this->form_validation->set_rules("file_type", "File type", "required");
-
-		if ($this->form_validation->run() === false) {
-			$this->output->set_output(json_encode(["error" => validation_errors()]));
+		
+		$this->form_validation->set_rules( "language_id", "Language", "required" );
+		$this->form_validation->set_rules( "product_id", "Product ID", "required" );
+		$this->form_validation->set_rules( "file_type", "File type", "required" );
+		
+		if( $this->form_validation->run() === false ) {
+			$this->output->set_output( json_encode( [ "error" => validation_errors() ] ) );
 			return false;
 		}
 		$data = $this->input->post();
-
+		
 		$attachment = $this->_uploadAttachment();
-		if (!$attachment) {
-			$this->output->set_output(json_encode(["error" => "Error uploading file"]));
+		if( ! $attachment ) {
+			$this->output->set_output( json_encode( [ "error" => "Error uploading file" ] ) );
 			return false;
 		}
-
+		
 		$data["file"] = $attachment["file_name"];
-
-		$this->db->insert("product_attachments", $data);
+		
+		$this->db->insert( "product_attachments", $data );
 		$id = $this->db->insert_id();
-		$this->output->set_output(json_encode(["redirect" => "/products/" . $data["product_id"]]));
+		$this->output->set_output( json_encode( [ "redirect" => "/products/" . $data["product_id"] ] ) );
 	}
-
-	public function delete($product_id)
-	{
-		if (!$this->ion_auth->is_admin()) {
+	
+	public function delete( $product_id ) {
+		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-
-		$this->db->where("id", $product_id)
-			->delete("products");
-
-		redirect("/products", "refresh");
+		
+		$this->db->where( "id", $product_id )
+			->delete( "products" );
+		
+		redirect( "/products", "refresh" );
 	}
-
+	
+	
 	private function _uploadCoverImage()
 	{
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
@@ -360,84 +350,18 @@ class Products extends CI_Controller
 			throw new Error("Unable to open file");
 		}
 	}
+	
 
-	private function _parseIdml($file, $product_id)
-	{
-		$xml = simplexml_load_file($_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file);
-		foreach ($xml as $key => $region) {
-			if ($key == "interior") {
-				$this->_parseIdmlParagraphContent($region, $product_id);
-			} else {
-				$this->_parseIdmlTagContent($region, $key, $product_id);
-			}
-		}
-	}
-
-	private function _parseIdmlParagraphContent($region, $product_id)
-	{
-		$section_names = [
-			"maincontent" => "Main content",
-			"main" => "Main content",
-		];
-		foreach ($region as $region_name => $content) {
-			$section_data = [
-				"product_id" => $product_id,
-				"name" => $section_names[$region_name] ?? ucfirst(str_replace("_", " ", $region_name)),
-				"idml_region" => $region_name,
-			];
-			$this->db->insert("product_sections", $section_data);
-			$section_id = $this->db->insert_id();
-			$paragraphs = preg_split("/\R/u", $content);;
-
-			foreach ($paragraphs as $p) {
-				$content_data = [
-					"product_id" => $product_id,
-					"content" => $p,
-					"section_id" => $section_id,
-					"is_hidden" => empty($p),
-				];
-				$this->db->insert("product_content", $content_data);
-			}
-		}
-	}
-
-	private function _parseIdmlTagContent($region, $region_name, $product_id)
-	{
-		$section_names = [
-			"cover" => "Front cover",
-			"backcover" => "Back cover",
-		];
-		$section_data = [
-			"product_id" => $product_id,
-			"name" => $section_names[$region_name] ?? ucfirst(str_replace("_", " ", $region_name)),
-			"idml_region" => $region_name,
-		];
-		$this->db->insert("product_sections", $section_data);
-		$section_id = $this->db->insert_id();
-		foreach ($region as $tag_key => $tag) {
-			$content_data = [
-				"product_id" => $product_id,
-				"content" => $tag,
-				"section_id" => $section_id,
-				"idml_tag" => $tag_key,
-			];
-			$this->db->insert("product_content", $content_data);
-		}
-	}
-
-	private function _uploadAttachment()
-	{
+	private function _uploadAttachment() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "pdf";
 		$config["max_size"] = 50000;
 		$config["encrypt_name"] = true;
-
-		$this->upload->initialize($config);
-
-		if (!$this->upload->do_upload("file")) {
+		$this->upload->initialize( $config );
+		if ( ! $this->upload->do_upload( "file" ) ) {
 			return false;
 		}
-
+		
 		$file = $this->upload->data();
 		return $this->upload->data();
 	}
