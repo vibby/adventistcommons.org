@@ -9,7 +9,8 @@ class IDMLextend
 	public $structure = array();
 
 	public function __construct()
-	{ }
+	{ 
+	}
 
 	public function createSection($data)
 	{

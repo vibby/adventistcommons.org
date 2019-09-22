@@ -1,9 +1,8 @@
 <?php
-
+namespace AdventistCommons\Traits;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-class EloquentHook {
-
+trait EloquentTrait{
 	/**
 	 * Holds the instance
 	 * @var object
@@ -56,5 +55,4 @@ class EloquentHook {
 		$capsule->setAsGlobal();
 		$capsule->bootEloquent();
 	}
-
 }

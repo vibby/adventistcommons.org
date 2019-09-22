@@ -5,13 +5,19 @@ use AdventistCommons\Import\IDMLfile;
 use AdventistCommons\Import\IDMLlib;
 use AdventistCommons\Import\IDMLextend;
 
+
 class Products extends CI_Controller {
 	
+	use AdventistCommons\Traits\EloquentTrait;
 	
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
+
+
+		$this->bootEloquent();
+
 		$this->load->library(["ion_auth", "form_validation", "upload", "twig"]);
 		$this->load->helper("url");
 		$this->load->model("product_model");
