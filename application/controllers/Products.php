@@ -1,13 +1,24 @@
 <?php
 defined("BASEPATH") OR exit("No direct script access allowed");
+
+use AdventistCommons\Import\IDMLfile;
+use AdventistCommons\Import\IDMLlib;
+use AdventistCommons\Import\IDMLextend;
+
 class Products extends CI_Controller {
+
+	use AdventistCommons\Eloquent\EloquentTrait;
+	
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
+		$this->bootEloquent();
 		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
 		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
+		$this->data = new stdClass();
+		$this->load->helper('url');
 		$user = $this->ion_auth->user()->row();
 		if( $user ) {
 			$user->image = md5( strtolower( trim( $this->ion_auth->user()->row()->email ) ) );
@@ -146,14 +157,14 @@ class Products extends CI_Controller {
 			$data["cover_image"] = $cover_image["file_name"];
 		}
 		
-		$xliff_file = null;
-		if( $is_new && $_FILES["xliff_file"]["name"] ) {
-			$xliff_file = $this->_uploadXliff();
-			if( ! $xliff_file ) {
+		$idml_file = null;
+		if( $is_new && $_FILES["idml_file"]["name"] ) {
+			$idml_file = $this->_uploadIdml();
+			if( ! $idml_file ) {
 				$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
 				return false;
 			}
-			$data["xliff_file"] = $xliff_file["file_name"];
+			$data["idml_file"] = $idml_file["raw_name"];
 		}
 		
 		if( $data["series_id"] == "" ) {
@@ -165,14 +176,25 @@ class Products extends CI_Controller {
 		
 		$data['audience'] = serialize($data['audience'] ?? []);
 		if( $is_new ) {
-			$this->db->insert( "products", $data );
+			$this->db->insert("products", $data);
+
 			$id = $this->db->insert_id();
-			
-			if( isset($xliff_file) ) {
-				$this->_parseXliff( $xliff_file["file_name"], $id );
-			}
-			
-			$this->output->set_output( json_encode( [ "redirect" => "/products/$id" ] ) );
+
+			$param = array("uploads/" . $data['idml_file'] . ".idml");
+
+			$file = new IDMLfile($param);
+
+			$idml = new IDMLlib($file);
+
+			$idmlExtend = new IDMLextend();
+
+			$this->data->all_contents = $idml->getMyContent('Story');
+
+			$this->data->sections = $idmlExtend->getSections($this->data->all_contents, $id);
+
+			$this->data->sections = $idmlExtend->getProductContent($this->data->all_contents, $id);
+
+			$this->output->set_output(json_encode(["redirect" => "/products/$id"]));
 		} else {
 			$this->db->where( "id", $data["id"] );
 			$this->db->update( "products", $data );
@@ -183,25 +205,26 @@ class Products extends CI_Controller {
 			}
 		}
 	}
-	
-	public function save_xliff() {
-		if( ! $this->ion_auth->is_admin() ) {
+
+	public function save_idml()
+	{
+		if (!$this->ion_auth->is_admin()) {
 			show_404();
 		}
-		
+
 		$this->output->set_content_type("application/json");
-		
-		$xliff_file = $this->_uploadXliff();
-		if( ! $xliff_file ) {
-			$this->output->set_output( json_encode( [ "error" => "Error uploading translation file" ] ) );
+
+		$idml_file = $this->_uploadIdml();
+		if (!$idml_file) {
+			$this->output->set_output(json_encode(["error" => "Error uploading translation file"]));
 			return false;
 		}
-		
+
 		$data = $this->input->post();
-		$data["xliff_file"] = $xliff_file["file_name"];
-		$this->db->where( "id", $data["id"] );
-		$this->db->update( "products", $data );
-		$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] . "#advanced" ] ) );
+		$data["idml_file"] = $idml_file["file_name"];
+		$this->db->where("id", $data["id"]);
+		$this->db->update("products", $data);
+		$this->output->set_output(json_encode(["redirect" => "/products/edit/" . $data["id"] . "#advanced"]));
 	}
 	
 	public function save_specs() {
@@ -288,82 +311,40 @@ class Products extends CI_Controller {
 		$this->image_lib->clear();
 		return $this->upload->data();
 	}
-	
-	private function _uploadXliff() {
+
+	private function _uploadIdml()
+	{
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
-		$config["allowed_types"] = "xml";
+		$config["allowed_types"] = "idml";
 		$config["max_size"] = 50000;
 		$config["encrypt_name"] = true;
-		$this->upload->initialize( $config );
-		if ( ! $this->upload->do_upload( "xliff_file" ) ) {
+
+		$this->upload->initialize($config);
+
+		if (!$this->upload->do_upload("idml_file")) {
 			return false;
 		}
-		
 		$file = $this->upload->data();
+		$this->_unzipIdml($file["file_name"], $file["raw_name"]);
+
 		return $this->upload->data();
 	}
-	
-	private function _parseXliff( $file, $product_id ) {
-		$xml = simplexml_load_file( $_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file );
-		foreach( $xml as $key => $region ) {
-			if( $key == "interior" ) {
-				$this->_parseXliffParagraphContent( $region, $product_id );
-			} else {
-				$this->_parseXliffTagContent( $region, $key, $product_id );
+
+	private function _unzipIdml($file_name, $raw_name)
+	{
+		$this->load->library("zip");
+		$unzip_path = $_SERVER["DOCUMENT_ROOT"] . "/uploads/extracted/" . $raw_name;
+		$zip = new ZipArchive();
+		if ($zip->open($_SERVER["DOCUMENT_ROOT"] . "/uploads/" . $file_name)) {
+			if (!$zip->extractTo($unzip_path)) {
+				throw new Error("Unable to extract file");
 			}
+			$zip->close();
+		} else {
+			throw new Error("Unable to open file");
 		}
 	}
-	
-	private function _parseXliffParagraphContent( $region, $product_id ) {
-		$section_names = [
-			"maincontent" => "Main content",
-			"main" => "Main content",
-		];
-		foreach( $region as $region_name => $content ) {
-			$section_data = [
-				"product_id" => $product_id,
-				"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
-				"xliff_region" => $region_name,
-			];
-			$this->db->insert( "product_sections", $section_data );
-			$section_id = $this->db->insert_id();
-			$paragraphs = preg_split("/\R/u", $content);;
-			
-			foreach( $paragraphs as $p ) {
-				$content_data = [
-					"product_id" => $product_id,
-					"content" => $p,
-					"section_id" => $section_id,
-					"is_hidden" => empty( $p ),
-				];
-				$this->db->insert( "product_content", $content_data );
-			}
-		}
-	}
-	
-	private function _parseXliffTagContent( $region, $region_name, $product_id ) {
-		$section_names = [
-			"cover" => "Front cover",
-			"backcover" => "Back cover",
-		];
-		$section_data = [
-			"product_id" => $product_id,
-			"name" => $section_names[$region_name] ?? ucfirst( str_replace( "_", " ", $region_name ) ),
-			"xliff_region" => $region_name,
-		];
-		$this->db->insert( "product_sections", $section_data );
-		$section_id = $this->db->insert_id();
-		foreach( $region as $tag_key => $tag ) {
-			$content_data = [
-				"product_id" => $product_id,
-				"content" => $tag,
-				"section_id" => $section_id,
-				"xliff_tag" => $tag_key,
-			];
-			$this->db->insert( "product_content", $content_data );
-		}
-	}
-		
+
 	private function _uploadAttachment() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "pdf";
