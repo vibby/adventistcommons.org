@@ -8,7 +8,7 @@ use AdventistCommons\Import\IDMLextend;
 
 class Products extends CI_Controller {
 	
-	use AdventistCommons\Traits\EloquentTrait;
+	use AdventistCommons\Eloquent\EloquentTrait;
 	
 	public function __construct()
 	{
