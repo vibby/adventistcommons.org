@@ -6,7 +6,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AdventistCommons\\Import\\": "import/idml",
+            "AdventistCommons\\Import\\": "import/",
             "AdventistCommons\\Eloquent\\": "eloquent/"
         }
     }

@@ -1,5 +1,5 @@
 <?php
-namespace AdventistCommons\Import;
+namespace AdventistCommons\Import\Idml;
 
 use \AdventistCommons\Eloquent\ProductSection;
 use \AdventistCommons\Eloquent\ProductContent;
@@ -7,10 +7,6 @@ use \AdventistCommons\Eloquent\ProductContent;
 class IDMLextend
 {	
 	public $structure = array();
-
-	public function __construct()
-	{ 
-	}
 
 	public function createSection($data)
 	{

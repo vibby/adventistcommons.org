@@ -1,5 +1,5 @@
 <?php
-namespace AdventistCommons\Import;
+namespace AdventistCommons\Import\Idml;
 
 class IDMLfile
 {
@@ -26,7 +26,6 @@ class IDMLfile
   public function getContentFile($file, $xml = false)
   {
     $content = '';
-    //var_dump($this->structure);
     if(isset($this->structure[$file]))
     {
       if($xml)
@@ -78,12 +77,8 @@ class IDMLfile
 
         while ($zip_entry = zip_read($this->resource))
         {
-          //var_dump(strip_tags( zip_entry_read($zip_entry,134217728 )));  
           $this->structure[zip_entry_name($zip_entry)] = zip_entry_read($zip_entry,134217728);
         }
-        // echo "<pre>";
-        // print_r($this->structure['Stories/Story_u1ab.xml']);
-        // echo "</pre>";
       }
     }else{
       throw new \Exception('File not found');
@@ -117,11 +112,8 @@ class IDMLfile
    */
   private function getMimeType($location)
   {
-    //exit();
     $finfo = new \finfo(FILEINFO_MIME);
     $type = $finfo->file($location);
-
-    //var_dump($type);
 
     return $type;
   }

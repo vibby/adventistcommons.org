@@ -1,5 +1,5 @@
 <?php
-namespace AdventistCommons\Import;
+namespace AdventistCommons\Import\Idml;
 class IDMLcontentCollection
 {
   private $rawXML;
@@ -21,7 +21,6 @@ class IDMLcontentCollection
     $domXML = new \DOMDocument();
     $domXML->loadXML($this->rawXML);
 
-    var_dump(simplexml_load_string($this->rawXML));
     $elements = $domXML->getElementsByTagName('XMLElement');
 
     /** @var DOMDocument $element */

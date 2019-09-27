@@ -1,5 +1,5 @@
 <?php
-namespace AdventistCommons\Import;
+namespace AdventistCommons\Import\Idml;
 class IDMLlib
 {
   private $file;

@@ -1,9 +1,9 @@
 <?php
 defined("BASEPATH") OR exit("No direct script access allowed");
 
-use AdventistCommons\Import\IDMLfile;
-use AdventistCommons\Import\IDMLlib;
-use AdventistCommons\Import\IDMLextend;
+use AdventistCommons\Import\Idml\IDMLfile;
+use AdventistCommons\Import\Idml\IDMLlib;
+use AdventistCommons\Import\Idml\IDMLextend;
 
 class Products extends CI_Controller {
 
