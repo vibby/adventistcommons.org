@@ -100,13 +100,32 @@ Graphic Designers:
 
 Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with PHP and MySQL installed.
 
-- Clone the repository to the public directory of your localhost environment
-- We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository. If you are using the default "localhost" server address, update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) to `http://localhost`.
+### Windows
+Instructions:
+- Clone the repository to the public directory of your localhost environment.
+- We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository.
+- If you are using the default "localhost" server address, update $config['base_url'] (line 26) in the file \application\config\config.example.php to http://localhost and save the new file as config.php.
 - Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
-- Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) in your favorite MySQL client.
-- Update [these lines](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/database.php#L78-L81) with your database credentials.
-- Update [this line](https://github.com/AdventistCommons/adventistcommons.org/blob/master/application/config/config.php#L26) with the alias you used to access the Adventist Commons install (eg. "localhost" or "adventistcommons.local").
+- Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) (file schema.sql)in your favorite MySQL client.
+- Update 'hostname','username','password','database' (lines 78-81) in the file \application\config\database.example.php with your database credentials and save the new file as database.php.
+- Update "$config['base_url']" (line 26) in the file \application\config\config.php with the alias you used to access the Adventist Commons install (eg. "localhost" or "adventistcommons.local").
+- To be able to test some features you may need to create a folder "uploads" in your document root.
 - Let us know if you have any issues with these steps.
+
+### Mac OS
+Instructions:
+- Clone the repository to the public directory of your localhost environment.
+- Create a database and import `schema.sql` file.
+- Setup `application/config/config.php` with your variables.
+- Setup `applications/config/database.php` with your variables.
+- Install dependencies 
+	- `$ composer require google/cloud-translate`
+	- `$ composer require kenjis/codeigniter-ss-twig`
+	- `php vendor /kenjis/codeigniter-ss-twig/install.php`
+- Edit `config.php` and change 
+	- ~~`$config['composer_autoload'] = TRUE;`~~
+	- `$config['composer_autoload'] = 'vendor/autoload.php';`
+- Run your web application
 
 ## License
 
