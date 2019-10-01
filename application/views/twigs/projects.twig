@@ -12,7 +12,7 @@
 				<div class="content-list">
 					<div class="row content-list-head">
 						<div class="col-auto">
-							<h3>Translations In Progress</h3>
+							<h3>Ongoing Translations</h3>
 						</div>
 						<div class="col-auto">
 							<div class="dropdown">
@@ -33,9 +33,9 @@
 						{% if projects|length == 0 %}
 							<p class="lead m-auto p-5">
 								{% if selected_language %}
-									No translations in progress for {{ selected_language.name }} – <a href='/projects?language=all'>view all languages</a>
+									No Ongoing Translations for {{ selected_language.name }} – <a href='/projects?language=all'>view all languages</a>
 								{% else %}
-									No translations in progress. 
+									No Ongoing Translations. 
 								{% endif %}
 							</p>
 						{% endif %}
