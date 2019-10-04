@@ -7,13 +7,10 @@ use AdventistCommons\Import\Idml\IDMLextend;
 
 class Products extends CI_Controller {
 
-	use AdventistCommons\Eloquent\EloquentTrait;
-	
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->bootEloquent();
 		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
 		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
@@ -190,9 +187,9 @@ class Products extends CI_Controller {
 
 			$this->data->all_contents = $idml->getMyContent('Story');
 
-			$this->data->sections = $idmlExtend->getSections($this->data->all_contents, $id);
+			$idmlExtend->getSections($this->data->all_contents, $id);
 
-			$this->data->sections = $idmlExtend->getProductContent($this->data->all_contents, $id);
+			$idmlExtend->getProductContent($this->data->all_contents, $id);
 
 			$this->output->set_output(json_encode(["redirect" => "/products/$id"]));
 		} else {

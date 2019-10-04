@@ -1,41 +1,47 @@
 <?php
 namespace AdventistCommons\Import\Idml;
 
-use \AdventistCommons\Eloquent\ProductSection;
-use \AdventistCommons\Eloquent\ProductContent;
-
 class IDMLextend
 {	
 	public $structure = array();
+	public $ci;
+
+	public function __construct()
+	{
+		$this->ci =& get_instance();
+		$this->ci->load->database();
+	}
 
 	public function createSection($data)
 	{
-
-		$section = ProductSection::create(array(
+		$this->ci->db->insert( "product_sections",array(
 			'product_id' => $data['id'],
 			'name' => $data['name'],
 			'position' => $data['position'],
 			'order' => $data['order']
-		));
+		) );
 	}
 
 	public function createProductContent($data)
 	{
-
-		$productContent = ProductContent::create(array(
+		$this->ci->db->insert( "product_content",array(
 			'product_id' => $data['product_id'],
 			'section_id' => $data['section_id'],
 			'content' => $data['content']
-		));
+		) );
 	}
 
 	public function getProductContent($resource, $product_id)
 	{
 
-		$p = ProductSection::where('product_id', $product_id)->get();
+		$p = $this->ci->db->select( "*" )
+			->from( "product_sections" )
+			->where( "product_id", $product_id )
+			->get()
+			->result_array();
 
 		foreach ($p as $product) {
-			$position = $product->position;
+			$position = intval($product['position']);
 
 
 			foreach ($resource as $content) {
@@ -67,7 +73,7 @@ class IDMLextend
 
 									$data = array(
 										'product_id' =>  $product_id,
-										'section_id' =>  $product->id,
+										'section_id' =>  $product['id'],
 										'content' => $vv
 									);
 

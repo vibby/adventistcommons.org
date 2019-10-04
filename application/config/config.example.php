@@ -101,7 +101,7 @@ $config['charset'] = 'UTF-8';
 | Enable Hooks for use Sentry, Eloquent ORM
 |
 */
-$config['enable_hooks'] = TRUE;
+$config['enable_hooks'] = FALSE;
 
 /*
 |--------------------------------------------------------------------------
