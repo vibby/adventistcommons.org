@@ -11,7 +11,7 @@ class Products extends CI_Controller {
 	{
 		parent::__construct();
 		$this->load->database();
-		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig" ] );
+		$this->load->library( [ "ion_auth", "form_validation", "upload", "twig", "container" ] );
 		$this->load->helper( "url" );
 		$this->load->model( "product_model" );
 		$this->data = new stdClass();
@@ -183,7 +183,7 @@ class Products extends CI_Controller {
 
 			$idml = new IDMLlib($file);
 
-			$idmlExtend = new IDMLextend();
+			$idmlExtend = $this->container->get(IDMLextend::class);
 
 			$this->data->all_contents = $idml->getMyContent('Story');
 
