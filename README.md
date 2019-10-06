@@ -96,11 +96,15 @@ Graphic Designers:
 
 - Volunteer to help us layout the print files of new products as they are translated or create new book and tract designs that will be distributed freely around the world. You can add your name to a list of volunteers by [signing up](https://adventistcommons.org/register) at Adventist Commons and by selecting the "Graphic design" skill in the second part of the sign up process.
 
-## Development Setup Guide
+## Development
+
+Adventistcommons is developped by developpers all around the world. Here are technical stuff about how to participate, if you will.
+
+### Development Setup Guide
 
 Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with PHP and MySQL installed.
 
-### Windows
+#### Windows
 Instructions:
 - Clone the repository to the public directory of your localhost environment.
 - We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository.
@@ -112,7 +116,7 @@ Instructions:
 - To be able to test some features you may need to create a folder "uploads" in your document root.
 - Let us know if you have any issues with these steps.
 
-### Mac OS
+#### Mac OS
 Instructions:
 - Clone the repository to the public directory of your localhost environment.
 - Create a database and import `schema.sql` file.
@@ -126,6 +130,100 @@ Instructions:
 	- ~~`$config['composer_autoload'] = TRUE;`~~
 	- `$config['composer_autoload'] = 'vendor/autoload.php';`
 - Run your web application
+
+### Software elements
+
+#### Code Igniter
+
+First base of the application. If you do not know it yet, check this : https://codeigniter.com/
+
+#### The container
+
+The **container** is a convenient way to hold and provide access for tool-objects (that we call services) without you have to care about their dependencies. If you create such a class for a feature, or want to use a class from a library, you should register it in the container file ```application/libraries/Container.php```, at that place :
+
+```PHP
+private function build()
+{
+	// Other services
+	[…]
+	
+	// Add a new service here
+	
+	$this->built = true;
+}
+```
+
+You can register it using closure, so the class will not be instanciated if not called, like this :
+```PHP
+$this->set(
+	// Here is the name of the service.
+	// It could be an abritray string, but the name of the class is a good idea to avoid typo errors.
+	\AdventistCommons\Path\To\MyClass::class,
+	function () { // Here comes the closure
+		// Here we tell how to build the service
+		return new \AdventistCommons\Path\To\MyClass();  
+	}
+);
+```
+
+If your class requires some other stuff, you can set it with constructor. Let’s say you need a zip compressor class, you will create its service too and inject it to create you first service :
+
+```PHP
+$this->set(
+	\AdventistCommons\Another\Path\Zipper::class,
+	function () {
+		return new \AdventistCommons\Another\Path\Zipper();
+	}
+);
+
+$this->set(
+	\AdventistCommons\Path\To\MyClass::class,
+	function () {
+		return new \AdventistCommons\Path\To\MyClass(
+			// $this refers to the container : this other service must be injected in the constructor
+			$this->get(\AdventistCommons\Another\Path\Zipper::class)  
+		);
+	}
+);
+```
+
+Service creator can be even more complex, you have the hand on its creation :
+
+```PHP
+$this->set(
+	\AdventistCommons\Path\To\MyClass::class,
+	function () {
+		$myService = new \AdventistCommons\Path\To\MyClass();
+		$myService->disbaleLog();   // simple method call
+		$myService->setZipper(     // inject dependencies via setters
+			$this->get(\AdventistCommons\Another\Path\Zipper::class)
+		); 
+		$myService->setConfig('someStuff'); // or anything else
+		
+		return $myService; 
+	}
+);
+```
+
+Now, if you want to use the service in your controller, just load the lib and call the service by its name
+```PHP
+
+class MyController extends CI_Controller {
+
+	public function __construct()
+	{
+		…
+		$this->load->library( [ …,  "container" ] );
+	}
+	
+	public function MyAction()
+	{
+		$myService = $this->container->get(\AdventistCommons\Path\To\MyClass::class);
+		$myService->proceedTreatment();
+		…
+	}	
+
+```
 
 ## License
 
