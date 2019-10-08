@@ -65,7 +65,7 @@ class Products extends CI_Controller {
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
 		];
-		$this->breadcrumbs[] = [ "label" => "All Products"  ];
+		$this->breadcrumbs[] = [ "label" => "All"  ];
 		$this->twig->addGlobal( "title", "Products" );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
 		$this->twig->display( "twigs/products", $data );

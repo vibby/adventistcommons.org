@@ -20,7 +20,7 @@ class Projects extends CI_Controller {
 	
 	public $breadcrumbs = [
 		[
-			"label" => "Ongoing Translations",
+			"label" => "Translations",
 			"url" => "/projects",
 		],
 	];
