@@ -98,7 +98,7 @@ Graphic Designers:
 
 ## Development
 
-Adventistcommons is developped by developpers all around the world. Here are technical stuff about how to participate, if you will.
+Adventistcommons is developped by developers all around the world. Here are technical stuff about how to participate, if you will.
 
 ### Development Setup Guide
 
