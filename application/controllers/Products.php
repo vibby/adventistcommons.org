@@ -58,12 +58,19 @@ class Products extends CI_Controller {
 	
 	public function index( $product_id = null )
 	{
+		$this->load->model( "project_model" );
+		$post_data = $this->input->post();
+
 		$data = [
-			"products" => $this->product_model->getProducts(),
+			"products" => $this->product_model->getProducts($post_data),
 			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
+			"title_options" => $this->product_model->getUniqueProductNames(),
+			"available_in_options" => $this->project_model->getProjectLanguages(),
+			"author_options" => $this->product_model->getUniqueAuthorNames(),
+			"filter" => $post_data
 		];
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
 		$this->twig->addGlobal( "title", "Products" );
