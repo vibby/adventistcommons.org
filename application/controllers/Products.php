@@ -92,7 +92,7 @@ class Products extends CI_Controller {
 			"filter" => $filter_data,
 			"links" => $this->pagination->create_links()
 		];
-		$this->breadcrumbs[] = [ "label" => "All Products"  ];
+		$this->breadcrumbs[] = [ "label" => "All"  ];
 		$this->twig->addGlobal( "title", "Products" );
 		$this->twig->addGlobal( "breadcrumbs", $this->breadcrumbs );
 		$this->twig->display( "twigs/products", $data );
