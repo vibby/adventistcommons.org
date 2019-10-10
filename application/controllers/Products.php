@@ -59,10 +59,29 @@ class Products extends CI_Controller {
 	public function index( $product_id = null )
 	{
 		$this->load->model( "project_model" );
-		$post_data = $this->input->post();
+		$this->load->library( "pagination" );
+
+		$this->form_validation->set_data(array('page' => $this->input->get('p', TRUE)));
+		$this->form_validation->set_rules('page', 'Page number', 'trim|is_natural');
+		$this->form_validation->set_rules('available_in', 'Available In', 'trim|is_natural_no_zero');
+		// @todo add other input parameters
+
+		if ($this->form_validation->run() == FALSE)
+		{
+			show_404();
+		}
+
+		$filter_data = $this->input->post();
+		$filter_data['page'] = empty($this->form_validation->validation_data['page']) ? 1 : $this->form_validation->validation_data['page'];
+		$filter_data['per_page'] = $this->config->item('per_page');
+
+		$pagination_config = array();
+		$pagination_config["base_url"] = base_url() . "products";
+		$pagination_config["total_rows"] = $this->product_model->getProductsCount($filter_data);
+		$this->pagination->initialize($pagination_config);
 
 		$data = [
-			"products" => $this->product_model->getProducts($post_data),
+			"products" => $this->product_model->getProducts($filter_data),
 			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_binding,
@@ -70,7 +89,8 @@ class Products extends CI_Controller {
 			"title_options" => $this->product_model->getUniqueProductNames(),
 			"available_in_options" => $this->project_model->getProjectLanguages(),
 			"author_options" => $this->product_model->getUniqueAuthorNames(),
-			"filter" => $post_data
+			"filter" => $filter_data,
+			"links" => $this->pagination->create_links()
 		];
 		$this->breadcrumbs[] = [ "label" => "All Products"  ];
 		$this->twig->addGlobal( "title", "Products" );

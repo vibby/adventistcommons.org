@@ -16,48 +16,11 @@ class Product_model extends CI_Model
 		"indd" => "InDesign",
 		
 	];
-	
-	public function getProducts($filter = array())
-	{
-		$productsQuery = $this->db->select( "p.*" )
-			->from( "products as p" );
-		// filtering
-		if (isset($filter['title']) && $filter['title'] != '') {
-			$productsQuery = $productsQuery->where( "p.name", $filter['title'] );
-		}
-		if (isset($filter['available_in']) && $filter['available_in'] != '') {
-			$productsQuery = $productsQuery->join( "projects", "projects.product_id = p.id" )
-				->where( "projects.language_id", $filter['available_in'] );
-		}
-		// @todo refactor audience field and apply filter
-		/*if (isset($filter['audience']) && $filter['audience'] != '') {
-			$productsQuery = $productsQuery->where( "audience", $filter['audience'] );
-		}*/
-		// @todo refactor author field and apply filter
-		if (isset($filter['author']) && $filter['author'] != '') {
-			$productsQuery = $productsQuery->where( "author", $filter['author'] );
-		}
-		// @todo refactor type field and apply filter
-		if (isset($filter['type']) && $filter['type'] != '') {
-			$productsQuery = $productsQuery->where( "type", $filter['type'] );
-		}
-		// @todo refactor type field and apply filter
-		if (isset($filter['binding']) && $filter['binding'] != '') {
-			$productsQuery = $productsQuery->where( "binding", $filter['binding'] );
-		}
-		// sorting
-		// default sorting option is a name of product
-		if (!isset($filter['sort_by']) || $filter['sort_by'] == 'title') {
-			$productsQuery = $productsQuery->order_by( "p.name", "ASC" );
-		}
-		if (isset($filter['sort_by']) && $filter['sort_by'] == 'author') {
-			$productsQuery = $productsQuery->order_by( "p.author", "ASC" );
-		}
-		if (isset($filter['sort_by']) && $filter['sort_by'] == 'publisher') {
-			$productsQuery = $productsQuery->order_by( "p.publisher", "ASC" );
-		}
 
-		$products = $productsQuery->get()
+	public function getProducts($filter = array()) {
+		$products = $this->_getProductsQuery($filter)
+			->limit($filter['per_page'], ($filter['page'] - 1) * $filter['per_page'])
+			->get()
 			->result_array();
 
 		return array_map( function( $product ) {
@@ -70,7 +33,11 @@ class Product_model extends CI_Model
 			return $product;
 		}, $products );
 	}
-	
+
+	public function getProductsCount($filter = array()) {
+		return $this->_getProductsQuery($filter)->get()->num_rows();
+	}
+
 	public function getProduct( $product_id ) {
 		$productArray = $this->db->select( "*" )
 			->from( "products" )
@@ -259,4 +226,48 @@ class Product_model extends CI_Model
 		}
 		return $ret;
 	}
+
+	private function _getProductsQuery($filter = array())
+	{
+		$productsQuery = $this->db->select( "p.*" )
+			->from( "products as p" );
+		// filtering
+		if (isset($filter['title']) && $filter['title'] != '') {
+			$productsQuery = $productsQuery->where( "p.name", $filter['title'] );
+		}
+		if (isset($filter['available_in']) && $filter['available_in'] != '') {
+			$productsQuery = $productsQuery->join( "projects", "projects.product_id = p.id" )
+				->where( "projects.language_id", $filter['available_in'] );
+		}
+		// @todo refactor audience field and apply filter
+		/*if (isset($filter['audience']) && $filter['audience'] != '') {
+			$productsQuery = $productsQuery->where( "audience", $filter['audience'] );
+		}*/
+		// @todo refactor author field and apply filter
+		if (isset($filter['author']) && $filter['author'] != '') {
+			$productsQuery = $productsQuery->where( "author", $filter['author'] );
+		}
+		// @todo refactor type field and apply filter
+		if (isset($filter['type']) && $filter['type'] != '') {
+			$productsQuery = $productsQuery->where( "type", $filter['type'] );
+		}
+		// @todo refactor type field and apply filter
+		if (isset($filter['binding']) && $filter['binding'] != '') {
+			$productsQuery = $productsQuery->where( "binding", $filter['binding'] );
+		}
+		// sorting
+		// default sorting option is a name of product
+		if (!isset($filter['sort_by']) || $filter['sort_by'] == 'title') {
+			$productsQuery = $productsQuery->order_by( "p.name", "ASC" );
+		}
+		if (isset($filter['sort_by']) && $filter['sort_by'] == 'author') {
+			$productsQuery = $productsQuery->order_by( "p.author", "ASC" );
+		}
+		if (isset($filter['sort_by']) && $filter['sort_by'] == 'publisher') {
+			$productsQuery = $productsQuery->order_by( "p.publisher", "ASC" );
+		}
+
+		return $productsQuery;
+	}
+
 }

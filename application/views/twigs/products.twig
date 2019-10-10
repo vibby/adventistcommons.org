@@ -12,7 +12,7 @@
 				</div>
 				<hr>
 				<div class="content-list">
-					<form id="product-filter-form" method="post" action="">
+					<form id="product-filter-form" method="post" action="/products">
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group row align-items-center">
@@ -129,6 +129,11 @@
 							</div>
 						{% endfor %}
 					</div>
+					<nav>
+						<ul class="pagination justify-content-end">
+							{{ links | raw}}
+						</ul>
+					</nav>
 				</div>
 			</div>
 		</div>
