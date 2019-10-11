@@ -23,32 +23,14 @@ class Products extends CI_Controller {
 			$this->twig->addGlobal( "user",  $user );
 		}
 	}
-	
-	public $audience = [
-		"Christian",
-		"Muslim",
-		"Buddhist",
-		"Hindu",
-		"Sikh",
-		"Animist",
-		"Secular",
-	];
-	
+
 	public $product_types = [
 		"book",
 		"magabook",
 		"booklet",
 		"tract",
 	];
-	
-	public $product_binding = [
-		"Hardcover",
-		"Perfect Bound",
-		"Spiral Bound",
-		"Saddle Stitch",
-		"Folded",
-	];
-	
+
 	public $breadcrumbs = [
 		[
 			"label" => "Products",
@@ -82,9 +64,9 @@ class Products extends CI_Controller {
 
 		$data = [
 			"products" => $this->product_model->getProducts($filter_data),
-			"audience_options" => $this->audience,
+			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_binding,
+			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 			"title_options" => $this->product_model->getUniqueProductNames(),
 			"available_in_options" => $this->project_model->getProjectLanguages(),
@@ -130,15 +112,15 @@ class Products extends CI_Controller {
 		if( ! $this->ion_auth->is_admin() ) {
 			show_404();
 		}
-		
+
 		$product = $this->product_model->getProduct( $product_id );
 		if( ! $product ) show_404();
-		
+
 		$data = [
 			"product" => $product,
-			"audience_options" => $this->audience,
+			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_binding,
+			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 		];
 		$this->breadcrumbs[] = [
@@ -197,12 +179,19 @@ class Products extends CI_Controller {
 			$this->db->insert( "series", [ "name" => $data["series_id"] ] );
 			$data["series_id"] = $this->db->insert_id();
 		}
-		
-		$data['audience'] = serialize($data['audience'] ?? []);
+
+		$audience = array();
+		if (isset($data['audience'])) 
+		{
+			$audience = $data['audience'];
+			unset($data['audience']);
+		}
 		if( $is_new ) {
 			$this->db->insert("products", $data);
 
 			$id = $this->db->insert_id();
+
+			$this->product_model->addProductAudiencesData($audience, $id);
 
 			$param = array("uploads/" . $data['idml_file'] . ".idml");
 
@@ -222,6 +211,7 @@ class Products extends CI_Controller {
 		} else {
 			$this->db->where( "id", $data["id"] );
 			$this->db->update( "products", $data );
+			$this->product_model->updateProductAudiencesData($audience, $data["id"]);
 			if( $_FILES["cover_image"]["name"] ) {
 				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
 			} else {

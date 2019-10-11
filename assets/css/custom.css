@@ -117,3 +117,8 @@ dl.inline dt:before{
 .partner-icon {
 	max-width: 160px;
 }
+
+/* Products list */
+.products-sort-by {
+  margin-left: 20px;
+}

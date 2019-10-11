@@ -44,13 +44,14 @@ class Product_model extends CI_Model
 			->where( "id", $product_id )
 			->get()
 			->row_array();
-			
-		$baseAudience = $productArray['audience'];
-		@$productArray[ "audience" ] = unserialize( $productArray[ "audience" ] );
-		if ( !$productArray[ "audience" ] && $baseAudience ) {
-			$productArray[ "audience" ] = [ $baseAudience ];
+
+		$productArray["audience"] = [];
+		$audiences = $this->getProductAudiences($product_id);
+		foreach ($audiences as $item)
+		{
+			$productArray["audience"][] = $item['name'];
 		}
-			
+
 		return $productArray;
 	}
 	
@@ -184,6 +185,61 @@ class Product_model extends CI_Model
 			->result_array();
 	}
 
+	public function getAudiencesList() {
+		return $this->db->select( "*" )
+			->from( "audiences" )
+			->order_by( "id", "ASC" )
+			->get()
+			->result_array();
+	}
+
+	public function getProductTypesList() {
+		return $this->db->select( "*" )
+			->from( "product_types" )
+			->get()
+			->result_array();
+	}
+
+	public function getProductBindingsList() {
+		return $this->db->select( "*" )
+			->from( "product_bindings" )
+			->get()
+			->result_array();
+	}
+
+	public function addProductAudiencesData($audiences = array(), $product_id) {
+		if (empty($audiences)) {
+			return;
+		}
+		foreach ($audiences as $item) {
+			$data = array(
+				'product_id' => $product_id,
+				'audience_id' => $item
+			);
+			$this->db->insert('product_audiences', $data);
+		}
+	}
+
+	public function updateProductAudiencesData($audiences = array(), $product_id) {
+		$this->db->delete('product_audiences', array('product_id' => $product_id));
+		foreach ($audiences as $item) {
+			$data = array(
+				'product_id' => $product_id,
+				'audience_id' => $item
+			);
+			$this->db->insert('product_audiences', $data);
+		}
+	}
+
+	public function getProductAudiences($product_id) {
+		return $this->db->select( "a.id, a.name" )
+			->from( "audiences a" )
+			->join( "product_audiences pa", "pa.audience_id = a.id" )
+			->where( "product_id", $product_id )
+			->get()
+			->result_array();
+	}
+
 	private function _user_has_approved_content( $content_id, $project_id, $user_id ) {
 		return $this->db->select( "*" )
 			->from( "project_content_approval" )
@@ -239,19 +295,16 @@ class Product_model extends CI_Model
 			$productsQuery = $productsQuery->join( "projects", "projects.product_id = p.id" )
 				->where( "projects.language_id", $filter['available_in'] );
 		}
-		// @todo refactor audience field and apply filter
-		/*if (isset($filter['audience']) && $filter['audience'] != '') {
-			$productsQuery = $productsQuery->where( "audience", $filter['audience'] );
-		}*/
-		// @todo refactor author field and apply filter
+		if (isset($filter['audience']) && $filter['audience'] != '') {
+			$productsQuery = $productsQuery->join( "product_audiences as pa", "pa.product_id = p.id" )
+				->where( "pa.audience_id", $filter['audience'] );
+		}
 		if (isset($filter['author']) && $filter['author'] != '') {
 			$productsQuery = $productsQuery->where( "author", $filter['author'] );
 		}
-		// @todo refactor type field and apply filter
 		if (isset($filter['type']) && $filter['type'] != '') {
 			$productsQuery = $productsQuery->where( "type", $filter['type'] );
 		}
-		// @todo refactor type field and apply filter
 		if (isset($filter['binding']) && $filter['binding'] != '') {
 			$productsQuery = $productsQuery->where( "binding", $filter['binding'] );
 		}

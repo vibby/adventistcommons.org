@@ -119,7 +119,7 @@ if( $( ".language-select" ).length > 0 ) {
 }
 
 $( ".selectize" ).selectize( {
-	"allowEmptyOption": true,
+	"allowEmptyOption": false
 });
 
 $( ".series-select" ).selectize( {
@@ -312,4 +312,44 @@ $( ".restore-revision" ).click( function(e) {
 
 $( ".skills-select" ).selectize( {
     "create": true,
+});
+
+/*
+ * 
+ * Reset products list form
+ */
+$( "#product-filter-form .reset" ).on( "click", function() {
+	var control = $('#product-filter-title').selectize();
+	if(typeof control[0] !== 'undefined') {
+		control[0].selectize.clear();
+	}
+
+	control = $('#product-filter-available-in').selectize();
+	if(typeof control[0] !== 'undefined') {
+		control[0].selectize.clear();
+	}
+
+	control = $('#product-filter-audience').selectize();
+	if(typeof control[0] !== 'undefined') {
+		control[0].selectize.clear();
+	}
+
+	control = $('#product-filter-author').selectize();
+	if(typeof control[0] !== 'undefined') {
+		control[0].selectize.clear();
+	}
+
+	control = $('#product-filter-type').selectize();
+	if(typeof control[0] !== 'undefined') {
+		control[0].selectize.clear();
+	}
+
+	control = $('#product-filter-binding').selectize();
+	if(typeof control[0] !== 'undefined') {
+		control[0].selectize.clear();
+	}
+
+	$("#sort-by-title").prop("checked", true);
+
+	$( "#product-filter-form" ).submit();
 });
