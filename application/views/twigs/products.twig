@@ -13,6 +13,7 @@
 				<hr>
 				<div class="content-list">
 					<form id="product-filter-form" method="post" action="/products">
+						<input type="hidden" id="product-filter-page" name="page" value="1"></input>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group row align-items-center">
@@ -71,7 +72,7 @@
 									<label for="product-filter-binding" class="col-4">Binding</label>
 									<select id="product-filter-binding" class="col selectize" name="binding" data-placeholder="Type or select from the list ...">
 										<option value=""></option>
-										{% for item in product_binding %}
+										{% for item in product_bindings %}
 											<option {% if item.id == filter.binding %}selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
 										{% endfor %}
 									</select>
@@ -288,7 +289,7 @@
 								<div class="form-group row align-items-center">
 									<label class="col-3">Binding</label>
 									<select class="form-control col" name="binding">
-										{% for item in product_binding  %}
+										{% for item in product_bindings  %}
 											<option value="{{ item.id }}">{{ item.name }}</option>
 										{% endfor %}
 									</select>
@@ -310,3 +311,7 @@
 		</form>
 	{% endif %}
 {% endblock %}
+
+{% block javascripts %}
+	<script src="{{ '/assets/js/page/products.js' }}"></script>
+{% endblock %}  

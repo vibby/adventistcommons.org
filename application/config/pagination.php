@@ -83,7 +83,7 @@ $config["prev_tag_open"] = '<li class="page-item">';
 
 $config["prev_tag_close"] = '</li>';
 
-$config["cur_tag_open"] = '<li class="page-item active"><a class="page-link" href="#">';
+$config["cur_tag_open"] = '<li class="page-item disabled"><a class="page-link" href="#">';
 
 $config["cur_tag_close"] = '<span class="sr-only">(current)</span></a></li>';
 

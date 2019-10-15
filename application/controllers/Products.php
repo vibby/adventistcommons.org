@@ -43,19 +43,33 @@ class Products extends CI_Controller {
 		$this->load->model( "project_model" );
 		$this->load->library( "pagination" );
 
-		$this->form_validation->set_data(array('page' => $this->input->get('p', TRUE)));
-		$this->form_validation->set_rules('page', 'Page number', 'trim|is_natural');
-		$this->form_validation->set_rules('available_in', 'Available In', 'trim|is_natural_no_zero');
-		// @todo add other input parameters
+		$audiences_options = $this->product_model->getAudiencesList();
+		$product_bindings =  $this->product_model->getProductBindingsList();
+		$title_options = $this->product_model->getUniqueProductNames();
+		$available_in_options = $this->project_model->getProjectLanguages();
+		$author_options = $this->product_model->getUniqueAuthorNames();
 
-		if ($this->form_validation->run() == FALSE)
+		$this->form_validation->set_rules('title', 'Title', 'callback__product_title_check[' . json_encode($title_options) . ']');
+		$this->form_validation->set_rules('available_in', 'Available In', 'callback__product_language_check[' . json_encode($available_in_options) . ']');
+		$this->form_validation->set_rules('audience', 'Audience', 'callback__product_audience_check[' . json_encode($audiences_options) . ']');
+		$this->form_validation->set_rules('author', 'Author', 'callback__product_author_check[' . json_encode($author_options) . ']');
+		$this->form_validation->set_rules('type', 'Type', 'callback__product_type_check');
+		$this->form_validation->set_rules('binding', 'Binding', 'callback__product_binding_check[' . json_encode($product_bindings) . ']');
+		$this->form_validation->set_rules('page', 'Page number', 'required|is_natural_no_zero');
+
+		if ($this->input->method(TRUE) == 'POST' && $this->form_validation->run() == FALSE)
 		{
 			show_404();
 		}
 
 		$filter_data = $this->input->post();
-		$filter_data['page'] = empty($this->form_validation->validation_data['page']) ? 1 : $this->form_validation->validation_data['page'];
+		$filter_data['page'] = !$this->input->post('page') ? 1: $this->input->post('page');
 		$filter_data['per_page'] = $this->config->item('per_page');
+
+		if ($this->input->get('p') && $this->input->get('p') != $filter_data['page'])
+		{
+			show_404();
+		}
 
 		$pagination_config = array();
 		$pagination_config["base_url"] = base_url() . "products";
@@ -64,13 +78,13 @@ class Products extends CI_Controller {
 
 		$data = [
 			"products" => $this->product_model->getProducts($filter_data),
-			"audience_options" => $this->product_model->getAudiencesList(),
+			"audience_options" => $audiences_options,
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_model->getProductBindingsList(),
+			"product_bindings" => $product_bindings,
 			"series" => $this->product_model->getSeriesItems(),
-			"title_options" => $this->product_model->getUniqueProductNames(),
-			"available_in_options" => $this->project_model->getProjectLanguages(),
-			"author_options" => $this->product_model->getUniqueAuthorNames(),
+			"title_options" => $title_options,
+			"available_in_options" => $available_in_options,
+			"author_options" => $author_options,
 			"filter" => $filter_data,
 			"links" => $this->pagination->create_links()
 		];
@@ -293,7 +307,120 @@ class Products extends CI_Controller {
 		
 		redirect( "/products", "refresh" );
 	}
+
+	/**
+	 * Validate product type form parameter
+	 * @param string $val
+	 * @return boolean
+	 */
+	public function _product_type_check($val) {
+		if ($val == '')
+		{
+			return true;
+		}
+		if (!in_array($val, $this->product_types))
+		{
+			return false;
+		}
+
+		return true;
+	}
 	
+	public function _product_title_check($val, $options) {
+		if ($val == '')
+		{
+			return true;
+		}
+		$data = json_decode($options);
+		$res = false;
+		foreach ($data as $item)
+		{
+			if ($item->name == $val) 
+			{
+				$res = true;
+				break;
+			}
+		}
+
+		return $res;
+	}
+	
+	public function _product_language_check($val, $options) {
+		if ($val == '')
+		{
+			return true;
+		}
+		$data = json_decode($options);
+		$res = false;
+		foreach ($data as $item) 
+		{
+			if ($item->id == $val) 
+			{
+				$res = true;
+				break;
+			}
+		}
+
+		return $res;
+	}
+		
+	public function _product_audience_check($val, $options) {
+		if ($val == '')
+		{
+			return true;
+		}
+		$data = json_decode($options);
+		$res = false;
+		foreach ($data as $item) 
+		{
+			if ($item->id == $val) 
+			{
+				$res = true;
+				break;
+			}
+		}
+
+		return $res;
+	}
+
+	public function _product_author_check($val, $options) {
+		if ($val == '')
+		{
+			return true;
+		}
+		$data = json_decode($options);
+		$res = false;
+		foreach ($data as $item) 
+		{
+			if ($item->author == $val) 
+			{
+				$res = true;
+				break;
+			}
+		}
+
+		return $res;
+	}
+
+	public function _product_binding_check($val, $options) {
+		if ($val == '')
+		{
+			return true;
+		}
+		$data = json_decode($options);
+		$res = false;
+		foreach ($data as $item) 
+		{
+			if ($item->id == $val) 
+			{
+				$res = true;
+				break;
+			}
+		}
+
+		return $res;
+	}
+
 	private function _uploadCoverImage() {
 		$config["upload_path"] = $_SERVER["DOCUMENT_ROOT"] . "/uploads";
 		$config["allowed_types"] = "jpg|jpeg|png";
