@@ -122,3 +122,7 @@ dl.inline dt:before{
 .products-sort-by {
   margin-left: 20px;
 }
+
+.col-md-6.box {
+    padding-right: 20px !important;
+}
