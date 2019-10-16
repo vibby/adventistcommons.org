@@ -24,6 +24,16 @@ class Products extends CI_Controller {
 		}
 	}
 
+	public $audience = [
+		"Christian",
+		"Muslim",
+		"Buddhist",
+		"Hindu",
+		"Sikh",
+		"Animist",
+		"Secular",
+	];
+	
 	public $product_types = [
 		"book",
 		"magabook",
@@ -43,7 +53,7 @@ class Products extends CI_Controller {
 		$this->load->model( "project_model" );
 		$this->load->library( "pagination" );
 
-		$audiences_options = $this->product_model->getAudiencesList();
+		//$audiences_options = $this->product_model->getAudiencesList();
 		$product_bindings =  $this->product_model->getProductBindingsList();
 		$title_options = $this->product_model->getUniqueProductNames();
 		$available_in_options = $this->project_model->getProjectLanguages();
@@ -51,7 +61,7 @@ class Products extends CI_Controller {
 
 		$this->form_validation->set_rules('title', 'Title', 'callback__product_title_check[' . json_encode($title_options) . ']');
 		$this->form_validation->set_rules('available_in', 'Available In', 'callback__product_language_check[' . json_encode($available_in_options) . ']');
-		$this->form_validation->set_rules('audience', 'Audience', 'callback__product_audience_check[' . json_encode($audiences_options) . ']');
+		//$this->form_validation->set_rules('audience', 'Audience', 'callback__product_audience_check[' . json_encode($audiences_options) . ']');
 		$this->form_validation->set_rules('author', 'Author', 'callback__product_author_check[' . json_encode($author_options) . ']');
 		$this->form_validation->set_rules('type', 'Type', 'callback__product_type_check');
 		$this->form_validation->set_rules('binding', 'Binding', 'callback__product_binding_check[' . json_encode($product_bindings) . ']');
@@ -78,7 +88,7 @@ class Products extends CI_Controller {
 
 		$data = [
 			"products" => $this->product_model->getProducts($filter_data),
-			"audience_options" => $audiences_options,
+			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
 			"product_bindings" => $product_bindings,
 			"series" => $this->product_model->getSeriesItems(),
@@ -132,7 +142,7 @@ class Products extends CI_Controller {
 
 		$data = [
 			"product" => $product,
-			"audience_options" => $this->product_model->getAudiencesList(),
+			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
@@ -193,19 +203,12 @@ class Products extends CI_Controller {
 			$this->db->insert( "series", [ "name" => $data["series_id"] ] );
 			$data["series_id"] = $this->db->insert_id();
 		}
-
-		$audience = array();
-		if (isset($data['audience'])) 
-		{
-			$audience = $data['audience'];
-			unset($data['audience']);
-		}
+		
+		$data['audience'] = serialize($data['audience'] ?? []);
 		if( $is_new ) {
 			$this->db->insert("products", $data);
 
 			$id = $this->db->insert_id();
-
-			$this->product_model->addProductAudiencesData($audience, $id);
 
 			$param = array("uploads/" . $data['idml_file'] . ".idml");
 
@@ -225,7 +228,6 @@ class Products extends CI_Controller {
 		} else {
 			$this->db->where( "id", $data["id"] );
 			$this->db->update( "products", $data );
-			$this->product_model->updateProductAudiencesData($audience, $data["id"]);
 			if( $_FILES["cover_image"]["name"] ) {
 				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
 			} else {
