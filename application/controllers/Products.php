@@ -23,17 +23,7 @@ class Products extends CI_Controller {
 			$this->twig->addGlobal( "user",  $user );
 		}
 	}
-	
-	public $audience = [
-		"Christian",
-		"Muslim",
-		"Buddhist",
-		"Hindu",
-		"Sikh",
-		"Animist",
-		"Secular",
-	];
-	
+
 	public $product_types = [
 		"book",
 		"magabook",
@@ -60,7 +50,7 @@ class Products extends CI_Controller {
 	{
 		$data = [
 			"products" => $this->product_model->getProducts(),
-			"audience_options" => $this->audience,
+			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
@@ -109,7 +99,7 @@ class Products extends CI_Controller {
 		
 		$data = [
 			"product" => $product,
-			"audience_options" => $this->audience,
+			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
 			"product_binding" => $this->product_binding,
 			"series" => $this->product_model->getSeriesItems(),
@@ -170,12 +160,19 @@ class Products extends CI_Controller {
 			$this->db->insert( "series", [ "name" => $data["series_id"] ] );
 			$data["series_id"] = $this->db->insert_id();
 		}
-		
-		$data['audience'] = serialize($data['audience'] ?? []);
+
+		$audience = array();
+		if (isset($data['audience'])) 
+		{
+			$audience = $data['audience'];
+			unset($data['audience']);
+		}
 		if( $is_new ) {
 			$this->db->insert("products", $data);
 
 			$id = $this->db->insert_id();
+
+			$this->product_model->addProductAudiencesData($audience, $id);
 
 			$param = array("uploads/" . $data['idml_file'] . ".idml");
 
@@ -195,6 +192,7 @@ class Products extends CI_Controller {
 		} else {
 			$this->db->where( "id", $data["id"] );
 			$this->db->update( "products", $data );
+			$this->product_model->updateProductAudiencesData($audience, $data["id"]);
 			if( $_FILES["cover_image"]["name"] ) {
 				$this->output->set_output( json_encode( [ "redirect" => "/products/edit/" . $data["id"] ] ) );
 			} else {
