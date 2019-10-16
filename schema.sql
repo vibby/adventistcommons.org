@@ -446,6 +446,7 @@ CREATE TABLE `product_content_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
+
 CREATE TABLE skills (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(150) NOT NULL,
@@ -456,13 +457,13 @@ CREATE TABLE skills (
 
 INSERT INTO `skills` (`id`, `name`, `code`)
 VALUES
-	(1,'Graphic design','GD'),
-	(2,'Web development','WD'),
-	(3,'Software development','SD'),
-	(4,'Writing/editing','WE'),
-	(5,'Video editing','VE'),
-	(6,'Illustration (digital art)','IDA');
-	
+  (1,'Graphic design','GD'),
+  (2,'Web development','WD'),
+  (3,'Software development','SD'),
+  (4,'Writing/editing','WE'),
+  (5,'Video editing','VE'),
+  (6,'Illustration (digital art)','IDA');
+  
 
 CREATE TABLE user_skills (
     `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -472,5 +473,3 @@ CREATE TABLE user_skills (
     CONSTRAINT `user_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
     CONSTRAINT `user_skills_ibfk_2` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
