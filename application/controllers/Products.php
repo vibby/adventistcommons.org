@@ -40,15 +40,7 @@ class Products extends CI_Controller {
 		"booklet",
 		"tract",
 	];
-	
-	public $product_binding = [
-		"Hardcover",
-		"Perfect Bound",
-		"Spiral Bound",
-		"Saddle Stitch",
-		"Folded",
-	];
-	
+
 	public $breadcrumbs = [
 		[
 			"label" => "Products",
@@ -62,7 +54,7 @@ class Products extends CI_Controller {
 			"products" => $this->product_model->getProducts(),
 			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_binding,
+			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 		];
 		$this->breadcrumbs[] = [ "label" => "All"  ];
@@ -111,7 +103,7 @@ class Products extends CI_Controller {
 			"product" => $product,
 			"audience_options" => $this->audience,
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_binding,
+			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 		];
 		$this->breadcrumbs[] = [

@@ -36,9 +36,10 @@ class Product_model extends CI_Model
 	}
 	
 	public function getProduct( $product_id ) {
-		$productArray = $this->db->select( "*" )
-			->from( "products" )
-			->where( "id", $product_id )
+		$productArray = $this->db->select( "p.*, pb.name as binding_name" )
+			->from( "products as p" )
+			->join( "product_bindings as pb", "pb.id = p.binding")
+			->where( "p.id", $product_id )
 			->get()
 			->row_array();
 			
@@ -161,7 +162,14 @@ class Product_model extends CI_Model
 			->get()
 			->result_array();
 	}
-	
+
+	public function getProductBindingsList() {
+		return $this->db->select( "*" )
+			->from( "product_bindings" )
+			->get()
+			->result_array();
+	}
+
 	private function _user_has_approved_content( $content_id, $project_id, $user_id ) {
 		return $this->db->select( "*" )
 			->from( "project_content_approval" )
