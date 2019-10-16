@@ -9,14 +9,7 @@ class User extends CI_Controller
 {
 	public $data = [];
 
-	public $skills = []; /*public $skills = [
-		"Graphic design",
-		"Web development",
-		"Software development",
-		"Writing/editing",
-		"Video editing",
-		"Illustration (digital art)"
-	];*/
+	public $skills = [];
 
 	public function __construct()
 	{
