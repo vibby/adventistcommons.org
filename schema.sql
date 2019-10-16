@@ -255,21 +255,6 @@ CREATE TABLE `series` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `product_bindings` (
-  `id` tinyint(1) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uc_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO `product_bindings` (`id`, `name`)
-VALUES
-	(1, 'Hardcover'),
-	(2, 'Perfect Bound'),
-	(3, 'Spiral Bound'),
-	(4, 'Saddle Stitch'),
-	(5, 'Folded');
-
 CREATE TABLE `products` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -287,15 +272,13 @@ CREATE TABLE `products` (
   `cover_paper` varchar(32) DEFAULT NULL,
   `interior_colors` varchar(32) DEFAULT NULL,
   `interior_paper` varchar(32) DEFAULT NULL,
-  `binding` tinyint(1) unsigned DEFAULT NULL,
+  `binding` varchar(32) DEFAULT NULL,
   `finishing` varchar(32) DEFAULT NULL,
   `publisher_website` varchar(255) DEFAULT NULL,
   `series_id` int(11) unsigned DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `series_id` (`series_id`),
-  KEY `binding` (`binding`),
-  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`),
-  CONSTRAINT `products_ibfk_2` FOREIGN KEY (`binding`) REFERENCES `product_bindings` (`id`)
+  CONSTRAINT `products_ibfk_1` FOREIGN KEY (`series_id`) REFERENCES `series` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 

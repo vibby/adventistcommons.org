@@ -184,20 +184,6 @@ class Product_model extends CI_Model
 			->result_array();
 	}
 
-	public function getProductTypesList() {
-		return $this->db->select( "*" )
-			->from( "product_types" )
-			->get()
-			->result_array();
-	}
-
-	public function getProductBindingsList() {
-		return $this->db->select( "*" )
-			->from( "product_bindings" )
-			->get()
-			->result_array();
-	}
-
 	private function _user_has_approved_content( $content_id, $project_id, $user_id ) {
 		return $this->db->select( "*" )
 			->from( "project_content_approval" )
