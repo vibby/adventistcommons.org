@@ -2821,8 +2821,12 @@ class Ion_auth_model extends CI_Model
 		if (isset($user["email"])) {
 			$user["username"] = $user["email"];
 		}
-		$user["skills"] = serialize($user["skills"] ??  []);
+
+		$pure_skill = $user["skills"];
+
+		$user["skills"] =serialize($user["skills"] ??  []);
 		$user = $this->update_languages($user_id, $user);
+		$this->update_user_skill($user_id, $pure_skill);
 		$this->db->where( "id", $user_id );
 		$this->db->update( "users", $user );
 	}
@@ -2845,4 +2849,102 @@ class Ion_auth_model extends CI_Model
 
 		return $user;
 	}
+
+
+	/**
+	 * get_user_skills
+	 *
+	 * @param int $user_id
+	 *
+	 * @return Array
+	 * @author Edwin Calsin Quinto
+	 */
+	public function get_user_skills(int $user_id){
+		$skillData = [];
+		if ($user_id) {
+
+			$skills = $this->db->select("*")
+			->from("user_skills")
+			->join('skills', 'user_skills.skill_id = skills.id')
+			->where("user_id", $user_id )
+			->get();
+
+			foreach ($skills->result() as $row) {
+				array_push($skillData, $row->name);
+			}
+			
+		}
+		
+
+		return $skillData;
+
+	}
+
+
+	/**
+	 * update_user_skill
+	 *
+	 * @param int $user_id, array get_skills
+	 *
+	 * @return null
+	 * @author Edwin Calsin Quinto
+	 */
+	private function update_user_skill(int $user_id, array $get_skills)	{
+
+		$db = $this->db;
+		$db->where( "user_id", $user_id )->delete( "user_skills" );
+
+		$dataInsert = [];
+		$skills = $this->db->select("id")
+			->from("skills")
+			->where_in('name', $get_skills)
+			->get();
+
+		foreach ($skills->result() as $row) {
+			array_push(
+				$dataInsert, array(
+					'user_id' => $user_id,
+					'skill_id' => $row->id,
+					));
+		}
+
+		$this->db->insert_batch('user_skills', $dataInsert);
+
+		
+		
+	}
+
+
+	/**
+	 * getSkillIdsForUser
+	 *
+	 * @param Array $user
+	 *
+	 * @return Array
+	 * @author Edwin Calsin Quinto
+	 */
+	public function getSkillIdsForUser(StdClass $user): array
+	{
+		$skills = $this->db->select( "skill_id" )
+			->from( "user_skills" )
+			->where( "user_id", $user->id )
+			->get()
+			->result_array();
+
+		$skills = array_map( function( $obj ) {
+			return $obj["skill_id"];
+		}, $skills );
+
+		return $skills;
+	}
+
+
+
+	
+
+
+
+
+
+
 }

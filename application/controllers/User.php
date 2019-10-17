@@ -9,14 +9,7 @@ class User extends CI_Controller
 {
 	public $data = [];
 
-	public $skills = [
-		"Graphic design",
-		"Web development",
-		"Software development",
-		"Writing/editing",
-		"Video editing",
-		"Illustration (digital art)"
-	];
+	public $skills = [];
 
 	public function __construct()
 	{
@@ -30,6 +23,15 @@ class User extends CI_Controller
 		if ( $user ) {
 			$this->user = $user;
 			$this->twig->addGlobal( "user",  $user );
+		}
+
+
+		$skills = $this->db->select("name")
+			->from("skills")
+			->get();
+
+		foreach ($skills->result() as $row) {
+			array_push($this->skills, $row->name);
 		}
 	}
 
@@ -77,7 +79,7 @@ class User extends CI_Controller
 		$user = $this->ion_auth->user( $user_id )->row();
         $data = [
 			"edit_user" => $user,
-			"skills" => array_merge($user->skills, $this->skills),
+			"skills" => array_merge($this->ion_auth->get_user_skills($user_id), $this->skills),
 			"permission_groups" => $this->ion_auth->groups()->result_array(),
 			"user_group_id" => $this->ion_auth->get_users_groups( $user_id )->row()->id,
 			"membership" => $this->project_model->getMembershipByUserId( $user_id ),
@@ -443,7 +445,7 @@ class User extends CI_Controller
 
 		$data = [
 			"edit_user" => $this->user,
-			"skills" => array_merge( $this->skills, is_array($this->user->skills) ? $this->user->skills : [] ),
+			"skills" => $this->skills,
 		];
 
 		$this->twig->addGlobal( "title", "Almost done" );
