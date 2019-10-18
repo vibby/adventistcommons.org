@@ -444,6 +444,7 @@ CREATE TABLE `product_content_log` (
   CONSTRAINT `product_content_log_ibfk_4` FOREIGN KEY (`resolved_by`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE `audiences` (
   `id` tinyint(1) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
@@ -471,4 +472,34 @@ CREATE TABLE `product_audiences` (
   KEY `audience_id` (`audience_id`),
   CONSTRAINT `product_audiences_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
   CONSTRAINT `product_audiences_ibfk_2` FOREIGN KEY (`audience_id`) REFERENCES `audiences` (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE skills (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `code` varchar(5) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `skills` (`id`, `name`, `code`)
+VALUES
+  (1,'Graphic design','GD'),
+  (2,'Web development','WD'),
+  (3,'Software development','SD'),
+  (4,'Writing/editing','WE'),
+  (5,'Video editing','VE'),
+  (6,'Illustration (digital art)','IDA');
+  
+
+CREATE TABLE user_skills (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) unsigned NOT NULL,
+    `skill_id` int(11) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `user_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT `user_skills_ibfk_2` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`id`)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
