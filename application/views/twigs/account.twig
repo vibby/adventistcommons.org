@@ -94,7 +94,7 @@
 									<div class="form-group row">
 										<label class="col-3">Other skills</label>
 										<div class="col">
-											<select class="skills-select" multiple name="skills[]" data-placeholder="Select skills...">
+											<select class="skills-select" multiple name="skills[]" data-placeholder="Select skills..." data-selected-ids="{{ edit_user.skills|join("|") }}">
 												{% for skill in skills %}
 													<option {% if skill in edit_user.skills %}selected{% endif %}>{{ skill }}</option>
 												{% endfor %}

@@ -264,7 +264,6 @@ CREATE TABLE `products` (
   `page_count` int(4) DEFAULT NULL,
   `type` enum('book','booklet','magabook','tract') DEFAULT 'book',
   `idml_file` varchar(255) DEFAULT NULL,
-  `audience` varchar(255) DEFAULT NULL,
   `publisher` varchar(255) DEFAULT NULL,
   `format_open` varchar(32) DEFAULT NULL,
   `format_closed` varchar(32) DEFAULT NULL,
@@ -443,4 +442,64 @@ CREATE TABLE `product_content_log` (
   CONSTRAINT `product_content_log_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
   CONSTRAINT `product_content_log_ibfk_3` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
   CONSTRAINT `product_content_log_ibfk_4` FOREIGN KEY (`resolved_by`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `audiences` (
+  `id` tinyint(1) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uc_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `audiences` (`id`, `name`)
+VALUES
+	(1, 'Christian'),
+	(2, 'Muslim'),
+	(3, 'Buddhist'),
+	(4, 'Hindu'),
+	(5, 'Sikh'),
+	(6, 'Animist'),
+	(7, 'Secular');
+
+CREATE TABLE `product_audiences` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) unsigned NOT NULL,
+  `audience_id` tinyint(1) unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
+  KEY `audience_id` (`audience_id`),
+  CONSTRAINT `product_audiences_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_audiences_ibfk_2` FOREIGN KEY (`audience_id`) REFERENCES `audiences` (`id`)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE skills (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(150) NOT NULL,
+    `code` varchar(5) NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `skills` (`id`, `name`, `code`)
+VALUES
+  (1,'Graphic design','GD'),
+  (2,'Web development','WD'),
+  (3,'Software development','SD'),
+  (4,'Writing/editing','WE'),
+  (5,'Video editing','VE'),
+  (6,'Illustration (digital art)','IDA');
+  
+
+CREATE TABLE user_skills (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) unsigned NOT NULL,
+    `skill_id` int(11) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `user_skills_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+    CONSTRAINT `user_skills_ibfk_2` FOREIGN KEY (`skill_id`) REFERENCES `skills` (`id`)
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

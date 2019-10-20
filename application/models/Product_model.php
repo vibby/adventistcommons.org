@@ -44,13 +44,14 @@ class Product_model extends CI_Model
 			->where( "id", $product_id )
 			->get()
 			->row_array();
-			
-		$baseAudience = $productArray['audience'];
-		@$productArray[ "audience" ] = unserialize( $productArray[ "audience" ] );
-		if ( !$productArray[ "audience" ] && $baseAudience ) {
-			$productArray[ "audience" ] = [ $baseAudience ];
+
+		$productArray["audience"] = [];
+		$audiences = $this->getProductAudiences($product_id);
+		foreach ($audiences as $item)
+		{
+			$productArray["audience"][] = $item['name'];
 		}
-			
+
 		return $productArray;
 	}
 	
@@ -165,6 +166,10 @@ class Product_model extends CI_Model
 			->result_array();
 	}
 
+	public function getAudiencesList() {
+		return $this->db->select( "*" )
+			->from( "audiences" )
+			->order_by( "id", "ASC" )
 	public function getUniqueProductNames() {
 		return $this->db->select( "name" )
 			->distinct()
@@ -174,6 +179,35 @@ class Product_model extends CI_Model
 			->result_array();
 	}
 
+	public function addProductAudiencesData($audiences = array(), $product_id) {
+		if (empty($audiences)) {
+			return;
+		}
+		foreach ($audiences as $item) {
+			$data = array(
+				'product_id' => $product_id,
+				'audience_id' => $item
+			);
+			$this->db->insert('product_audiences', $data);
+		}
+	}
+
+	public function updateProductAudiencesData($audiences = array(), $product_id) {
+		$this->db->delete('product_audiences', array('product_id' => $product_id));
+		foreach ($audiences as $item) {
+			$data = array(
+				'product_id' => $product_id,
+				'audience_id' => $item
+			);
+			$this->db->insert('product_audiences', $data);
+		}
+	}
+
+	public function getProductAudiences($product_id) {
+		return $this->db->select( "a.id, a.name" )
+			->from( "audiences a" )
+			->join( "product_audiences pa", "pa.audience_id = a.id" )
+			->where( "product_id", $product_id )
 	public function getUniqueAuthorNames() {
 		return $this->db->select( "author" )
 			->distinct()
