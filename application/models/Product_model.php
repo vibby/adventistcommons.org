@@ -170,6 +170,10 @@ class Product_model extends CI_Model
 		return $this->db->select( "*" )
 			->from( "audiences" )
 			->order_by( "id", "ASC" )
+			->get()
+			->result_array();
+	}
+
 	public function getUniqueProductNames() {
 		return $this->db->select( "name" )
 			->distinct()
@@ -208,6 +212,10 @@ class Product_model extends CI_Model
 			->from( "audiences a" )
 			->join( "product_audiences pa", "pa.audience_id = a.id" )
 			->where( "product_id", $product_id )
+			->get()
+			->result_array();
+	}
+
 	public function getUniqueAuthorNames() {
 		return $this->db->select( "author" )
 			->distinct()

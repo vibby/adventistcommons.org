@@ -85,7 +85,7 @@ class Products extends CI_Controller {
 		$this->pagination->initialize($pagination_config);
 
 		$data = [
-			"products" => $this->product_model->getProducts(),
+			"products" => $this->product_model->getProducts($filter_data),
 			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
 			"product_bindings" => $this->product_binding,
