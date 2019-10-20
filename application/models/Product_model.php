@@ -39,9 +39,10 @@ class Product_model extends CI_Model
 	}
 
 	public function getProduct( $product_id ) {
-		$productArray = $this->db->select( "*" )
-			->from( "products" )
-			->where( "id", $product_id )
+		$productArray = $this->db->select( "p.*, pb.name as binding_name" )
+			->from( "products as p" )
+			->join( "product_bindings as pb", "pb.id = p.binding")
+			->where( "p.id", $product_id )
 			->get()
 			->row_array();
 
@@ -222,6 +223,13 @@ class Product_model extends CI_Model
 			->from( "products" )
 			->where( "author != ", "")
 			->order_by( "author", "ASC" )
+			->get()
+			->result_array();
+	}
+
+	public function getProductBindingsList() {
+		return $this->db->select( "*" )
+			->from( "product_bindings" )
 			->get()
 			->result_array();
 	}

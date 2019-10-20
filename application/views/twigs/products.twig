@@ -301,8 +301,8 @@
 								<div class="form-group row align-items-center">
 									<label class="col-3">Binding</label>
 									<select class="form-control col" name="binding">
-										{% for item in product_bindings  %}
-											<option >{{ item }}</option>
+										{% for item in product_binding  %}
+											<option value="{{ item.id }}">{{ item.name }}</option>
 										{% endfor %}
 									</select>
 								</div>

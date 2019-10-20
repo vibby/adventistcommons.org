@@ -150,10 +150,10 @@
 										<label class="col-3">Binding</label>
 										<select class="form-control col" name="binding">
 											{% for item in product_binding  %}
-												{% if(product.binding == item) %}
-													<option selected>{{ item }}</option>
+												{% if(product.binding == item.id) %}
+													<option selected value="{{ item.id }}">{{ item.name }}</option>
 												{% else %}
-													<option>{{ item }}</option>
+													<option value="{{ item.id }}">{{ item.name }}</option>
 												{% endif %}
 											{% endfor %}
 										</select>

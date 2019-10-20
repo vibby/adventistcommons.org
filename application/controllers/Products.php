@@ -30,15 +30,7 @@ class Products extends CI_Controller {
 		"booklet",
 		"tract",
 	];
-	
-	public $product_binding = [
-		"Hardcover",
-		"Perfect Bound",
-		"Spiral Bound",
-		"Saddle Stitch",
-		"Folded",
-	];
-	
+
 	public $breadcrumbs = [
 		[
 			"label" => "Products",
@@ -51,18 +43,18 @@ class Products extends CI_Controller {
 		$this->load->model( "project_model" );
 		$this->load->library( "pagination" );
 
-		//$audiences_options = $this->product_model->getAudiencesList();
-		//$product_bindings =  $this->product_model->getProductBindingsList();
+		$audiences_options = $this->product_model->getAudiencesList();
+		$product_bindings =  $this->product_model->getProductBindingsList();
 		$title_options = $this->product_model->getUniqueProductNames();
 		$available_in_options = $this->project_model->getProjectLanguages();
 		$author_options = $this->product_model->getUniqueAuthorNames();
 
 		$this->form_validation->set_rules('title', 'Title', 'callback__product_title_check[' . json_encode($title_options) . ']');
 		$this->form_validation->set_rules('available_in', 'Available In', 'callback__product_language_check[' . json_encode($available_in_options) . ']');
-		//$this->form_validation->set_rules('audience', 'Audience', 'callback__product_audience_check[' . json_encode($audiences_options) . ']');
+		$this->form_validation->set_rules('audience', 'Audience', 'callback__product_audience_check[' . json_encode($audiences_options) . ']');
 		$this->form_validation->set_rules('author', 'Author', 'callback__product_author_check[' . json_encode($author_options) . ']');
 		$this->form_validation->set_rules('type', 'Type', 'callback__product_type_check');
-		//$this->form_validation->set_rules('binding', 'Binding', 'callback__product_binding_check[' . json_encode($product_bindings) . ']');
+		$this->form_validation->set_rules('binding', 'Binding', 'callback__product_binding_check[' . json_encode($product_bindings) . ']');
 		$this->form_validation->set_rules('page', 'Page number', 'required|is_natural_no_zero');
 
 		if ($this->input->method(TRUE) == 'POST' && $this->form_validation->run() == FALSE)
@@ -88,7 +80,7 @@ class Products extends CI_Controller {
 			"products" => $this->product_model->getProducts($filter_data),
 			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
-			"product_bindings" => $this->product_binding,
+			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 			"title_options" => $title_options,
 			"available_in_options" => $available_in_options,
@@ -142,7 +134,7 @@ class Products extends CI_Controller {
 			"product" => $product,
 			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_binding,
+			"product_binding" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 		];
 		$this->breadcrumbs[] = [
