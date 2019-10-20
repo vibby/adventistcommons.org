@@ -17,8 +17,8 @@
 						<div class="row">
 							<div class="col-md-6 box">
 								<div class="form-group row align-items-center">
-									<label for="product-filter-title" class="col-4">Original Title</label>
-									<select id="product-filter-title" class="col selectize" name="title" data-placeholder="Type or select from the list ...">
+									<label for="product-filter-title" class="col-sm-4 col">Original Title</label>
+									<select id="product-filter-title" class="col-sm selectize" name="title" data-placeholder="Type or select from the list ...">
 										<option value=""></option>
 										{% for item in title_options %}
 											<option {% if item.name == filter.title %}selected{% endif %}>{{ item.name }}</option>
@@ -301,7 +301,7 @@
 								<div class="form-group row align-items-center">
 									<label class="col-3">Binding</label>
 									<select class="form-control col" name="binding">
-										{% for item in product_binding  %}
+										{% for item in product_bindings  %}
 											<option value="{{ item.id }}">{{ item.name }}</option>
 										{% endfor %}
 									</select>

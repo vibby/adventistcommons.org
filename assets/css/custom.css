@@ -29,7 +29,7 @@ a {
 	border-color: #495057 transparent transparent transparent !important;
 }
 
-.selectize-control.col {
+.selectize-control.col, .selectize-control.col-sm {
 	padding: 0 !important;
 }
 
@@ -124,5 +124,15 @@ dl.inline dt:before{
 }
 
 .col-md-6.box {
-    padding-right: 20px !important;
+  padding-right: 20px !important;
+}
+
+.selectize-control.single .selectize-input:after {
+  right: 10px !important;
+}
+
+@media screen and (max-width: 576px) {
+  .selectize-control.col-sm {
+    padding-left: 10px !important;
+  }
 }

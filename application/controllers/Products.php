@@ -80,7 +80,7 @@ class Products extends CI_Controller {
 			"products" => $this->product_model->getProducts($filter_data),
 			"audience_options" => $this->product_model->getAudiencesList(),
 			"product_types" => $this->product_types,
-			"product_binding" => $this->product_model->getProductBindingsList(),
+			"product_bindings" => $this->product_model->getProductBindingsList(),
 			"series" => $this->product_model->getSeriesItems(),
 			"title_options" => $title_options,
 			"available_in_options" => $available_in_options,
