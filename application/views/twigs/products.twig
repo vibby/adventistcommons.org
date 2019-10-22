@@ -12,6 +12,113 @@
 				</div>
 				<hr>
 				<div class="content-list">
+					<form id="product-filter-form" method="post" action="/products">
+						<input type="hidden" id="product-filter-page" name="page" value="1"></input>
+						<div class="row">
+							<div class="col-md-6 box">
+								<div class="form-group row align-items-center">
+									<label for="product-filter-title" class="col-sm-4 col">Original Title</label>
+									<select id="product-filter-title" class="col-sm selectize" name="title" data-placeholder="Type or select from the list ...">
+										<option value=""></option>
+										{% for item in title_options %}
+											<option {% if item.name == filter.title %}selected{% endif %}>{{ item.name }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								{% if title_options|length == 0 %}
+									<div class="form-group row align-items-center">
+										<span class="col-4"></span>
+										<span class="col small">Original Titles list is empty</span>
+									</div>
+								{% endif %}
+								<div class="form-group row align-items-center">
+									<label for="product-filter-available-in" class="col-4">Available In</label>
+									<select id="product-filter-available-in" class="col selectize" name="available_in" data-placeholder="Type or select from the list ...">
+										<option value=""></option>
+										{% for item in available_in_options %}
+											<option {% if item.id == filter.available_in %}selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								{% if available_in_options|length == 0 %}
+									<div class="form-group row align-items-center">
+										<span class="col-4"></span>
+										<span class="col small">Available In list is empty</span>
+									</div>
+								{% endif %}
+								<div class="form-group row align-items-center">
+									<label for="product-filter-audience" class="col-4">Audience</label>
+									<select id="product-filter-audience" class="col selectize" name="audience" data-placeholder="Type or select from the list ...">
+										<option value=""></option>
+										{% for item in audience_options %}
+											<option {% if item.id == filter.audience %}selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-md-6 box">
+								<div class="form-group row align-items-center">
+									<label for="product-filter-author" class="col-4">Author</label>
+									<select id="product-filter-author" class="col selectize" name="author" data-placeholder="Type or select from the list ...">
+										<option value=""></option>
+										{% for item in author_options %}
+											<option {% if item.author == filter.author %}selected{% endif %} value="{{ item.author }}">{{ item.author }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								{% if author_options|length == 0 %}
+									<div class="form-group row align-items-center">
+										<span class="col-4"></span>
+										<span class="col small">Authors list is empty</span>
+									</div>
+								{% endif %}
+								<div class="form-group row align-items-center">
+									<label for="product-filter-type" class="col-4">Type</label>
+									<select id="product-filter-type" class="col selectize" name="type" data-placeholder="Type or select from the list ...">
+										<option value=""></option>
+										{% for item in product_types %}
+											<option {% if item == filter.type %}selected{% endif %} value="{{ item }}">{{ item }}</option>
+										{% endfor %}
+									</select>
+								</div>
+								<div class="form-group row align-items-center">
+									<label for="product-filter-binding" class="col-4">Binding</label>
+									<select id="product-filter-binding" class="col selectize" name="binding" data-placeholder="Type or select from the list ...">
+										<option value=""></option>
+										{% for item in product_bindings %}
+											<option {% if item.id == filter.binding %}selected{% endif %} value="{{ item.id }}">{{ item.name }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<div class="form-group row align-items-center h-100">
+									<label class="col-3">Sort By</label>
+									<div class="col custom-control custom-radio products-sort-by">
+										<input type="radio" id="sort-by-title" name="sort_by" class="custom-control-input" value="title" {% if filter.sort_by is not defined or 'title' == filter.sort_by %}checked{% endif %}>
+										<label class="custom-control-label" for="sort-by-title">Title</label>
+									</div>
+									<div class="col custom-control custom-radio">
+										<input type="radio" id="sort-by-author" name="sort_by" class="custom-control-input" value="author" {% if filter.sort_by is defined and 'author' == filter.sort_by %}checked{% endif %}>
+										<label class="custom-control-label" for="sort-by-author">Author</label>
+									</div>
+									<div class="col custom-control custom-radio">
+										<input type="radio" id="sort-by-publisher" name="sort_by" class="custom-control-input" value="publisher" {% if filter.sort_by is defined and 'publisher' == filter.sort_by %}checked{% endif %}>
+										<label class="custom-control-label" for="sort-by-publisher">Publisher</label>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4 d-flex justify-content-end">
+								<button class="btn btn-primary reset" type="button">
+									View All
+								</button>&nbsp;
+								<button class="btn btn-primary" type="submit">
+									Search
+								</button>
+							</div>
+						</div>
+					</form>
+					<hr>
 					<div class="content-list-body row">
 						{% for product in products  %}
 							<div class="col-md-6">
@@ -41,6 +148,11 @@
 							</div>
 						{% endfor %}
 					</div>
+					<nav>
+						<ul class="pagination justify-content-end">
+							{{ links | raw}}
+						</ul>
+					</nav>
 				</div>
 			</div>
 		</div>
@@ -90,7 +202,7 @@
 									<label for="audience" class="col-3">Audience</label>
 									<select id="audience" class="col selectize" multiple name="audience[]" data-placeholder="Select audience(s) ...">
 										{% for audience in audience_options %}
-											<option {% if audience in product.audience %}selected{% endif %}>{{ audience }}</option>
+											<option {% if audience.id in product.audience %}selected{% endif %} value="{{ audience.id }}">{{ audience.name }}</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -189,8 +301,8 @@
 								<div class="form-group row align-items-center">
 									<label class="col-3">Binding</label>
 									<select class="form-control col" name="binding">
-										{% for item in product_binding  %}
-											<option >{{ item }}</option>
+										{% for item in product_bindings  %}
+											<option value="{{ item.id }}">{{ item.name }}</option>
 										{% endfor %}
 									</select>
 								</div>
@@ -211,3 +323,7 @@
 		</form>
 	{% endif %}
 {% endblock %}
+
+{% block javascripts %}
+	<script src="{{ '/assets/js/page/products.js' }}"></script>
+{% endblock %}  

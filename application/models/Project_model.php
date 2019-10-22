@@ -48,6 +48,7 @@ class Project_model extends CI_Model
 	
 	public function getProjectLanguages() {
 		return $this->db->select( "languages.id, languages.name" )
+			->distinct()
 			->from( "languages" )
 			->join( "projects", "projects.language_id = languages.id" )
 			->get()

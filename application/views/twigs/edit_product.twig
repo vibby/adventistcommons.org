@@ -72,9 +72,9 @@
 									<div class="form-group row align-items-center">
 										<label for="audience" class="col-3">Audience</label>
 										<select id="audience" class="col selectize" multiple name="audience[]" data-placeholder="Select audience(s) ...">
-                                            {% for audience in audience_options %}
-												<option {% if audience in product.audience %}selected{% endif %}>{{ audience }}</option>
-                                            {% endfor %}
+											{% for audience in audience_options %}
+												<option {% if audience.name in product.audience %}selected{% endif %} value="{{ audience.id }}">{{ audience.name }}</option>
+											{% endfor %}
 										</select>
 									</div>
 									<hr>
@@ -150,10 +150,10 @@
 										<label class="col-3">Binding</label>
 										<select class="form-control col" name="binding">
 											{% for item in product_binding  %}
-												{% if(product.binding == item) %}
-													<option selected>{{ item }}</option>
+												{% if(product.binding == item.id) %}
+													<option selected value="{{ item.id }}">{{ item.name }}</option>
 												{% else %}
-													<option>{{ item }}</option>
+													<option value="{{ item.id }}">{{ item.name }}</option>
 												{% endif %}
 											{% endfor %}
 										</select>

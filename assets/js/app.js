@@ -119,7 +119,7 @@ if( $( ".language-select" ).length > 0 ) {
 }
 
 $( ".selectize" ).selectize( {
-	"allowEmptyOption": true,
+	"allowEmptyOption": false
 });
 
 $( ".series-select" ).selectize( {
