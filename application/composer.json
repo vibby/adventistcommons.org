@@ -1,7 +1,8 @@
 {
     "require": {
         "google/cloud-translate": "^1.2",
-        "kenjis/codeigniter-ss-twig": "^0.4.0"
+        "kenjis/codeigniter-ss-twig": "^0.4.0",
+        "robmorgan/phinx": "^0.10.7"
     },
     "autoload": {
         "psr-4": {

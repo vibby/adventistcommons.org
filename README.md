@@ -98,44 +98,56 @@ Graphic Designers:
 
 ## Development
 
-Adventistcommons is developped by developers all around the world. Here are technical stuff about how to participate, if you will.
+Adventistcommons is developed by developers all around the world. Here are technical stuff about how to participate, if you will.
 
 ### Development Setup Guide
 
-Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with PHP and MySQL installed.
+Follow the steps below to setup AdventistCommons on your local development environment. We assume you already have a functioning localhost environment with webserver (Apache, Nginx …), PHP and MySQL installed. Instructions are for Windows, Mac OS and Linux.
 
-#### Windows
-Instructions:
-- Clone the repository to the public directory of your localhost environment.
-- We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository.
-- If you are using the default "localhost" server address, update $config['base_url'] (line 26) in the file \application\config\config.example.php to http://localhost and save the new file as config.php.
-- Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
-- Run the [schema install](https://github.com/AdventistCommons/adventistcommons.org/blob/master/schema.sql) (file schema.sql)in your favorite MySQL client.
-- Update 'hostname','username','password','database' (lines 78-81) in the file \application\config\database.example.php with your database credentials and save the new file as database.php.
+Let us know if you have any issues with these steps.
+
+#### Code base
+- Clone the repository on your localhost environment.
+- Setup your webserver vhost. We recommend setting up adventistcommons.local as a server alias and pointing it to the directory where you cloned the repository.
+- Install composer : Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini`
+- Install dependencies with composer with ```php composer.phar install```
+- You may need to install code igniter’s twig extension with command ``php vendor /kenjis/codeigniter-ss-twig/install.php``
+
+#### Database
+- Create database in your favorite MySQL client or with command line : ```mysql -u root -pPASSWORD -e "create database DBNAME;"``` (replace PASSWORD and DBNAME with real data)
+- copy \phinx.example.yml to \phinx.yml 
+- Edit the file [phinx.yml](https://github.com/AdventistCommons/adventistcommons.org/blob/master/phinx.yml#L19-L22) to set your database credentials.
+- Play migration to have a database up to date : ```php vendor/bin/phinx migrate```
+
+#### Config
+- copy \application\config\config.example.php to \application\config\config.php 
 - Update "$config['base_url']" (line 26) in the file \application\config\config.php with the alias you used to access the Adventist Commons install (eg. "localhost" or "adventistcommons.local").
-- To be able to test some features you may need to create a folder "uploads" in your document root.
-- Let us know if you have any issues with these steps.
-
-#### Mac OS
-Instructions:
-- Clone the repository to the public directory of your localhost environment.
-- Create a database and import `schema.sql` file.
-- Setup `application/config/config.php` with your variables.
-- Setup `applications/config/database.php` with your variables.
-- Install dependencies 
-	- `$ composer require google/cloud-translate`
-	- `$ composer require kenjis/codeigniter-ss-twig`
-	- `php vendor /kenjis/codeigniter-ss-twig/install.php`
-- Edit `config.php` and change 
+- copy \application\config\database.example.php to \application\config\database.php 
+- Update 'hostname','username','password','database' (lines 78-81) in the file \application\config\database.php with your database credentials.
+- On Mac OS, you may need to Edit `config.php` and change 
 	- ~~`$config['composer_autoload'] = TRUE;`~~
 	- `$config['composer_autoload'] = 'vendor/autoload.php';`
-- Run your web application
+- To be able to test some features you may need to create a folder "uploads" in your document root.
 
 ### Software elements
 
 #### Code Igniter
 
 First base of the application. If you do not know it yet, check this : https://codeigniter.com/
+
+#### Migrations
+
+Databases changes are handled in a migrations system : Phinx. To play all migrations, run the command ```php application/vendor/bin/phinx migrate```. The migrations already executed on your system are stored, so you can play many times safely, only not-applied-yet migrations will be applied. When you get others work from code base (git pull or merge), you must play migrations other developers may have added, with same command : ```php application/vendor/bin/phinx migrate```.
+
+The idea of migration is to keep a trace of changes done in database, which can be written as SQL code. Migrations are stored in ```/db/migrations```.
+
+If you want to add a change in database follow these steps :
+- create an empty migration ```php application/vendor/bin/phinx create MyFeature``` (replace ~MyFeature~ by a camel case semantic name)
+- edit the new migration file, created in `/db/migrations/`, add the ~up~ logic with SQL code on data or structure.
+- play you migration with ```php application/vendor/bin/phinx migrate```
+- do not forget to add also the ~down~ logic to be able to reverse it. And test it with ```php application/vendor/bin/phinx rollback``` 
+
+And from now, never do structural changes directly in database, use migrations !
 
 #### The container
 
