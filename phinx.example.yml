@@ -4,17 +4,8 @@ paths:
 
 environments:
     default_migration_table: phinxlog
-    default_database: development
-    production:
-        adapter: mysql
-        host: localhost
-        name: production_db
-        user: root
-        pass: ''
-        port: 3306
-        charset: utf8
-
-    development:
+    default_database: adventistcommons
+    adventistcommons:
         adapter: mysql
         host: localhost
         name: development_db
