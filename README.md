@@ -105,6 +105,9 @@ Adventistcommons is developed by developers all around the world. Here are techn
 You can use the docker setup :
 - Install docker and docker-compose
 - Clone the repository to the public directory of your localhost environment
+- copy \application\config\database.docker.php to \application\config\database.php
+- copy \application\config\config.docker.php to \application\config\database.php
+- copy \phinx.docker.yml to \phinx.yml
 - Point your terminal client to the application/ directory, and run `php -r "readfile('https://getcomposer.org/installer');" | php -c php.ini` and `php composer.phar update`
 - Point your terminal project root and launch project with ``sudo docker-compose up``
 - In your browser, go to localhost:8080 (adminer), and connect with parameters Mysql / ac-db / root / somePassword
