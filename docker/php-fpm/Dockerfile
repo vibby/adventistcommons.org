@@ -20,6 +20,7 @@ RUN buildDeps="libpq-dev libzip-dev libicu-dev libjpeg62-turbo-dev libfreetype6-
         mysqli \
         pgsql \
         sockets \
-        intl
+        intl\
+        zip
 CMD ["php-fpm"]
 
