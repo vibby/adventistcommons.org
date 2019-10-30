@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  ac-db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: somePassword
+
+  ac-webserver:
+    image: phpdockerio/nginx:latest
+    container_name: ac-webserver
+    volumes:
+      - .:/var/www/adventistcommons:ro
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./var/log/nginx:/var/log/nginx
+      - ./var/sessions:/var/www/adventistcommons/var/sessions
+    ports:
+      - "8096:80"
+    links:
+      - ac-php-fpm
+    expose:
+      - 8096
+
+  ac-php-fpm:
+    build:
+      context: ./docker/php-fpm
+    container_name: ac-php-fpm
+    ports:
+      - 9000:9000
+    volumes:
+      - .:/var/www/adventistcommons
+      - ./var/sessions:/var/www/adventistcommons/var/sessions
+      - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.2/fpm/conf.d/99-overrides.ini:ro
+      - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.2/cli/conf.d/99-overrides.ini:ro
+    links:
+      - ac-db
+
+  ac-adminer:
+    image: adminer:latest
+    container_name: ac-admniner
+    links:
+      - ac-db
+    ports:
+      - 8080:8080
+
+# FOR DNS problems, see here : https://development.robinwinslow.uk/2016/06/23/fix-docker-networking-dns/

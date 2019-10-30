@@ -2,6 +2,8 @@
 /application/vendor
 .idea
 composer.phar
+/var/log/nginx
+/var/sessions
 /uploads
 /application/config/config.php
 /application/config/database.php
